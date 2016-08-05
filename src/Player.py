@@ -4,6 +4,7 @@ class Player():
     def __init__(self, path_to_sprite, default_speed):
         self.position = (0, 0)
         self.velocity = (0, 0)
+        self.acceleration = (0,0)
         self.default_speed = default_speed
         self.sprite = pygame.image.load(path_to_sprite)
         self.sprite_rect = self.sprite.get_rect()
@@ -17,6 +18,13 @@ class Player():
         newY = self.position[1] + displacement[1]
         self.position = (newX, newY)
 
+    def inertia(self, position):
+
+        newX = self.velocity[0] + position[0]
+        newY = self.velocity[1] + position[1]
+        self.velocity = (newX, newY)
+
+
     def handleEvent(self, event):
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
@@ -29,7 +37,7 @@ class Player():
 
     def Update(self, deltaTime):
         dt = deltaTime / 1000
-        print("deltaTime %d\ndt %f" %(deltaTime, dt))
+        self.inertia(((self.acceleration[0] * dt, self.acceleration[1] * dt)
         self.move((self.velocity[0] * dt, self.velocity[1] * dt))
 
 
