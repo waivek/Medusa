@@ -32,11 +32,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="Player.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/Player.py">
+      <file leaf-file-name="Level.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/Level.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.8429561">
-              <caret line="23" column="37" selection-start-line="23" selection-start-column="37" selection-end-line="23" selection-end-column="37" />
+            <state vertical-scroll-proportion="0.6281755">
+              <caret line="16" column="0" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -525,18 +525,6 @@
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Level.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6281755">
-          <caret line="16" column="0" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
-          <folding>
-            <marker date="1470403380391" expanded="true" signature="32:574" placeholder="..." />
-            <marker date="1470403380391" expanded="true" signature="66:326" placeholder="..." />
-            <marker date="1470403380391" expanded="true" signature="361:574" placeholder="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/testing">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.92147803">
@@ -560,6 +548,21 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.8429561">
           <caret line="23" column="37" selection-start-line="23" selection-start-column="37" selection-end-line="23" selection-end-column="37" />
+          <folding>
+            <marker date="1470320519889" expanded="true" signature="30:1270" placeholder="..." />
+            <marker date="1470320519889" expanded="true" signature="85:296" placeholder="..." />
+            <marker date="1470320519889" expanded="true" signature="325:376" placeholder="..." />
+            <marker date="1470320519889" expanded="true" signature="411:611" placeholder="..." />
+            <marker date="1470320519889" expanded="true" signature="646:1086" placeholder="..." />
+            <marker date="1470320519889" expanded="true" signature="1120:1270" placeholder="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Level.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.6281755">
+          <caret line="16" column="0" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
           <folding />
         </state>
       </provider>
