@@ -2,9 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="12d4f250-520a-4c34-b5d8-1f9e6c20d4c7" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Level.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main" afterPath="$PROJECT_DIR$/src/main" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/helpers" afterPath="$PROJECT_DIR$/src/helpers" />
     </list>
     <ignored path="Medusa.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -19,7 +18,7 @@
   <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/Medusa$testing.coverage" NAME="testing Coverage Results" MODIFIED="1470320016236" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
-    <SUITE FILE_PATH="coverage/Medusa$Player.coverage" NAME="Player Coverage Results" MODIFIED="1470320521626" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
+    <SUITE FILE_PATH="coverage/Medusa$Player.coverage" NAME="Player Coverage Results" MODIFIED="1470407186417" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
     <SUITE FILE_PATH="coverage/Medusa$main.coverage" NAME="main Coverage Results" MODIFIED="1470403589919" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
     <SUITE FILE_PATH="coverage/Medusa$Level.coverage" NAME="Level Coverage Results" MODIFIED="1470402887072" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
   </component>
@@ -32,12 +31,14 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="Player.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/Player.py">
+      <file leaf-file-name="main" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.8429561">
-              <caret line="23" column="37" selection-start-line="23" selection-start-column="37" selection-end-line="23" selection-end-column="37" />
-              <folding />
+            <state vertical-scroll-proportion="0.47113165">
+              <caret line="15" column="39" selection-start-line="15" selection-start-column="39" selection-end-line="15" selection-end-column="39" />
+              <folding>
+                <element signature="e#0#10#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -58,9 +59,11 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/src/testing" />
-        <option value="$PROJECT_DIR$/src/Player.py" />
-        <option value="$PROJECT_DIR$/src/Level.py" />
         <option value="$PROJECT_DIR$/src/main" />
+        <option value="$PROJECT_DIR$/src/Level.py" />
+        <option value="$PROJECT_DIR$/src/Sprite.py" />
+        <option value="$PROJECT_DIR$/src/helpers" />
+        <option value="$PROJECT_DIR$/src/Player.py" />
       </list>
     </option>
   </component>
@@ -440,8 +443,8 @@
     <recent_temporary>
       <list size="4">
         <item index="0" class="java.lang.String" itemvalue="Python.main" />
-        <item index="1" class="java.lang.String" itemvalue="Python.Level" />
-        <item index="2" class="java.lang.String" itemvalue="Python.Player" />
+        <item index="1" class="java.lang.String" itemvalue="Python.Player" />
+        <item index="2" class="java.lang.String" itemvalue="Python.Level" />
         <item index="3" class="java.lang.String" itemvalue="Python.testing" />
       </list>
     </recent_temporary>
@@ -504,8 +507,7 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="18" column="9" selection-start-line="18" selection-start-column="9" selection-end-line="18" selection-end-column="9" />
           <folding>
-            <marker date="1470403776778" expanded="true" signature="0:54" placeholder="import ..." />
-            <marker date="1470403776778" expanded="true" signature="67:747" placeholder="..." />
+            <element signature="e#0#10#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -525,18 +527,6 @@
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Level.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6281755">
-          <caret line="16" column="0" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
-          <folding>
-            <marker date="1470403380391" expanded="true" signature="32:574" placeholder="..." />
-            <marker date="1470403380391" expanded="true" signature="66:326" placeholder="..." />
-            <marker date="1470403380391" expanded="true" signature="361:574" placeholder="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/testing">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.92147803">
@@ -545,22 +535,64 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main">
+    <entry file="file://$PROJECT_DIR$/src/Level.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.8822171">
+          <caret line="28" column="0" selection-start-line="28" selection-start-column="0" selection-end-line="28" selection-end-column="0" />
+          <folding>
+            <marker date="1470406385540" expanded="true" signature="32:729" placeholder="..." />
+            <marker date="1470406385540" expanded="true" signature="66:326" placeholder="..." />
+            <marker date="1470406385540" expanded="true" signature="361:564" placeholder="..." />
+            <marker date="1470406385540" expanded="true" signature="591:729" placeholder="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Sprite.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.43187067">
-          <caret line="11" column="22" selection-start-line="11" selection-start-column="22" selection-end-line="11" selection-end-column="22" />
+          <caret line="11" column="19" selection-start-line="11" selection-start-column="19" selection-end-line="11" selection-end-column="19" />
           <folding>
-            <marker date="1470403776778" expanded="true" signature="0:54" placeholder="import ..." />
-            <marker date="1470403776778" expanded="true" signature="67:747" placeholder="..." />
+            <marker date="1470406996889" expanded="true" signature="30:354" placeholder="..." />
+            <marker date="1470406996889" expanded="true" signature="70:176" placeholder="..." />
+            <marker date="1470406996889" expanded="true" signature="211:274" placeholder="..." />
+            <marker date="1470406996889" expanded="true" signature="303:354" placeholder="..." />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/helpers">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.03926097">
+          <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Player.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.8429561">
-          <caret line="23" column="37" selection-start-line="23" selection-start-column="37" selection-end-line="23" selection-end-column="37" />
-          <folding />
+        <state vertical-scroll-proportion="0.70669746">
+          <caret line="18" column="36" selection-start-line="18" selection-start-column="36" selection-end-line="18" selection-end-column="36" />
+          <folding>
+            <marker date="1470407185852" expanded="true" signature="0:43" placeholder="import ..." />
+            <marker date="1470407185852" expanded="true" signature="60:1639" placeholder="..." />
+            <marker date="1470407185852" expanded="true" signature="115:424" placeholder="..." />
+            <marker date="1470407185852" expanded="true" signature="453:486" placeholder="..." />
+            <marker date="1470407185852" expanded="true" signature="521:762" placeholder="..." />
+            <marker date="1470407185852" expanded="true" signature="808:946" placeholder="..." />
+            <marker date="1470407185852" expanded="true" signature="982:1422" placeholder="..." />
+            <marker date="1470407185852" expanded="true" signature="1456:1639" placeholder="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.47113165">
+          <caret line="15" column="39" selection-start-line="15" selection-start-column="39" selection-end-line="15" selection-end-column="39" />
+          <folding>
+            <element signature="e#0#10#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
