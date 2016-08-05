@@ -15,14 +15,17 @@ class Level():
 
     def add_player(self, player):
         if self.player1 == None:
-            pass
-            # do player1 code
+            self.player1 = player
         elif self.player2 == None:
-            pass
-            # do player2 code
+            self.player2 = player
         else:
-            pass
-            # ERROR
+            raise Exception("Tried to add player>2")
+
+    def level_draw(self):
+        if self.player1 is not None:
+            self.player1.draw()
+        if self.player2 is not None:
+            self.player2.draw()
 
 
 l = Level(6, 3)
