@@ -26,6 +26,14 @@ class Level():
             self.player1.draw()
         if self.player2 is not None:
             self.player2.draw()
+            pass
+            # do player1 code
+        elif self.player2 == None:
+            pass
+            # do player2 code
+        else:
+            pass
+            # ERROR
 
 
 l = Level(6, 3)
