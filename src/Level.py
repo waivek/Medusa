@@ -1,4 +1,5 @@
-
+from src.Sprite import Sprite
+from src.Player import PlayerState
 
 BLOCK_SIZE = 32
 class Level():
@@ -7,11 +8,14 @@ class Level():
         self.player2 = None
         self.row = row
         self.col = col
-        self.my_list = \
+        self.map = \
             [
                 [ y >= (self.row / 2) for x in range(self.col)]
                 for y in range(self.row)
             ]
+        print(self.map)
+        self.sky_sprite = Sprite("..\\raw\\sky.png")
+        self.block_spr = Sprite("..\\raw\\tile.jpg")
 
     def add_player(self, player):
         if self.player1 == None:
@@ -21,11 +25,37 @@ class Level():
         else:
             raise Exception("Tried to add player>2")
 
-    def level_draw(self):
+    def draw(self, screen):
+        self.sky_sprite.draw(screen)
+
+        for i in range(self.row):
+            for j in range(self.col):
+                if self.map[i][j] == True:
+                    self.block_spr.set_location((BLOCK_SIZE*j,BLOCK_SIZE*i))
+                    self.block_spr.draw(screen)
+
         if self.player1 is not None:
-            self.player1.draw()
+            self.player1.draw(screen)
         if self.player2 is not None:
-            self.player2.draw()
+            self.player2.draw(screen)
+
+    def handle_event(self, event):
+        if self.player1 is not None:
+            self.player1.handleEvent(event)
+        if self.player2 is not None:
+            self.player2.handleEvent(event)
+
+    def Update(self, deltaTime):
+        if self.player1 is not None:
+            pos = self.player1.getpos()
+            newpos = (int(pos[0]/BLOCK_SIZE),int(pos[1]/BLOCK_SIZE))
+            print(newpos)
+            if self.map[newpos[1]][newpos[0]]:
+                self.player1.state = PlayerState.GROUND
+
+            self.player1.Update(deltaTime)
+        if self.player2 is not None:
+            self.player2.Update(deltaTime)
 
 
 l = Level(6, 3)
