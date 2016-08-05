@@ -1,3 +1,4 @@
+from src.Sprite import Sprite
 import pygame
 
 class Player():
@@ -6,14 +7,16 @@ class Player():
         self.velocity = (0, 0)
         self.acceleration = (0,0)
         self.default_speed = default_speed
-        self.sprite = pygame.image.load(path_to_sprite)
-        self.sprite_rect = self.sprite.get_rect()
+        self.sprite = Sprite(path_to_sprite=path_to_sprite)
+        # self.sprite = pygame.image.load(path_to_sprite)
+        # self.sprite_rect = self.sprite.get_rect()
 
     def draw(self, screen):
-        screen.blit(self.sprite, self.sprite_rect)
+        self.sprite.draw(screen)
 
     def move(self, displacement):
-        self.sprite_rect = self.sprite_rect.move(displacement)
+        # self.sprite_rect = self.sprite_rect.move(displacement)
+        self.sprite.move(displacement)
         newX = self.position[0] + displacement[0]
         newY = self.position[1] + displacement[1]
         self.position = (newX, newY)
