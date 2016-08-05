@@ -9,6 +9,7 @@ def main():
     screen = pygame.display.set_mode(size)
     black = 0, 0, 0
     p1 = Player(path_to_sprite="..\\raw\\sprite.jpg", default_speed=100)
+    print(p1.__class__)
     time = pygame.time.get_ticks()
 
     while True:
