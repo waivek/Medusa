@@ -18,10 +18,10 @@ class Player():
         newY = self.position[1] + displacement[1]
         self.position = (newX, newY)
 
-    def inertia(self, position):
+    def update_velocity(self, acceleration):
 
-        newX = self.velocity[0] + position[0]
-        newY = self.velocity[1] + position[1]
+        newX = self.velocity[0] + acceleration[0]
+        newY = self.velocity[1] + acceleration[1]
         self.velocity = (newX, newY)
 
 
@@ -37,7 +37,7 @@ class Player():
 
     def Update(self, deltaTime):
         dt = deltaTime / 1000
-        self.inertia(((self.acceleration[0] * dt, self.acceleration[1] * dt)
+        self.update_velocity(((self.acceleration[0] * dt, self.acceleration[1] * dt)))
         self.move((self.velocity[0] * dt, self.velocity[1] * dt))
 
 
