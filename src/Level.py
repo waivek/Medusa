@@ -1,4 +1,4 @@
-
+from src.Sprite import Sprite
 
 BLOCK_SIZE = 32
 class Level():
@@ -7,11 +7,14 @@ class Level():
         self.player2 = None
         self.row = row
         self.col = col
-        self.my_list = \
+        self.map = \
             [
                 [ y >= (self.row / 2) for x in range(self.col)]
                 for y in range(self.row)
             ]
+        print(self.map)
+        self.sky_sprite = Sprite("..\\raw\\sky.png")
+        self.block_spr = Sprite("..\\raw\\tile.jpg")
 
     def add_player(self, player):
         if self.player1 == None:
