@@ -13,6 +13,7 @@ class Player():
         self.acceleration = (0,0)
         self.default_speed = default_speed
         self.sprite = Sprite(path_to_sprite=path_to_sprite)
+        self.state = PlayerState.JUMPING
         # self.sprite = pygame.image.load(path_to_sprite)
         # self.sprite_rect = self.sprite.get_rect()
 
@@ -42,6 +43,10 @@ class Player():
                 self.velocity = (-self.default_speed, self.velocity[1])
             if event.key == pygame.K_RIGHT:
                 self.velocity = (self.default_speed, self.velocity[1])
+            if event.key == pygame.K_SPACE and self.state==PlayerState.GROUND:
+                self.velocity = (self.velocity[0],self.velocity[1]-300)
+                self.state = PlayerState.JUMPING
+
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
                 self.velocity = (0, self.velocity[1])
@@ -53,6 +58,13 @@ class Player():
         dt = deltaTime / 1000
         self.update_velocity(((self.acceleration[0] * dt, self.acceleration[1] * dt)))
         self.move((self.velocity[0] * dt, self.velocity[1] * dt))
+
+        if self.state == PlayerState.JUMPING:
+            self.acceleration = (self.acceleration[0], 250)
+        elif self.state == PlayerState.GROUND:
+            self.velocity = (self.velocity[0], 0)
+            self.acceleration = (self.acceleration[0], 0)
+        print(self.state)
 
 
 

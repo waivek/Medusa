@@ -1,4 +1,5 @@
 from src.Sprite import Sprite
+from src.Player import PlayerState
 
 BLOCK_SIZE = 32
 class Level():
@@ -46,6 +47,12 @@ class Level():
 
     def Update(self, deltaTime):
         if self.player1 is not None:
+            pos = self.player1.getpos()
+            newpos = (int(pos[0]/BLOCK_SIZE),int(pos[1]/BLOCK_SIZE))
+            print(newpos)
+            if self.map[newpos[1]][newpos[0]]:
+                self.player1.state = PlayerState.GROUND
+
             self.player1.Update(deltaTime)
         if self.player2 is not None:
             self.player2.draw()
