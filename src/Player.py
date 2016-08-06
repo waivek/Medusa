@@ -64,7 +64,6 @@ class Player():
         elif self.state == PlayerState.GROUND:
             self.velocity = (self.velocity[0], 0)
             self.acceleration = (self.acceleration[0], 0)
-        print(self.state)
 
 
 

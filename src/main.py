@@ -23,6 +23,7 @@ def main():
         deltaTime = pygame.time.get_ticks() - time
         while deltaTime < 16:
             deltaTime = pygame.time.get_ticks() - time
+        print("Delta Time = %d" % deltaTime)
         time = pygame.time.get_ticks()
         # p1.Update(deltaTime)
         # p1.draw(screen)
