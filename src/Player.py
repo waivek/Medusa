@@ -1,4 +1,7 @@
 from src.Sprite import Sprite
+from src.LoadResources import SoundEnum
+from src.LoadResources import play_sound
+
 import pygame
 
 from enum import Enum
@@ -36,7 +39,6 @@ class Player():
     def getpos(self):
         return self.position
 
-
     def handle_event(self, event):
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
@@ -46,6 +48,7 @@ class Player():
             if event.key == pygame.K_SPACE and self.state==PlayerState.GROUND:
                 self.velocity = (self.velocity[0],self.velocity[1]-300)
                 self.state = PlayerState.JUMPING
+                play_sound(SoundEnum.JUMP)
 
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:

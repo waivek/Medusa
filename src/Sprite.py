@@ -1,6 +1,7 @@
 import pygame
+from src.LoadResources import ImageEnum
 
-class Sprite():
+class Sprite:
     def __init__(self, path_to_sprite):
         self.sprite = pygame.image.load(path_to_sprite)
         self.sprite_rect = self.sprite.get_rect()
