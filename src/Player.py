@@ -49,8 +49,8 @@ class Player:
 
     def update_position(self, displacement):
         self.sprite.move(displacement)
-        newx = self.position[0] + displacement[0]
-        newy = self.position[1] + displacement[1]
+        newx = self.position[0] + int(displacement[0])
+        newy = self.position[1] + int(displacement[1])
         self.position = (newx, newy)
 
     def update_velocity(self, acceleration):
@@ -62,7 +62,7 @@ class Player:
         return self.position
 
     def getrekt(self):
-        return pygame.Rect(self.position[0],self.position[1]-32,self.size[0],self.size[1])
+        return pygame.Rect(self.position[0],self.position[1],self.size[0],self.size[1])
 
     def handle_event(self, event):
         if event.type == pygame.KEYDOWN:
@@ -85,9 +85,11 @@ class Player:
     def update(self, deltatime):
         dt = deltatime / 1000
 
+        print(self.velocity)
+
         #update parameters
-        self.update_velocity(((self.acceleration[0] * dt, self.acceleration[1] * dt)))
         self.update_position((self.velocity[0] * dt, self.velocity[1] * dt))
+        self.update_velocity(((self.acceleration[0] * dt, self.acceleration[1] * dt)))
 
         #update state
         if self.state == PlayerState.JUMPING:

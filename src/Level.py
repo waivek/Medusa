@@ -1,9 +1,9 @@
 from src.Sprite import Sprite
-from src.Sprite import rect_intersect
 from src.Player import PlayerState
 from src.Player import BLOCK_SIZE
 from src.LoadResources import ImageEnum
 from src.LoadResources import gImages
+import src.Util
 import pygame
 
 class Level:
@@ -55,10 +55,29 @@ class Level:
             for i in range(self.col):
                 for j in range(self.row):
                     if self.map[j][i]:
-                        tilerect = pygame.Rect(BLOCK_SIZE*i,BLOCK_SIZE*j,BLOCK_SIZE,BLOCK_SIZE)
-                        if rect_intersect(self.player1.getrekt(), tilerect):
+                        tile_rect = pygame.Rect(BLOCK_SIZE * i, BLOCK_SIZE * j, BLOCK_SIZE, BLOCK_SIZE)
+                        player_rect = self.player1.getrekt()
+
+                        if src.Util.rect_intersect(player_rect, tile_rect):
+                            (vertical_x, horizontal_y) = src.Util.get_intersecting_lines(player_rect,
+                                                                                tile_rect)
+
+                            (p_x, p_y) = src.Util.get_inner_point(player_rect, tile_rect)
+
+                            (target_x, target_y) = src.Util.get_target_point(
+                                vertical_x=vertical_x, horizontal_y=horizontal_y,
+                                v_x= -self.player1.velocity[0], v_y= -self.player1.velocity[1],
+                                p_x=p_x, p_y=p_y
+                            )
+
+                            self.player1.update_position((target_x - p_x, target_y - p_y))
+
+                            if(self.player1.velocity[1] > 0):
+                                self.player1.velocity = (self.player1.velocity[0],0)
+                            #if target_y == horizontal_y:
                             self.player1.state = PlayerState.GROUND
-                            self.player1.velocity = (self.player1.velocity[0],0)
+                            #elif target_x == vertical_x:
+                            #    self.player1.state = PlayerState.JUMPING
 
         if self.player2 is not None:
             self.player2.update(deltatime)
