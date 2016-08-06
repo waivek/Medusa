@@ -1,10 +1,12 @@
 from src.Sprite import Sprite
 from src.Sprite import rect_intersect
 from src.Player import PlayerState
+from src.Player import BLOCK_SIZE
+from src.LoadResources import ImageEnum
+from src.LoadResources import gImages
 import pygame
 
-BLOCK_SIZE = 32
-class Level():
+class Level:
     def __init__(self, row, col):
         self.player1 = None
         self.player2 = None
@@ -15,9 +17,9 @@ class Level():
                 [ y >= (self.row / 2) for x in range(self.col)]
                 for y in range(self.row)
             ]
-        print(self.map)
-        self.sky_sprite = Sprite("..\\raw\\sky.png")
-        self.block_spr = Sprite("..\\raw\\tile.jpg")
+
+        self.sky_sprite = Sprite(ImageEnum.SKY)
+        self.block_sprite = Sprite(ImageEnum.BLOCK)
 
     def add_player(self, player):
         if self.player1 is None:
@@ -33,8 +35,8 @@ class Level():
         for i in range(self.row):
             for j in range(self.col):
                 if self.map[i][j] is True:
-                    self.block_spr.set_location((BLOCK_SIZE*j,BLOCK_SIZE*i))
-                    self.block_spr.draw(screen)
+                    self.block_sprite.set_location((BLOCK_SIZE*j,BLOCK_SIZE*i))
+                    self.block_sprite.draw(screen)
 
         if self.player1 is not None:
             self.player1.draw(screen)
@@ -54,7 +56,7 @@ class Level():
                 for j in range(self.row):
                     if self.map[j][i]:
                         tilerect = pygame.Rect(BLOCK_SIZE*i,BLOCK_SIZE*j,BLOCK_SIZE,BLOCK_SIZE)
-                        if rect_intersect(self.player1.sprite.sprite_rect, tilerect):
+                        if rect_intersect(self.player1.getrekt(), tilerect):
                             self.player1.state = PlayerState.GROUND
 
         if self.player2 is not None:
