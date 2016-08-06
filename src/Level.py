@@ -24,11 +24,32 @@ class Level():
         else:
             raise Exception("Tried to add player>2")
 
-    def level_draw(self):
+    def draw(self, screen):
+        self.sky_sprite.draw(screen)
+
+        for i in range(self.row):
+            for j in range(self.col):
+                if self.map[i][j] == True:
+                    self.block_spr.set_location((BLOCK_SIZE*j,BLOCK_SIZE*i))
+                    self.block_spr.draw(screen)
+
         if self.player1 is not None:
-            self.player1.draw()
+            self.player1.draw(screen)
+        if self.player2 is not None:
+            self.player2.draw(screen)
+
+    def handle_event(self, event):
+        if self.player1 is not None:
+            self.player1.handleEvent(event)
+        if self.player2 is not None:
+            self.player2.handleEvent(event)
+
+    def Update(self, deltaTime):
+        if self.player1 is not None:
+            self.player1.Update(deltaTime)
         if self.player2 is not None:
             self.player2.draw()
+            self.player2.Update(deltaTime)
             pass
             # do player1 code
         elif self.player2 == None:
