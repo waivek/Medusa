@@ -45,7 +45,7 @@ class Level():
         if self.player2 is not None:
             self.player2.handleEvent(event)
 
-    def Update(self, deltaTime):
+    def update(self, deltaTime):
         if self.player1 is not None:
             pos = self.player1.getpos()
             newpos = (int(pos[0]/BLOCK_SIZE),int(pos[1]/BLOCK_SIZE))
