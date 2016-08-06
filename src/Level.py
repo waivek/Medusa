@@ -43,11 +43,11 @@ class Level():
 
     def handle_event(self, event):
         if self.player1 is not None:
-            self.player1.handleEvent(event)
+            self.player1.handle_event(event)
         if self.player2 is not None:
-            self.player2.handleEvent(event)
+            self.player2.handle_event(event)
 
-    def Update(self, deltaTime):
+    def update(self, deltatime):
         if self.player1 is not None:
             pos = self.player1.getpos()
             newpos = (int(pos[0]/BLOCK_SIZE),int(pos[1]/BLOCK_SIZE))
@@ -55,18 +55,5 @@ class Level():
             if self.map[newpos[1]][newpos[0]]:
                 self.player1.state = PlayerState.GROUND
 
-            self.player1.Update(deltaTime)
         if self.player2 is not None:
-            self.player2.Update(deltaTime)
-            self.player2.Update(deltaTime)
-            pass
-            # do player1 code
-        elif self.player2 == None:
-            pass
-            # do player2 code
-        else:
-            pass
-            # ERROR
-
-
-l = Level(6, 3)
+            self.player2.update(deltatime)
