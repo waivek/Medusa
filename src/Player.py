@@ -1,6 +1,11 @@
 from src.Sprite import Sprite
 import pygame
 
+from enum import Enum
+class PlayerState(Enum):
+    GROUND = 0
+    JUMPING = 1
+
 class Player():
     def __init__(self, path_to_sprite, default_speed):
         self.position = (0, 0)
@@ -27,6 +32,9 @@ class Player():
         newY = self.velocity[1] + acceleration[1]
         self.velocity = (newX, newY)
 
+    def getpos(self):
+        return self.position
+
 
     def handleEvent(self, event):
         if event.type == pygame.KEYDOWN:
@@ -37,6 +45,9 @@ class Player():
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
                 self.velocity = (0, self.velocity[1])
+
+    def setAcceleration(self,acc):
+        self.acceleration=acc
 
     def Update(self, deltaTime):
         dt = deltaTime / 1000
