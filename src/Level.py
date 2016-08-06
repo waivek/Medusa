@@ -49,11 +49,13 @@ class Level():
 
     def update(self, deltatime):
         if self.player1 is not None:
-            pos = self.player1.getpos()
-            newpos = (int(pos[0]/BLOCK_SIZE),int(pos[1]/BLOCK_SIZE))
-            print(newpos)
-            if self.map[newpos[1]][newpos[0]]:
-                self.player1.state = PlayerState.GROUND
+            self.player1.update(deltatime)
+            for i in range(self.col):
+                for j in range(self.row):
+                    if self.map[j][i]:
+                        tilerect = pygame.Rect(BLOCK_SIZE*i,BLOCK_SIZE*j,BLOCK_SIZE,BLOCK_SIZE)
+                        if rect_intersect(self.player1.sprite.sprite_rect, tilerect):
+                            self.player1.state = PlayerState.GROUND
 
         if self.player2 is not None:
             self.player2.update(deltatime)
