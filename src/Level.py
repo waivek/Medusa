@@ -1,5 +1,9 @@
 from src.Sprite import Sprite
 from src.Sprite import rect_intersect
+from src.Sprite import get_intersecting_lines
+from src.Sprite import get_inner_point
+from src.Sprite import get_target_point
+from src.Sprite import get_intersecting_line_tuples
 from src.Player import PlayerState
 import pygame
 
@@ -55,7 +59,33 @@ class Level():
                     if self.map[j][i]:
                         tilerect = pygame.Rect(BLOCK_SIZE*i,BLOCK_SIZE*j,BLOCK_SIZE,BLOCK_SIZE)
                         if rect_intersect(self.player1.sprite.sprite_rect, tilerect):
-                            self.player1.state = PlayerState.GROUND
+                            (vertical_x, horizontal_y) = get_intersecting_lines(self.player1.sprite.sprite_rect, tilerect)
+                            (p_x, p_y) = get_inner_point(self.player1.sprite.sprite_rect, tilerect)
+                            (target_x, target_y) = get_target_point(
+                                vertical_x=vertical_x,
+                                horizontal_y=horizontal_y,
+                                v_x=self.player1.velocity[0],
+                                v_y=self.player1.velocity[1],
+                                p_x=p_x,
+                                p_y=p_y
+                            )
+                            (player_left, player_right, player_upper, player_lower) = \
+                                get_intersecting_line_tuples(self.player1.sprite.sprite_rect, tilerect)
+                            if player_left:
+                                if player_upper:
+                                    self.player1.sprite.sprite_rect.topleft = (target_x, target_y)
+                                elif player_lower:
+                                    self.player1.sprite.sprite_rect.bottomleft = (target_x, target_y)
+                            if player_right:
+                                if player_upper:
+                                    self.player1.sprite.sprite_rect.topright = (target_x, target_y)
+                                elif player_lower:
+                                    self.player1.sprite.sprite_rect.bottomright = (target_x, target_y)
+
+                            if target_y == horizontal_y:
+                                self.player1.state = PlayerState.GROUND
+                            elif target_x == vertical_x:
+                                self.player1.state = PlayerState.JUMPING
 
         if self.player2 is not None:
             self.player2.update(deltatime)
