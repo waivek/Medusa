@@ -56,6 +56,15 @@ class Level():
             self.player1.Update(deltaTime)
         if self.player2 is not None:
             self.player2.Update(deltaTime)
+            self.player2.Update(deltaTime)
+            pass
+            # do player1 code
+        elif self.player2 == None:
+            pass
+            # do player2 code
+        else:
+            pass
+            # ERROR
 
 
 l = Level(6, 3)

@@ -1,2 +1,4 @@
-.idea/
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/*.iws
 src/__pycache__/
