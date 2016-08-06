@@ -1,5 +1,7 @@
 from src.Sprite import Sprite
+from src.Sprite import rect_intersect
 from src.Player import PlayerState
+import pygame
 
 BLOCK_SIZE = 32
 class Level():
@@ -18,9 +20,9 @@ class Level():
         self.block_spr = Sprite("..\\raw\\tile.jpg")
 
     def add_player(self, player):
-        if self.player1 == None:
+        if self.player1 is None:
             self.player1 = player
-        elif self.player2 == None:
+        elif self.player2 is None:
             self.player2 = player
         else:
             raise Exception("Tried to add player>2")
@@ -30,7 +32,7 @@ class Level():
 
         for i in range(self.row):
             for j in range(self.col):
-                if self.map[i][j] == True:
+                if self.map[i][j] is True:
                     self.block_spr.set_location((BLOCK_SIZE*j,BLOCK_SIZE*i))
                     self.block_spr.draw(screen)
 

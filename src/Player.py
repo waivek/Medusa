@@ -20,7 +20,7 @@ class Player():
     def draw(self, screen):
         self.sprite.draw(screen)
 
-    def move(self, displacement):
+    def update_position(self, displacement):
         # self.sprite_rect = self.sprite_rect.move(displacement)
         self.sprite.move(displacement)
         newX = self.position[0] + displacement[0]
@@ -37,7 +37,7 @@ class Player():
         return self.position
 
 
-    def handleEvent(self, event):
+    def handle_event(self, event):
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
                 self.velocity = (-self.default_speed, self.velocity[1])
@@ -51,13 +51,13 @@ class Player():
             if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
                 self.velocity = (0, self.velocity[1])
 
-    def setAcceleration(self,acc):
+    def set_acceleration(self,acc):
         self.acceleration=acc
 
-    def Update(self, deltaTime):
+    def update(self, deltaTime):
         dt = deltaTime / 1000
         self.update_velocity(((self.acceleration[0] * dt, self.acceleration[1] * dt)))
-        self.move((self.velocity[0] * dt, self.velocity[1] * dt))
+        self.update_position((self.velocity[0] * dt, self.velocity[1] * dt))
 
         if self.state == PlayerState.JUMPING:
             self.acceleration = (self.acceleration[0], 250)

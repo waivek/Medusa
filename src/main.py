@@ -26,7 +26,7 @@ def main():
         time = pygame.time.get_ticks()
         # p1.Update(deltaTime)
         # p1.draw(screen)
-        level.Update(deltaTime)
+        level.update(deltaTime)
         level.draw(screen)
         pygame.display.flip()
 
