@@ -1,9 +1,10 @@
 import pygame
 from src.LoadResources import ImageEnum
+from src.LoadResources import gImages
 
 class Sprite:
-    def __init__(self, path_to_sprite):
-        self.sprite = pygame.image.load(path_to_sprite)
+    def __init__(self, spriteenum):
+        self.sprite = gImages[spriteenum.value]
         self.sprite_rect = self.sprite.get_rect()
 
     def move(self, displacement):

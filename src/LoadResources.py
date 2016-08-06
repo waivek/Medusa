@@ -5,16 +5,21 @@ gImages = []
 gSounds = []
 
 class ImageEnum(Enum):
-    PLAYER1 = 0
-    TILE = 1
-    SKY = 2
+    PLAYER1_LEFT = 0
+    PLAYER1_RIGHT = 1
+    PLAYER1_JUMPLEFT = 2
+    PLAYER1_JUMPRIGHT = 3
+    BLOCK = 4
+    SKY = 5
 
 class SoundEnum(Enum):
     JUMP = 0
     HIT = 1
 
-gImagePaths = [r"..\raw\player1.png",r"..\raw\tile.jpg",r"..\raw\sky.png"]
-gSoundPaths = [r"..\raw\jump.wav",r"..\raw\hit.wav"]
+gImagePaths = [r"..\raw\Sprites\explorer_left_strip8.png",r"..\raw\Sprites\explorer_right_strip8.png",
+               r"..\raw\Sprites\explorer_jumpleft.png",r"..\raw\Sprites\explorer_jumpright.png",
+               r"..\raw\Sprites\wall_block.png",r"..\raw\Sprites\sky.png"]
+gSoundPaths = [r"..\raw\Sounds\jump.wav",r"..\raw\Sounds\hit.wav"]
 
 def load_images():
     for i in range(len(gImagePaths)):
