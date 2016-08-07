@@ -1,6 +1,7 @@
 from src.Sprite import Sprite
 from src.Player import PlayerState
 from src.Player import BLOCK_SIZE
+from src.Player import CONST_CAMERA_PLAYER_OFFSET
 from src.LoadResources import ImageEnum
 from src.LoadResources import gImages
 import src.Util
@@ -92,4 +93,4 @@ class Level:
             self.player2.update(deltatime)
 
         #update camera
-        self.camera_pos = (self.player1.position[0], self.camera_pos[1])
+        self.camera_pos = (self.player1.position[0]-CONST_CAMERA_PLAYER_OFFSET, self.camera_pos[1])

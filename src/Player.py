@@ -7,6 +7,7 @@ from src.LoadResources import ImageEnum
 import pygame
 
 BLOCK_SIZE = 32
+CONST_CAMERA_PLAYER_OFFSET = 160
 
 CONST_GRAVITY = 500
 CONST_JUMP_VELOCITY = 500
@@ -20,7 +21,7 @@ class PlayerState(Enum):
 class Player:
     def __init__(self):
         self.size = (BLOCK_SIZE, BLOCK_SIZE)
-        self.position = (0, 0)
+        self.position = (CONST_CAMERA_PLAYER_OFFSET, CONST_CAMERA_PLAYER_OFFSET)
         self.velocity = (0, 0)
         self.acceleration = (0,0)
         self.state = PlayerState.JUMPING
@@ -43,6 +44,7 @@ class Player:
         self.sprite.add_sprite(spr5)
 
         self.sprite.set_state(2)
+        self.sprite.move(self.position)
 
     def draw(self, screen, camera):
         self.sprite.draw(screen, camera)
