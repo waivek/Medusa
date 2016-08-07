@@ -3,6 +3,7 @@ import pygame
 from src.Level import Level
 from src.Player import Player
 from src.LoadResources import load_resources
+from src.Skeleton import Skeleton
 
 def init():
     pygame.init()
@@ -18,7 +19,9 @@ def main():
     black = 0, 0, 0
     level = Level(20, 100)
     p1 = Player()
+    s1 = Skeleton()
     level.add_player(p1)
+    level.add_monster(s1)
     time = pygame.time.get_ticks()
 
     while True:

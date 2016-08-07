@@ -8,6 +8,8 @@ import pygame
 
 class Level:
     def __init__(self, row, col):
+        self.monsters = []
+
         self.player1 = None
         self.player2 = None
         self.row = row
@@ -20,6 +22,9 @@ class Level:
 
         self.sky_sprite = Sprite(ImageEnum.SKY)
         self.block_sprite = Sprite(ImageEnum.BLOCK)
+
+    def add_monster(self, monster):
+        self.monsters.append(monster)
 
     def add_player(self, player):
         if self.player1 is None:
