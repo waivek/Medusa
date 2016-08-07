@@ -84,6 +84,23 @@ class Player:
     def set_acceleration(self,acc):
         self.acceleration=acc
 
+    def update_sprite(self):
+        if (self.state == PlayerState.JUMPING):
+            if self.velocity[0] >= 0:
+                self.sprite.set_state(2)
+            else:
+                self.sprite.set_state(3)
+        else:
+            if self.velocity[0] > 0:
+                self.sprite.set_state(0)
+            elif self.velocity[0] < 0:
+                self.sprite.set_state(1)
+            else:
+                if self.sprite.state == 0 or self.sprite.state==2:
+                    self.sprite.set_state(4)
+                if self.sprite.state == 1 or self.sprite.state==3:
+                    self.sprite.set_state(5)
+
     def update(self, deltatime):
         dt = deltatime / 1000
 
@@ -108,18 +125,4 @@ class Player:
         #update sprite
         print(self.state)
         self.sprite.update(deltatime)
-        if(self.state==PlayerState.JUMPING):
-            if self.velocity[0] > 0:
-                self.sprite.set_state(2)
-            else:
-                self.sprite.set_state(3)
-        else:
-            if self.velocity[0] > 0:
-                self.sprite.set_state(0)
-            elif self.velocity[0] < 0:
-                self.sprite.set_state(1)
-            else:
-                if self.sprite.state == 0:
-                    self.sprite.set_state(4)
-                if self.sprite.state == 1:
-                    self.sprite.set_state(5)
+        self.update_sprite()
