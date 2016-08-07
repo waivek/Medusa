@@ -81,10 +81,12 @@ class Player:
     def set_acceleration(self,acc):
         self.acceleration=acc
 
+    def set_to_ground(self):
+        self.state = PlayerState.GROUND
+
     def update(self, deltatime):
         dt = deltatime / 1000
 
-        print(self.velocity)
 
         #update parameters
         self.update_position((self.velocity[0] * dt, self.velocity[1] * dt))

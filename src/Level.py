@@ -48,41 +48,58 @@ class Level:
         if self.player2 is not None:
             self.player2.draw(screen)
 
+        for monster in self.monsters:
+            monster.draw(screen)
+
+
     def handle_event(self, event):
         if self.player1 is not None:
             self.player1.handle_event(event)
         if self.player2 is not None:
             self.player2.handle_event(event)
 
+    def handle_collisions(self, entity, tile_rect):
+        player_rect = entity.getrekt()
+
+        if src.Util.rect_intersect(player_rect, tile_rect):
+            (vertical_x, horizontal_y) = src.Util.get_intersecting_lines(player_rect,
+                                                                         tile_rect)
+
+            (p_x, p_y) = src.Util.get_inner_point(player_rect, tile_rect)
+
+            (target_x, target_y) = src.Util.get_target_point(
+                vertical_x=vertical_x, horizontal_y=horizontal_y,
+                v_x= -entity.velocity[0], v_y= -entity.velocity[1],
+                p_x=p_x, p_y=p_y
+            )
+
+            entity.update_position((target_x - p_x, target_y - p_y))
+
+            if(entity.velocity[1] > 0):
+                entity.velocity = (entity.velocity[0],0)
+            #if target_y == horizontal_y:
+
+            entity.set_to_ground()
+            # entity.state = PlayerState.GROUND
+            #elif target_x == vertical_x:
+            #    entity.state = PlayerState.JUMPING
+
+
     def update(self, deltatime):
         if self.player1 is not None:
             self.player1.update(deltatime)
-            for i in range(self.col):
-                for j in range(self.row):
-                    if self.map[j][i]:
-                        tile_rect = pygame.Rect(BLOCK_SIZE * i, BLOCK_SIZE * j, BLOCK_SIZE, BLOCK_SIZE)
-                        player_rect = self.player1.getrekt()
-
-                        if src.Util.rect_intersect(player_rect, tile_rect):
-                            (vertical_x, horizontal_y) = src.Util.get_intersecting_lines(player_rect,
-                                                                                tile_rect)
-
-                            (p_x, p_y) = src.Util.get_inner_point(player_rect, tile_rect)
-
-                            (target_x, target_y) = src.Util.get_target_point(
-                                vertical_x=vertical_x, horizontal_y=horizontal_y,
-                                v_x= -self.player1.velocity[0], v_y= -self.player1.velocity[1],
-                                p_x=p_x, p_y=p_y
-                            )
-
-                            self.player1.update_position((target_x - p_x, target_y - p_y))
-
-                            if(self.player1.velocity[1] > 0):
-                                self.player1.velocity = (self.player1.velocity[0],0)
-                            #if target_y == horizontal_y:
-                            self.player1.state = PlayerState.GROUND
-                            #elif target_x == vertical_x:
-                            #    self.player1.state = PlayerState.JUMPING
 
         if self.player2 is not None:
             self.player2.update(deltatime)
+
+        for monster in self.monsters:
+            monster.update(deltatime)
+
+        for i in range(self.col):
+            for j in range(self.row):
+                if self.map[j][i]:
+                    tile_rect = pygame.Rect(BLOCK_SIZE * i, BLOCK_SIZE * j, BLOCK_SIZE, BLOCK_SIZE)
+                    self.handle_collisions(self.player1, tile_rect)
+                    for monster in self.monsters:
+                        self.handle_collisions(monster, tile_rect)
+
