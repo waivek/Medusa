@@ -92,21 +92,22 @@ class Player:
         self.update_velocity(((self.acceleration[0] * dt, self.acceleration[1] * dt)))
 
         #update state
-        if self.state == PlayerState.JUMPING:
-            self.acceleration = (self.acceleration[0], CONST_GRAVITY)
-        elif self.state == PlayerState.GROUND:
-            self.velocity = (self.velocity[0], 0)
-            self.acceleration = (self.acceleration[0], 0)
+        #if self.state == PlayerState.JUMPING:
+        self.acceleration = (self.acceleration[0], CONST_GRAVITY)
+        #elif self.state == PlayerState.GROUND:
+        #    self.velocity = (self.velocity[0], 0)
+        #    self.acceleration = (self.acceleration[0], 0)
 
         #update sprite
+        print(self.state)
         self.sprite.update(deltatime)
         if(self.state==PlayerState.JUMPING):
-            if self.velocity[0]>0:
+            if self.velocity[0] > 0:
                 self.sprite.set_state(2)
             else:
                 self.sprite.set_state(3)
         else:
-            if (self.velocity[0] > 0):
+            if self.velocity[0] > 0:
                 self.sprite.set_state(0)
             elif self.velocity[0] < 0:
                 self.sprite.set_state(1)

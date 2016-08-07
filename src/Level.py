@@ -17,6 +17,11 @@ class Level:
                 [ y >= (self.row / 2) for x in range(self.col)]
                 for y in range(self.row)
             ]
+        self.map[5][5] = True
+        self.map[5][6] = True
+        self.map[5][7] = True
+        self.map[5][8] = True
+        self.map[5][9] = True
 
         self.sky_sprite = Sprite(ImageEnum.SKY)
         self.block_sprite = Sprite(ImageEnum.BLOCK)
@@ -31,7 +36,7 @@ class Level:
             raise Exception("Tried to add player>2")
 
     def draw(self, screen):
-        self.sky_sprite.draw(screen, self.camera_pos)
+        self.sky_sprite.draw(screen, (0,0))
 
         for i in range(self.row):
             for j in range(self.col):
@@ -54,6 +59,7 @@ class Level:
         #update player and detect collision
         if self.player1 is not None:
             self.player1.update(deltatime)
+
             for i in range(self.col):
                 for j in range(self.row):
                     if self.map[j][i]:
@@ -74,11 +80,12 @@ class Level:
 
                             self.player1.update_position((target_x - p_x, target_y - p_y))
 
-                            if(self.player1.velocity[1] > 0):
+                            if(abs(self.player1.velocity[1]) > 100):
                                 self.player1.velocity = (self.player1.velocity[0],0)
-                            #if target_y == horizontal_y:
+
+                            #if target_y == horizontal_y and self.player1.velocity[1] > 0:
                             self.player1.state = PlayerState.GROUND
-                            #elif target_x == vertical_x:
+                            #else:
                             #    self.player1.state = PlayerState.JUMPING
 
         if self.player2 is not None:
