@@ -68,10 +68,10 @@ class Player:
 
     def handle_event(self, event):
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT:
-                self.velocity = (-self.speed, self.velocity[1])
-            if event.key == pygame.K_RIGHT:
-                self.velocity = (self.speed, self.velocity[1])
+            #if event.key == pygame.K_LEFT:
+                #self.velocity = (-self.speed, self.velocity[1])
+            #if event.key == pygame.K_RIGHT:
+                #self.velocity = (self.speed, self.velocity[1])
             if event.key == pygame.K_SPACE and self.state==PlayerState.GROUND:
                 self.velocity = (self.velocity[0],self.velocity[1] - self.jump_velocity)
                 self.state = PlayerState.JUMPING
@@ -87,8 +87,13 @@ class Player:
     def update(self, deltatime):
         dt = deltatime / 1000
 
-        print(self.velocity)
-
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_LEFT] and not keys[pygame.K_RIGHT]:
+            self.velocity = (-self.speed, self.velocity[1])
+        elif keys[pygame.K_RIGHT] and not keys[pygame.K_LEFT]:
+            self.velocity = (self.speed, self.velocity[1])
+        else:
+            self.velocity = (0, self.velocity[1])
         #update parameters
         self.update_position((self.velocity[0] * dt, self.velocity[1] * dt))
         self.update_velocity(((self.acceleration[0] * dt, self.acceleration[1] * dt)))
