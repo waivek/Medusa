@@ -71,12 +71,17 @@ def get_target_point(vertical_x, horizontal_y, v_x, v_y, p_x, p_y):
         return (p_x, horizontal_y)
     elif v_y == 0:
         if abs(horizontal_y - p_y) < 1: #hack to allow walking
-            return (p_x,p_y)
-        return (vertical_x, p_y)
+            return (p_x,p_y - 1)
+        return (vertical_x, p_y - 1)
 
     #get points
     x = ((horizontal_y - p_y)/v_y) * v_x + p_x
     y = ((vertical_x - p_x) / v_x) * v_y + p_y
+
+    if(v_y > 0):
+        horizontal_y = horizontal_y+1
+    else:
+        horizontal_y = horizontal_y-1
 
     #check dist
     d_vertical_x = (vertical_x - p_x) ** 2 + (y - p_y) ** 2
