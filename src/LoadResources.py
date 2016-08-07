@@ -11,14 +11,23 @@ class ImageEnum(Enum):
     PLAYER1_JUMPRIGHT = 3
     BLOCK = 4
     SKY = 5
+    SKELETON_STANDING = 6
+    SKELETON_WALKING = 7
 
 class SoundEnum(Enum):
     JUMP = 0
     HIT = 1
 
-gImagePaths = [r"..\raw\Sprites\explorer_left_strip8.png",r"..\raw\Sprites\explorer_right_strip8.png",
-               r"..\raw\Sprites\explorer_jumpleft.png",r"..\raw\Sprites\explorer_jumpright.png",
-               r"..\raw\Sprites\wall_block.png",r"..\raw\Sprites\sky.png"]
+gImagePaths = [
+    r"..\raw\Sprites\explorer_left_strip8.png",  #0
+    r"..\raw\Sprites\explorer_right_strip8.png", #1
+    r"..\raw\Sprites\explorer_jumpleft.png",     #2
+    r"..\raw\Sprites\explorer_jumpright.png",    #3
+    r"..\raw\Sprites\wall_block.png",            #4
+    r"..\raw\Sprites\sky.png",                   #5
+    r"..\raw\Sprites\skeleton.png", #6
+    r"..\raw\Sprites\skeleton_walking_strip10.png" # 7
+]
 gSoundPaths = [r"..\raw\Sounds\jump.wav",r"..\raw\Sounds\hit.wav"]
 
 def load_images():
