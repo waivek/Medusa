@@ -7,6 +7,7 @@ from src.LoadResources import ImageEnum
 import pygame
 
 BLOCK_SIZE = 32
+CONST_CAMERA_PLAYER_OFFSET = 160
 
 CONST_GRAVITY = 500
 CONST_JUMP_VELOCITY = 500
@@ -20,7 +21,7 @@ class PlayerState(Enum):
 class Player:
     def __init__(self):
         self.size = (BLOCK_SIZE, BLOCK_SIZE)
-        self.position = (0, 0)
+        self.position = (CONST_CAMERA_PLAYER_OFFSET, CONST_CAMERA_PLAYER_OFFSET)
         self.velocity = (0, 0)
         self.acceleration = (0,0)
         self.state = PlayerState.JUMPING
@@ -43,8 +44,12 @@ class Player:
         self.sprite.add_sprite(spr5)
 
         self.sprite.set_state(2)
+<<<<<<< HEAD
         play_music(0)
 
+=======
+        self.sprite.move(self.position)
+>>>>>>> refs/remotes/origin/rian
 
     def draw(self, screen, camera):
         self.sprite.draw(screen, camera)
@@ -68,10 +73,10 @@ class Player:
 
     def handle_event(self, event):
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT:
-                self.velocity = (-self.speed, self.velocity[1])
-            if event.key == pygame.K_RIGHT:
-                self.velocity = (self.speed, self.velocity[1])
+            #if event.key == pygame.K_LEFT:
+                #self.velocity = (-self.speed, self.velocity[1])
+            #if event.key == pygame.K_RIGHT:
+                #self.velocity = (self.speed, self.velocity[1])
             if event.key == pygame.K_SPACE and self.state==PlayerState.GROUND:
                 self.velocity = (self.velocity[0],self.velocity[1] - self.jump_velocity)
                 self.state = PlayerState.JUMPING
@@ -85,11 +90,33 @@ class Player:
     def set_acceleration(self,acc):
         self.acceleration=acc
 
+    def update_sprite(self):
+        if (self.state == PlayerState.JUMPING):
+            if self.velocity[0] >= 0:
+                self.sprite.set_state(2)
+            else:
+                self.sprite.set_state(3)
+        else:
+            if self.velocity[0] > 0:
+                self.sprite.set_state(0)
+            elif self.velocity[0] < 0:
+                self.sprite.set_state(1)
+            else:
+                if self.sprite.state == 0 or self.sprite.state==2:
+                    self.sprite.set_state(4)
+                if self.sprite.state == 1 or self.sprite.state==3:
+                    self.sprite.set_state(5)
+
     def update(self, deltatime):
         dt = deltatime / 1000
 
-        print(self.velocity)
-
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_LEFT] and not keys[pygame.K_RIGHT]:
+            self.velocity = (-self.speed, self.velocity[1])
+        elif keys[pygame.K_RIGHT] and not keys[pygame.K_LEFT]:
+            self.velocity = (self.speed, self.velocity[1])
+        else:
+            self.velocity = (0, self.velocity[1])
         #update parameters
         self.update_position((self.velocity[0] * dt, self.velocity[1] * dt))
         self.update_velocity(((self.acceleration[0] * dt, self.acceleration[1] * dt)))
@@ -104,6 +131,7 @@ class Player:
         #update sprite
         print(self.state)
         self.sprite.update(deltatime)
+<<<<<<< HEAD
         if(self.state == PlayerState.JUMPING):
             if self.velocity[0] > 0:
                 self.sprite.set_state(2)
@@ -119,3 +147,6 @@ class Player:
                     self.sprite.set_state(4)
                 if self.sprite.state == 1:
                     self.sprite.set_state(5)
+=======
+        self.update_sprite()
+>>>>>>> refs/remotes/origin/rian

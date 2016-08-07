@@ -1,6 +1,7 @@
 from src.Sprite import Sprite
 from src.Player import PlayerState
 from src.Player import BLOCK_SIZE
+from src.Player import CONST_CAMERA_PLAYER_OFFSET
 from src.LoadResources import ImageEnum
 from src.LoadResources import gImages
 import src.Util
@@ -61,6 +62,7 @@ class Level:
             self.player2.handle_event(event)
 
     def update(self, deltatime):
+        print(self.player1.velocity)
         #update player and detect collision
         if self.player1 is not None:
             self.player1.update(deltatime)
@@ -85,11 +87,12 @@ class Level:
 
                             self.player1.update_position((target_x - p_x, target_y - p_y))
 
-                            if(abs(self.player1.velocity[1]) > 100):
-                                self.player1.velocity = (self.player1.velocity[0],0)
+                            if abs(target_y - horizontal_y) <= 1 and self.player1.velocity[1] > 64:
+                                self.player1.state = PlayerState.GROUND
+                                self.player1.update_sprite()
 
-                            #if target_y == horizontal_y and self.player1.velocity[1] > 0:
-                            self.player1.state = PlayerState.GROUND
+                            if (abs(self.player1.velocity[1]) > 64):
+                                self.player1.velocity = (self.player1.velocity[0], 0)
                             #else:
                             #    self.player1.state = PlayerState.JUMPING
 
@@ -97,4 +100,4 @@ class Level:
             self.player2.update(deltatime)
 
         #update camera
-        self.camera_pos = (self.player1.position[0], self.camera_pos[1])
+        self.camera_pos = (self.player1.position[0]-CONST_CAMERA_PLAYER_OFFSET, self.camera_pos[1])
