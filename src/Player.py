@@ -1,7 +1,7 @@
 from src.AnimationFSM import AnimationFSM
 from src.AnimatedSprite import AnimatedSprite
 from src.LoadResources import SoundEnum
-from src.LoadResources import play_sound
+from src.LoadResources import play_sound, play_music
 from src.LoadResources import ImageEnum
 
 import pygame
@@ -43,6 +43,8 @@ class Player:
         self.sprite.add_sprite(spr5)
 
         self.sprite.set_state(2)
+        play_music(0)
+
 
     def draw(self, screen, camera):
         self.sprite.draw(screen, camera)
@@ -79,6 +81,7 @@ class Player:
             if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
                 self.velocity = (0, self.velocity[1])
 
+
     def set_acceleration(self,acc):
         self.acceleration=acc
 
@@ -101,7 +104,7 @@ class Player:
         #update sprite
         print(self.state)
         self.sprite.update(deltatime)
-        if(self.state==PlayerState.JUMPING):
+        if(self.state == PlayerState.JUMPING):
             if self.velocity[0] > 0:
                 self.sprite.set_state(2)
             else:

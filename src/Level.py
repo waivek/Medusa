@@ -17,11 +17,16 @@ class Level:
                 [ y >= (self.row / 2) for x in range(self.col)]
                 for y in range(self.row)
             ]
-        self.map[5][5] = True
-        self.map[5][6] = True
-        self.map[5][7] = True
-        self.map[5][8] = True
-        self.map[5][9] = True
+        # self.map[5][5] = True
+        # self.map[5][6] = True
+        # self.map[5][7] = True
+        # self.map[5][8] = True
+        # self.map[5][9] = True
+
+        # self.map[6][5] = True
+        # self.map[7][5] = True
+        # self.map[8][5] = True
+        # self.map[9][5] = True
 
         self.sky_sprite = Sprite(ImageEnum.SKY)
         self.block_sprite = Sprite(ImageEnum.BLOCK)
@@ -73,9 +78,9 @@ class Level:
                             (p_x, p_y) = src.Util.get_inner_point(player_rect, tile_rect)
 
                             (target_x, target_y) = src.Util.get_target_point(
-                                vertical_x=vertical_x, horizontal_y=horizontal_y,
+                                vertical_x = vertical_x, horizontal_y = horizontal_y,
                                 v_x= -self.player1.velocity[0], v_y= -self.player1.velocity[1],
-                                p_x=p_x, p_y=p_y
+                                p_x = p_x, p_y = p_y
                             )
 
                             self.player1.update_position((target_x - p_x, target_y - p_y))
