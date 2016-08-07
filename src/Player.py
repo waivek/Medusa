@@ -3,12 +3,11 @@ from src.AnimatedSprite import AnimatedSprite
 from src.LoadResources import SoundEnum
 from src.LoadResources import play_sound
 from src.LoadResources import ImageEnum
+from src.WorldConstants import *
 
 import pygame
 
-BLOCK_SIZE = 32
 
-CONST_GRAVITY = 500
 CONST_JUMP_VELOCITY = 500
 CONST_PLAYER_SPEED = 100
 
