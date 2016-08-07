@@ -11,8 +11,8 @@ class AnimationFSM:
         assert(isinstance(sprite,AnimatedSprite))
         self.sprites.append(sprite)
 
-    def draw(self, screen):
-        self.sprites[self.state].draw(screen)
+    def draw(self, screen, camera):
+        self.sprites[self.state].draw(screen, camera)
 
     def update(self, deltatime):
         self.sprites[self.state].update(deltatime)

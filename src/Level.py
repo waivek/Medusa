@@ -20,6 +20,7 @@ class Level:
 
         self.sky_sprite = Sprite(ImageEnum.SKY)
         self.block_sprite = Sprite(ImageEnum.BLOCK)
+        self.camera_pos = (32*10, 0)
 
     def add_player(self, player):
         if self.player1 is None:
@@ -30,18 +31,18 @@ class Level:
             raise Exception("Tried to add player>2")
 
     def draw(self, screen):
-        self.sky_sprite.draw(screen)
+        self.sky_sprite.draw(screen, self.camera_pos)
 
         for i in range(self.row):
             for j in range(self.col):
                 if self.map[i][j] is True:
                     self.block_sprite.set_location((BLOCK_SIZE*j,BLOCK_SIZE*i))
-                    self.block_sprite.draw(screen)
+                    self.block_sprite.draw(screen,self.camera_pos)
 
         if self.player1 is not None:
-            self.player1.draw(screen)
+            self.player1.draw(screen,self.camera_pos)
         if self.player2 is not None:
-            self.player2.draw(screen)
+            self.player2.draw(screen,self.camera_pos)
 
     def handle_event(self, event):
         if self.player1 is not None:
@@ -50,6 +51,7 @@ class Level:
             self.player2.handle_event(event)
 
     def update(self, deltatime):
+        #update player and detect collision
         if self.player1 is not None:
             self.player1.update(deltatime)
             for i in range(self.col):
@@ -81,3 +83,6 @@ class Level:
 
         if self.player2 is not None:
             self.player2.update(deltatime)
+
+        #update camera
+        self.camera_pos = (self.player1.position[0], self.camera_pos[1])
