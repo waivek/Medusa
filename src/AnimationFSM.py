@@ -16,7 +16,6 @@ class AnimationFSM:
 
     def update(self, deltatime):
         self.sprites[self.state].update(deltatime)
-        print(self.state)
 
     def set_state(self, state):
         if(self.state!=state):
