@@ -13,5 +13,6 @@ class Sprite:
     def set_location(self,pos):
         self.sprite_rect.topleft = pos
 
-    def draw(self, screen):
-        screen.blit(self.sprite, self.sprite_rect)
+    def draw(self, screen, camera):
+        screen.blit(self.sprite, (self.sprite_rect[0]-camera[0],self.sprite_rect[1]-camera[1],self.sprite_rect[2]-camera[0],
+                                  self.sprite_rect[3]-camera[1]))

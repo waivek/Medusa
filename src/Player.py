@@ -44,8 +44,8 @@ class Player:
 
         self.sprite.set_state(2)
 
-    def draw(self, screen):
-        self.sprite.draw(screen)
+    def draw(self, screen, camera):
+        self.sprite.draw(screen, camera)
 
     def update_position(self, displacement):
         self.sprite.move(displacement)

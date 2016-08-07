@@ -27,9 +27,12 @@ class AnimatedSprite:
             self.timer.mod_time(self.frequency)
             self.next_frame()
 
-    def draw(self, screen):
+    def draw(self, screen, camera):
         rect = pygame.Rect((self.current_frame*self.bounds[0],0),self.bounds)
-        screen.blit(gImages[self.image_id.value], self.sprite_rect, rect)
+
+        spr_pos = (self.sprite_rect[0]-camera[0],self.sprite_rect[1]-camera[1],self.sprite_rect[2]-camera[0],
+                                  self.sprite_rect[3]-camera[1])
+        screen.blit(gImages[self.image_id.value], spr_pos, rect)
 
     def move(self, displacement):
         self.sprite_rect = self.sprite_rect.move(displacement)
