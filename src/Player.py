@@ -117,7 +117,5 @@ class Player:
         #    self.moving_component.acceleration = (self.moving_component.acceleration[0], 0)
 
         #update sprite
-        print(self.state)
-        print(self.moving_component.position)
         self.sprite.update(deltatime)
         self.update_sprite()
