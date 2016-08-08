@@ -1,7 +1,7 @@
 from src.AnimationFSM import AnimationFSM
 from src.AnimatedSprite import AnimatedSprite
 from src.LoadResources import SoundEnum
-from src.LoadResources import play_sound, play_music
+from src.LoadResources import play_sound
 from src.LoadResources import ImageEnum
 
 import pygame
@@ -44,12 +44,8 @@ class Player:
         self.sprite.add_sprite(spr5)
 
         self.sprite.set_state(2)
-<<<<<<< HEAD
-        play_music(0)
 
-=======
         self.sprite.move(self.position)
->>>>>>> refs/remotes/origin/rian
 
     def draw(self, screen, camera):
         self.sprite.draw(screen, camera)
@@ -131,22 +127,4 @@ class Player:
         #update sprite
         print(self.state)
         self.sprite.update(deltatime)
-<<<<<<< HEAD
-        if(self.state == PlayerState.JUMPING):
-            if self.velocity[0] > 0:
-                self.sprite.set_state(2)
-            else:
-                self.sprite.set_state(3)
-        else:
-            if self.velocity[0] > 0:
-                self.sprite.set_state(0)
-            elif self.velocity[0] < 0:
-                self.sprite.set_state(1)
-            else:
-                if self.sprite.state == 0:
-                    self.sprite.set_state(4)
-                if self.sprite.state == 1:
-                    self.sprite.set_state(5)
-=======
         self.update_sprite()
->>>>>>> refs/remotes/origin/rian
