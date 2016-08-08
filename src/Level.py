@@ -62,7 +62,6 @@ class Level:
             self.player2.handle_event(event)
 
     def update(self, deltatime):
-        print(self.player1.velocity)
         #update player and detect collision
         if self.player1 is not None:
             self.player1.update(deltatime)
@@ -81,18 +80,18 @@ class Level:
 
                             (target_x, target_y) = src.Util.get_target_point(
                                 vertical_x = vertical_x, horizontal_y = horizontal_y,
-                                v_x= -self.player1.velocity[0], v_y= -self.player1.velocity[1],
+                                v_x= -self.player1.moving_component.velocity[0], v_y= -self.player1.moving_component.velocity[1],
                                 p_x = p_x, p_y = p_y
                             )
 
-                            self.player1.update_position((target_x - p_x, target_y - p_y))
+                            self.player1.moving_component.update_position((target_x - p_x, target_y - p_y))
 
-                            if abs(target_y - horizontal_y) <= 1 and self.player1.velocity[1] > 64:
+                            if abs(target_y - horizontal_y) <= 1 and self.player1.moving_component.velocity[1] > 64:
                                 self.player1.state = PlayerState.GROUND
                                 self.player1.update_sprite()
 
-                            if (abs(self.player1.velocity[1]) > 64):
-                                self.player1.velocity = (self.player1.velocity[0], 0)
+                            if (abs(self.player1.moving_component.velocity[1]) > 64):
+                                self.player1.moving_component.velocity = (self.player1.moving_component.velocity[0], 0)
                             #else:
                             #    self.player1.state = PlayerState.JUMPING
 
@@ -100,4 +99,4 @@ class Level:
             self.player2.update(deltatime)
 
         #update camera
-        self.camera_pos = (self.player1.position[0]-CONST_CAMERA_PLAYER_OFFSET, self.camera_pos[1])
+        self.camera_pos = (self.player1.moving_component.position[0]-CONST_CAMERA_PLAYER_OFFSET, self.camera_pos[1])

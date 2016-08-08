@@ -16,9 +16,6 @@ class MovingComponent:
         self.position = (newx, newy)
 
 
-    def getrekt(self):
-        return pygame.Rect(self.position[0],self.position[1],self.size[0],self.size[1])
-
     def update_velocity(self, acceleration):
         newx = self.velocity[0] + acceleration[0]
         newy = self.velocity[1] + acceleration[1]

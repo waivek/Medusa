@@ -6,6 +6,8 @@ from src.LoadResources import ImageEnum
 
 import pygame
 
+from src.MovingComponent import MovingComponent
+
 BLOCK_SIZE = 32
 CONST_CAMERA_PLAYER_OFFSET = 160
 
@@ -20,10 +22,10 @@ class PlayerState(Enum):
 
 class Player:
     def __init__(self):
-        self.size = (BLOCK_SIZE, BLOCK_SIZE)
-        self.position = (CONST_CAMERA_PLAYER_OFFSET, CONST_CAMERA_PLAYER_OFFSET)
-        self.velocity = (0, 0)
-        self.acceleration = (0,0)
+        # self.moving_component.size = (BLOCK_SIZE, BLOCK_SIZE)
+        # self.moving_component.position = (CONST_CAMERA_PLAYER_OFFSET, CONST_CAMERA_PLAYER_OFFSET)
+        # self.moving_component.velocity = (0, 0)
+        # self.moving_component.acceleration = (0,0)
         self.state = PlayerState.JUMPING
 
         self.speed = CONST_PLAYER_SPEED
@@ -45,57 +47,47 @@ class Player:
 
         self.sprite.set_state(2)
 
-        self.sprite.move(self.position)
+        self.moving_component = MovingComponent(self.sprite)
+        self.moving_component.update_position((CONST_CAMERA_PLAYER_OFFSET, CONST_CAMERA_PLAYER_OFFSET))
 
     def draw(self, screen, camera):
         self.sprite.draw(screen, camera)
 
-    def update_position(self, displacement):
-        self.sprite.move(displacement)
-        newx = self.position[0] + int(displacement[0])
-        newy = self.position[1] + int(displacement[1])
-        self.position = (newx, newy)
-
-    def update_velocity(self, acceleration):
-        newx = self.velocity[0] + acceleration[0]
-        newy = self.velocity[1] + acceleration[1]
-        self.velocity = (newx, newy)
-
     def getpos(self):
-        return self.position
+        return self.moving_component.position
 
     def getrekt(self):
-        return pygame.Rect(self.position[0],self.position[1],self.size[0],self.size[1])
+        return pygame.Rect(self.moving_component.position[0],self.moving_component.position[1],self.moving_component.size[0],self.moving_component.size[1])
 
     def handle_event(self, event):
         if event.type == pygame.KEYDOWN:
             #if event.key == pygame.K_LEFT:
-                #self.velocity = (-self.speed, self.velocity[1])
+                #self.moving_component.velocity = (-self.speed, self.moving_component.velocity[1])
             #if event.key == pygame.K_RIGHT:
-                #self.velocity = (self.speed, self.velocity[1])
+                #self.moving_component.velocity = (self.speed, self.moving_component.velocity[1])
             if event.key == pygame.K_SPACE and self.state==PlayerState.GROUND:
-                self.velocity = (self.velocity[0],self.velocity[1] - self.jump_velocity)
+                self.moving_component.velocity = (self.moving_component.velocity[0],self.moving_component.velocity[1] - self.jump_velocity)
                 self.state = PlayerState.JUMPING
                 play_sound(SoundEnum.JUMP)
 
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
-                self.velocity = (0, self.velocity[1])
+                self.moving_component.velocity = (0, self.moving_component.velocity[1])
 
 
     def set_acceleration(self,acc):
-        self.acceleration=acc
+        self.moving_component.acceleration=acc
 
     def update_sprite(self):
         if (self.state == PlayerState.JUMPING):
-            if self.velocity[0] >= 0:
+            if self.moving_component.velocity[0] >= 0:
                 self.sprite.set_state(2)
             else:
                 self.sprite.set_state(3)
         else:
-            if self.velocity[0] > 0:
+            if self.moving_component.velocity[0] > 0:
                 self.sprite.set_state(0)
-            elif self.velocity[0] < 0:
+            elif self.moving_component.velocity[0] < 0:
                 self.sprite.set_state(1)
             else:
                 if self.sprite.state == 0 or self.sprite.state==2:
@@ -108,23 +100,24 @@ class Player:
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT] and not keys[pygame.K_RIGHT]:
-            self.velocity = (-self.speed, self.velocity[1])
+            self.moving_component.velocity = (-self.speed, self.moving_component.velocity[1])
         elif keys[pygame.K_RIGHT] and not keys[pygame.K_LEFT]:
-            self.velocity = (self.speed, self.velocity[1])
+            self.moving_component.velocity = (self.speed, self.moving_component.velocity[1])
         else:
-            self.velocity = (0, self.velocity[1])
+            self.moving_component.velocity = (0, self.moving_component.velocity[1])
         #update parameters
-        self.update_position((self.velocity[0] * dt, self.velocity[1] * dt))
-        self.update_velocity(((self.acceleration[0] * dt, self.acceleration[1] * dt)))
+        self.moving_component.update_position((self.moving_component.velocity[0] * dt, self.moving_component.velocity[1] * dt))
+        self.moving_component.update_velocity(((self.moving_component.acceleration[0] * dt, self.moving_component.acceleration[1] * dt)))
 
         #update state
         #if self.state == PlayerState.JUMPING:
-        self.acceleration = (self.acceleration[0], CONST_GRAVITY)
+        self.moving_component.acceleration = (self.moving_component.acceleration[0], CONST_GRAVITY)
         #elif self.state == PlayerState.GROUND:
-        #    self.velocity = (self.velocity[0], 0)
-        #    self.acceleration = (self.acceleration[0], 0)
+        #    self.moving_component.velocity = (self.moving_component.velocity[0], 0)
+        #    self.moving_component.acceleration = (self.moving_component.acceleration[0], 0)
 
         #update sprite
         print(self.state)
+        print(self.moving_component.position)
         self.sprite.update(deltatime)
         self.update_sprite()
