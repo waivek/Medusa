@@ -18,6 +18,3 @@ class Vector2i:
     def multiply_vector(self, other):
         v = Vector2i(self.x * other.x, self.y * other.y)
         return v
-
-    def to_tuple(self):
-        return (self.x, self.y)
