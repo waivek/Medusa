@@ -34,5 +34,8 @@ class AnimatedSprite:
                                   self.sprite_rect[3]-camera[1])
         screen.blit(gImages[self.image_id.value], spr_pos, rect)
 
+    def get_pos_rect(self):
+        return pygame.Rect(self.sprite_rect.topleft[0],self.sprite_rect.topleft[1],self.bounds[0],self.bounds[1])
+
     def move(self, displacement):
         self.sprite_rect = self.sprite_rect.move(displacement)
