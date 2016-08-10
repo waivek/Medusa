@@ -41,16 +41,7 @@ class Skeleton:
 
     def update(self, deltaTime):
         self.moving_component.update(deltaTime)
-        print(self.moving_component.position)
-        #if self.state == SkeletonState.IN_AIR:
-        #    self.moving_component.acceleration = (self.moving_component.acceleration[0], CONST_GRAVITY)
-        #elif self.state == SkeletonState.GROUND:
-        #    self.moving_component.velocity = (self.moving_component.velocity[0], 0)
-        #    self.moving_component.acceleration = (self.moving_component.acceleration[0], 0)
-
-
         self.enemy_movement_component.update(deltaTime)
-        #self.moving_component.acceleration = (self.moving_component.acceleration[0], CONST_GRAVITY)
         self.sprite.update(deltaTime)
         self.update_sprite()
 

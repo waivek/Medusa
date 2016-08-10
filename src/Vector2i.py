@@ -7,7 +7,7 @@ class Vector2i:
         v = Vector2i(self.x+other.x,self.y+other.y)
         return v
 
-    def negate(self, other):
+    def negate(self):
         v = Vector2i(-self.x, -self.y)
         return v
 
