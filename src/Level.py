@@ -36,6 +36,14 @@ class Level:
         #self.map[9][10] = True
         #self.map[10][10] = True
 
+        self.map[10][12] = False
+        self.map[11][12] = False
+        self.map[12][12] = False
+        self.map[10][13] = False
+        self.map[11][13] = False
+        self.map[12][13] = False
+        self.map[10][14] = False
+
         self.sky_sprite = Sprite(ImageEnum.SKY)
         self.block_sprite = Sprite(ImageEnum.BLOCK)
         self.camera_pos = (32*10, 0)

@@ -127,7 +127,6 @@ class MovingComponent:
         self.velocity = (newx, newy)
 
     def update(self, deltatime):
-
         dt = deltatime / 1000
         print(self.position)
 
