@@ -21,7 +21,7 @@ class Skeleton:
         self.sprite.state = 0
         self.state = SkeletonState.IN_AIR
         self.moving_component = MovingComponent(self.sprite)
-        self.moving_component.update_position((100, 10))
+        #self.moving_component.update_position((100, 10))
         self.enemy_movement_component = EnemyMovementComponent(self.moving_component)
 
     def draw(self, screen, camera):

@@ -213,4 +213,4 @@ class Level:
             self.player2.update(deltatime)
 
         #update camera
-        self.camera_pos = (self.player1.position[0]-CONST_CAMERA_PLAYER_OFFSET, self.camera_pos[1])
+        self.camera_pos = (self.player1.moving_component.position[0]-CONST_CAMERA_PLAYER_OFFSET, self.camera_pos[1])
