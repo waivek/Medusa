@@ -40,6 +40,8 @@ class Level:
         self.block_sprite = Sprite(ImageEnum.BLOCK)
         self.camera_pos = (32*10, 0)
 
+        self.monsters = []
+
     def add_player(self, player):
         if self.player1 is None:
             self.player1 = player
@@ -47,6 +49,9 @@ class Level:
             self.player2 = player
         else:
             raise Exception("Tried to add player>2")
+
+    def add_monster(self, monster):
+        self.monsters.append(monster)
 
     def draw(self, screen):
         self.sky_sprite.draw(screen, (0,0))
