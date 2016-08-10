@@ -12,7 +12,7 @@ class SkeletonState(Enum):
     IN_AIR = 1
 
 class Skeleton:
-    def __init__(self):
+    def __init__(self, tiles, row, col):
         self.sprite = AnimationFSM()
         spr0 = AnimatedSprite(ImageEnum.SKELETON_STANDING, 1)
         spr1 = AnimatedSprite(ImageEnum.SKELETON_WALKING, 10)
@@ -20,8 +20,8 @@ class Skeleton:
         self.sprite.add_sprite(spr1)
         self.sprite.state = 0
         self.state = SkeletonState.IN_AIR
-        self.moving_component = MovingComponent(self.sprite)
-        #self.moving_component.update_position((100, 10))
+        self.moving_component = MovingComponent(self.sprite, tiles, row, col)
+        self.moving_component.update_position((100, 10))
         self.enemy_movement_component = EnemyMovementComponent(self.moving_component)
 
     def draw(self, screen, camera):
@@ -42,15 +42,15 @@ class Skeleton:
     def update(self, deltaTime):
         self.moving_component.update(deltaTime)
         print(self.moving_component.position)
-        if self.state == SkeletonState.IN_AIR:
-            self.moving_component.acceleration = (self.moving_component.acceleration[0], CONST_GRAVITY)
-        elif self.state == SkeletonState.GROUND:
-            self.moving_component.velocity = (self.moving_component.velocity[0], 0)
-            self.moving_component.acceleration = (self.moving_component.acceleration[0], 0)
+        #if self.state == SkeletonState.IN_AIR:
+        #    self.moving_component.acceleration = (self.moving_component.acceleration[0], CONST_GRAVITY)
+        #elif self.state == SkeletonState.GROUND:
+        #    self.moving_component.velocity = (self.moving_component.velocity[0], 0)
+        #    self.moving_component.acceleration = (self.moving_component.acceleration[0], 0)
 
 
         self.enemy_movement_component.update(deltaTime)
-        self.moving_component.acceleration = (self.moving_component.acceleration[0], CONST_GRAVITY)
+        #self.moving_component.acceleration = (self.moving_component.acceleration[0], CONST_GRAVITY)
         self.sprite.update(deltaTime)
         self.update_sprite()
 

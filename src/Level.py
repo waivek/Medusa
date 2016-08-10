@@ -25,16 +25,24 @@ class Level:
         self.map[5][9] = True
         self.map[6][9] = True
         self.map[7][9] = True
-        self.map[8][9] = True
-        self.map[9][9] = True
-        self.map[10][9] = True
+        #self.map[8][9] = True
+        #self.map[9][9] = True
+        #self.map[10][9] = True
 
         self.map[5][10] = True
         self.map[6][10] = True
         self.map[7][10] = True
-        self.map[8][10] = True
-        self.map[9][10] = True
-        self.map[10][10] = True
+        #self.map[8][10] = True
+        #self.map[9][10] = True
+        #self.map[10][10] = True
+
+        self.map[10][12] = False
+        self.map[11][12] = False
+        self.map[12][12] = False
+        self.map[10][13] = False
+        self.map[11][13] = False
+        self.map[12][13] = False
+        self.map[10][14] = False
 
         self.sky_sprite = Sprite(ImageEnum.SKY)
         self.block_sprite = Sprite(ImageEnum.BLOCK)
@@ -66,6 +74,9 @@ class Level:
             self.player1.draw(screen,self.camera_pos)
         if self.player2 is not None:
             self.player2.draw(screen,self.camera_pos)
+
+        for monster in self.monsters:
+            monster.draw(screen,self.camera_pos)
 
     def handle_event(self, event):
         if self.player1 is not None:
@@ -211,6 +222,9 @@ class Level:
 
         if self.player2 is not None:
             self.player2.update(deltatime)
+
+        for monster in self.monsters:
+            monster.update(deltatime)
 
         #update camera
         self.camera_pos = (self.player1.moving_component.position[0]-CONST_CAMERA_PLAYER_OFFSET, self.camera_pos[1])

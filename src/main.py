@@ -19,9 +19,9 @@ def main():
     screen = pygame.display.set_mode(size)
     black = 0, 0, 0
     level = Level(20, 100)
-    p1 = Player()
+    p1 = Player(level.map,level.col,level.row)
     level.add_player(p1)
-    level.add_monster(Skeleton())
+    level.add_monster(Skeleton(level.map,level.col,level.row))
     time = pygame.time.get_ticks()
 
     while True:
