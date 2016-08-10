@@ -24,12 +24,6 @@ class PlayerState(Enum):
 class Player:
     def __init__(self, tiles, row, col):
         self.size = (BLOCK_SIZE, BLOCK_SIZE)
-        #self.position = (CONST_CAMERA_PLAYER_OFFSET, CONST_CAMERA_PLAYER_OFFSET)
-        #self.velocity = (0, 0)
-        #self.acceleration = (0,0)
-
-        #self.oldvelocity = (0,0)
-        #self.oldposition = (0,0)
 
         self.state = PlayerState.JUMPING
 
@@ -64,15 +58,7 @@ class Player:
             for j in range(row):
                 if tiles[j][i]:
                     tile_rect = pygame.Rect(BLOCK_SIZE * i, BLOCK_SIZE * j, BLOCK_SIZE, BLOCK_SIZE)
-                    #tile_rect.bottomright = (BLOCK_SIZE*i +32,BLOCK_SIZE*j +32)
-                    t_x = target[0]
-                    t_y = target[1]
                     target = src.Util.reduce_line2(pos, target, tile_rect)
-
-                    if((t_x,t_y) != target):
-                        print("new target: %d %d" % (i,j))
-                        print(target)
-                        #print(tile_rect)
         return target
 
 
@@ -87,10 +73,6 @@ class Player:
 
     def handle_event(self, event):
         if event.type == pygame.KEYDOWN:
-            #if event.key == pygame.K_LEFT:
-                #self.velocity = (-self.speed, self.velocity[1])
-            #if event.key == pygame.K_RIGHT:
-                #self.velocity = (self.speed, self.velocity[1])
             if event.key == pygame.K_SPACE and self.state==PlayerState.GROUND:
                 self.moving_component.velocity = (self.moving_component.velocity[0],self.moving_component.velocity[1] - self.jump_velocity)
                 self.state = PlayerState.JUMPING
@@ -117,11 +99,7 @@ class Player:
                 if self.sprite.state == 1 or self.sprite.state==3:
                     self.sprite.set_state(5)
 
-    def update(self, deltatime, tiles, col, row):
-        #print(self.position)
-        print("state")
-        print(self.sprite.state)
-        print(self.moving_component.velocity)
+    def update(self, deltatime):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT] and not keys[pygame.K_RIGHT]:
             self.moving_component.velocity = (-self.speed, self.moving_component.velocity[1])
