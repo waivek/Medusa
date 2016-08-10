@@ -25,3 +25,6 @@ class AnimationFSM:
     def move(self,displacement):
         for i in range(len(self.sprites)):
             self.sprites[i].move(displacement)
+
+    def sprite_rect(self):
+        return self.sprites[self.state].get_pos_rect()

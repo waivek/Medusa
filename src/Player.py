@@ -3,10 +3,10 @@ from src.AnimatedSprite import AnimatedSprite
 from src.LoadResources import SoundEnum
 from src.LoadResources import play_sound
 from src.LoadResources import ImageEnum
+from src.MovingComponent import *
+import src.Util
 
 import pygame
-
-from src.MovingComponent import MovingComponent
 
 BLOCK_SIZE = 32
 CONST_CAMERA_PLAYER_OFFSET = 160
@@ -15,6 +15,7 @@ CONST_GRAVITY = 500
 CONST_JUMP_VELOCITY = 500
 CONST_PLAYER_SPEED = 100
 
+
 from enum import Enum
 class PlayerState(Enum):
     GROUND = 0
@@ -22,10 +23,14 @@ class PlayerState(Enum):
 
 class Player:
     def __init__(self):
-        # self.moving_component.size = (BLOCK_SIZE, BLOCK_SIZE)
-        # self.moving_component.position = (CONST_CAMERA_PLAYER_OFFSET, CONST_CAMERA_PLAYER_OFFSET)
-        # self.moving_component.velocity = (0, 0)
-        # self.moving_component.acceleration = (0,0)
+        self.size = (BLOCK_SIZE, BLOCK_SIZE)
+        #self.position = (CONST_CAMERA_PLAYER_OFFSET, CONST_CAMERA_PLAYER_OFFSET)
+        #self.velocity = (0, 0)
+        #self.acceleration = (0,0)
+
+        #self.oldvelocity = (0,0)
+        #self.oldposition = (0,0)
+
         self.state = PlayerState.JUMPING
 
         self.speed = CONST_PLAYER_SPEED
@@ -47,24 +52,45 @@ class Player:
 
         self.sprite.set_state(2)
 
+
         self.moving_component = MovingComponent(self.sprite)
-        self.moving_component.update_position((CONST_CAMERA_PLAYER_OFFSET, CONST_CAMERA_PLAYER_OFFSET))
+        self.sprite.move(self.moving_component.position)
 
     def draw(self, screen, camera):
         self.sprite.draw(screen, camera)
 
-    def getpos(self):
-        return self.moving_component.position
+    def block_velocity(self,pos,target,tiles,col,row):
+        for i in range(col):
+            for j in range(row):
+                if tiles[j][i]:
+                    tile_rect = pygame.Rect(BLOCK_SIZE * i, BLOCK_SIZE * j, BLOCK_SIZE, BLOCK_SIZE)
+                    #tile_rect.bottomright = (BLOCK_SIZE*i +32,BLOCK_SIZE*j +32)
+                    t_x = target[0]
+                    t_y = target[1]
+                    target = src.Util.reduce_line2(pos, target, tile_rect)
+
+                    if((t_x,t_y) != target):
+                        print("new target: %d %d" % (i,j))
+                        print(target)
+                        #print(tile_rect)
+        return target
+
+
+    def get_displacement(self, position, displacement, tiles, row, col):
+        target = (position[0] + displacement[0], position[1] + displacement[1])
+        out1 = self.block_velocity(position, target, tiles, col, row)
+        d = (out1[0] - position[0], out1[1] - position[1])
+        return d
 
     def getrekt(self):
-        return pygame.Rect(self.moving_component.position[0],self.moving_component.position[1],self.moving_component.size[0],self.moving_component.size[1])
+        return pygame.Rect(self.moving_component.position[0],self.moving_component.position[1],self.size[0],self.size[1])
 
     def handle_event(self, event):
         if event.type == pygame.KEYDOWN:
             #if event.key == pygame.K_LEFT:
-                #self.moving_component.velocity = (-self.speed, self.moving_component.velocity[1])
+                #self.velocity = (-self.speed, self.velocity[1])
             #if event.key == pygame.K_RIGHT:
-                #self.moving_component.velocity = (self.speed, self.moving_component.velocity[1])
+                #self.velocity = (self.speed, self.velocity[1])
             if event.key == pygame.K_SPACE and self.state==PlayerState.GROUND:
                 self.moving_component.velocity = (self.moving_component.velocity[0],self.moving_component.velocity[1] - self.jump_velocity)
                 self.state = PlayerState.JUMPING
@@ -73,10 +99,6 @@ class Player:
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
                 self.moving_component.velocity = (0, self.moving_component.velocity[1])
-
-
-    def set_acceleration(self,acc):
-        self.moving_component.acceleration=acc
 
     def update_sprite(self):
         if (self.state == PlayerState.JUMPING):
@@ -95,9 +117,11 @@ class Player:
                 if self.sprite.state == 1 or self.sprite.state==3:
                     self.sprite.set_state(5)
 
-    def update(self, deltatime):
-        dt = deltatime / 1000
-
+    def update(self, deltatime, tiles, col, row):
+        #print(self.position)
+        print("state")
+        print(self.sprite.state)
+        print(self.moving_component.velocity)
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT] and not keys[pygame.K_RIGHT]:
             self.moving_component.velocity = (-self.speed, self.moving_component.velocity[1])
@@ -105,17 +129,14 @@ class Player:
             self.moving_component.velocity = (self.speed, self.moving_component.velocity[1])
         else:
             self.moving_component.velocity = (0, self.moving_component.velocity[1])
-        #update parameters
-        self.moving_component.update_position((self.moving_component.velocity[0] * dt, self.moving_component.velocity[1] * dt))
-        self.moving_component.update_velocity(((self.moving_component.acceleration[0] * dt, self.moving_component.acceleration[1] * dt)))
 
-        #update state
-        #if self.state == PlayerState.JUMPING:
-        self.moving_component.acceleration = (self.moving_component.acceleration[0], CONST_GRAVITY)
-        #elif self.state == PlayerState.GROUND:
-        #    self.moving_component.velocity = (self.moving_component.velocity[0], 0)
-        #    self.moving_component.acceleration = (self.moving_component.acceleration[0], 0)
+        self.moving_component.update(deltatime,tiles,col,row)
 
-        #update sprite
+        if (abs(self.moving_component.velocity[1]) <= 100):
+            self.state = PlayerState.GROUND
+            self.update_sprite()
+        else:
+            self.state = PlayerState.JUMPING
+            self.update_sprite()
+
         self.sprite.update(deltatime)
-        self.update_sprite()
