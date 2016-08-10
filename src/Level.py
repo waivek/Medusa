@@ -1,7 +1,6 @@
 from src.Sprite import Sprite
-from src.Player import PlayerState
-from src.Player import BLOCK_SIZE
-from src.Player import CONST_CAMERA_PLAYER_OFFSET
+from src.Player import *
+from src.Monster import *
 from src.LoadResources import ImageEnum
 from src.LoadResources import gImages
 import src.Util
@@ -9,8 +8,6 @@ import pygame
 
 class Level:
     def __init__(self, row, col):
-        self.player1 = None
-        self.player2 = None
         self.row = row
         self.col = col
         self.map = \
@@ -49,16 +46,14 @@ class Level:
         self.camera_pos = (32*10, 0)
 
         self.monsters = []
+        self.players = []
 
     def add_player(self, player):
-        if self.player1 is None:
-            self.player1 = player
-        elif self.player2 is None:
-            self.player2 = player
-        else:
-            raise Exception("Tried to add player>2")
+        assert isinstance(player, Player)
+        self.players.append(player)
 
     def add_monster(self, monster):
+        #assert isinstance(monster, Monster)
         self.monsters.append(monster)
 
     def draw(self, screen):
@@ -70,19 +65,15 @@ class Level:
                     self.block_sprite.set_location((BLOCK_SIZE*j,BLOCK_SIZE*i))
                     self.block_sprite.draw(screen,self.camera_pos)
 
-        if self.player1 is not None:
-            self.player1.draw(screen,self.camera_pos)
-        if self.player2 is not None:
-            self.player2.draw(screen,self.camera_pos)
+        for player in self.players:
+            player.draw(screen,self.camera_pos)
 
         for monster in self.monsters:
             monster.draw(screen,self.camera_pos)
 
     def handle_event(self, event):
-        if self.player1 is not None:
-            self.player1.handle_event(event)
-        if self.player2 is not None:
-            self.player2.handle_event(event)
+        for player in self.players:
+            player.handle_event(event)
 
     def point_in_wall(self, x, y):
         for i in range(self.col):
@@ -93,22 +84,13 @@ class Level:
                         return True
         return False
 
-    def get_pushout(self, position, rect):
-        target = src.Util.push_out(position[0],position[1],rect)
-        target = (target[0]-position[0],target[1]-position[1])
-        return target
-
     def update(self, deltatime):
-
-        #update player and detect collision
-        if self.player1 is not None:
-            self.player1.update(deltatime)
-
-        if self.player2 is not None:
-            self.player2.update(deltatime)
+        #update entities and detect collision
+        for player in self.players:
+            player.update(deltatime)
 
         for monster in self.monsters:
             monster.update(deltatime)
 
         #update camera
-        self.camera_pos = (self.player1.moving_component.position[0]-CONST_CAMERA_PLAYER_OFFSET, self.camera_pos[1])
+        self.camera_pos = (self.players[0].moving_component.position[0]-CONST_CAMERA_PLAYER_OFFSET, self.camera_pos[1])
