@@ -22,7 +22,7 @@ class PlayerState(Enum):
     JUMPING = 1
 
 class Player:
-    def __init__(self):
+    def __init__(self, tiles, row, col):
         self.size = (BLOCK_SIZE, BLOCK_SIZE)
         #self.position = (CONST_CAMERA_PLAYER_OFFSET, CONST_CAMERA_PLAYER_OFFSET)
         #self.velocity = (0, 0)
@@ -53,7 +53,7 @@ class Player:
         self.sprite.set_state(2)
 
 
-        self.moving_component = MovingComponent(self.sprite)
+        self.moving_component = MovingComponent(self.sprite, tiles, row, col)
         self.sprite.move(self.moving_component.position)
 
     def draw(self, screen, camera):
@@ -130,7 +130,7 @@ class Player:
         else:
             self.moving_component.velocity = (0, self.moving_component.velocity[1])
 
-        self.moving_component.update(deltatime,tiles,col,row)
+        self.moving_component.update(deltatime)
 
         if (abs(self.moving_component.velocity[1]) <= 100):
             self.state = PlayerState.GROUND

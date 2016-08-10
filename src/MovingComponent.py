@@ -4,18 +4,22 @@ import pygame
 CONST_MAX_VELOCITY = 500
 
 class MovingComponent:
-    def __init__(self, sprite):
+    def __init__(self, sprite, tiles, col, row):
         self.position = (0, 0)
         self.velocity = (0, 0)
         self.acceleration = (0,0)
         self.sprite = sprite
         self.size = (BLOCK_SIZE, BLOCK_SIZE)
 
-    def point_in_wall(self, x, y, tiles, col, row):
+        self.tiles = tiles
+        self.tiles_col = col
+        self.tiles_row = row
+
+    def point_in_wall(self, x, y):
         #print("%d %d" % (x, y))
         cx = int(x/32)
         cy = int(y/32)
-        if tiles[cy][cx]:
+        if self.tiles[cy][cx]:
             return True
         return False
         # for i in range(col):
@@ -28,7 +32,7 @@ class MovingComponent:
         #                 #print("false: %d %d %d %d" % (x,y,BLOCK_SIZE*i,BLOCK_SIZE*j))
         # return False
 
-    def snap_out(self,tiles,col,row):
+    def snap_out(self):
         m = 0
         flag = 0
         factor = 1
@@ -40,10 +44,10 @@ class MovingComponent:
                 for j in range(2*m+1):
                     d = (factor*(int(i/2)*((-1)**(i%2))),factor*(int(j/2)*((-1)**(j%2))))
                     b = False
-                    b = b or self.point_in_wall(self.sprite.sprite_rect().topleft[0] + d[0],self.sprite.sprite_rect().topleft[1] + d[1],tiles,col,row)
-                    b = b or self.point_in_wall(self.sprite.sprite_rect().topright[0] + d[0],self.sprite.sprite_rect().topright[1] + d[1],tiles,col,row)
-                    b = b or self.point_in_wall(self.sprite.sprite_rect().bottomleft[0] + d[0],self.sprite.sprite_rect().bottomleft[1] + d[1],tiles,col,row)
-                    b = b or self.point_in_wall(self.sprite.sprite_rect().bottomright[0] + d[0],self.sprite.sprite_rect().bottomright[1] + d[1],tiles,col,row)
+                    b = b or self.point_in_wall(self.sprite.sprite_rect().topleft[0] + d[0],self.sprite.sprite_rect().topleft[1] + d[1])
+                    b = b or self.point_in_wall(self.sprite.sprite_rect().topright[0] + d[0],self.sprite.sprite_rect().topright[1] + d[1])
+                    b = b or self.point_in_wall(self.sprite.sprite_rect().bottomleft[0] + d[0],self.sprite.sprite_rect().bottomleft[1] + d[1])
+                    b = b or self.point_in_wall(self.sprite.sprite_rect().bottomright[0] + d[0],self.sprite.sprite_rect().bottomright[1] + d[1])
 
                     if b==False:
                         self.move(d)
@@ -67,7 +71,7 @@ class MovingComponent:
         self.position = (newx, newy)
         #print(self.position)
 
-    def update_position(self, displacement, tiles, col, row):
+    def update_position(self, displacement):
         displacement = (int(displacement[0]),int(displacement[1]))
 
         #check for collisions
@@ -108,8 +112,7 @@ class MovingComponent:
         newx = self.position[0] + int(displacement[0])
         newy = self.position[1] + int(displacement[1])
         self.position = (newx, newy)
-
-        self.snap_out(tiles,col,row)
+        self.snap_out()
 
     def update_velocity(self, acceleration):
         newx = self.velocity[0] + acceleration[0]
@@ -123,13 +126,13 @@ class MovingComponent:
 
         self.velocity = (newx, newy)
 
-    def update(self, deltatime, tiles, col, row):
+    def update(self, deltatime):
 
         dt = deltatime / 1000
         print(self.position)
 
         # update parameters
-        self.update_position((self.velocity[0] * dt, self.velocity[1] * dt), tiles, col, row)
+        self.update_position((self.velocity[0] * dt, self.velocity[1] * dt))
         self.update_velocity(((self.acceleration[0] * dt, self.acceleration[1] * dt)))
 
         self.acceleration = (self.acceleration[0], CONST_GRAVITY)
