@@ -10,6 +10,7 @@ from enum import Enum
 class SkeletonState(Enum):
     GROUND = 0
     IN_AIR = 1
+
 class Skeleton:
     def __init__(self):
         self.sprite = AnimationFSM()
