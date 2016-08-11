@@ -1,4 +1,5 @@
 from src.WorldConstants import *
+import src.Util
 import pygame
 
 class MovingComponent:
@@ -24,6 +25,34 @@ class MovingComponent:
         if self.tiles[cy][cx]:
             return True
         return False
+
+    def push_out_colliders(self, colliders):
+        m = 0
+        flag = 0
+        factor = 1
+        while flag == 0:
+            my_sprite = self.sprite.sprite_rect()
+            for i in range(2 * m + 1):
+                if flag == 1:
+                    break
+                for j in range(2 * m + 1):
+                    d = (factor * (int(i / 2) * ((-1) ** (i % 2))), factor * (int(j / 2) * ((-1) ** (j % 2))))
+                    b = False
+                    print (m)
+                    for k in range(len(colliders)):
+                        new_rect = pygame.Rect(my_sprite.topleft[0]+d[0], my_sprite.topleft[1]+d[1], 32, 32)
+
+                        b = b or src.Util.rect_intersect(new_rect, colliders[k].sprite.sprite_rect())
+                        #print(my_sprite)
+                    if b is False:
+                        self.move(d)
+                        flag = 1
+                        if (d[0] is not 0):
+                            self.velocity = (0, self.velocity[1])
+                        if (d[1] is not 0):
+                            self.velocity = (self.velocity[0], 0)
+                        break
+            m+=1
 
     def snap_out(self):
         m = 0

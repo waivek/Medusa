@@ -2,6 +2,8 @@ from src.Powerup import *
 from src.LoadResources import *
 from src.Buff import *
 
+CONST_REGEN_HEAL_RATE = 100
+
 class StaminaPowerup(Powerup):
     def __init__(self,pos):
         super().__init__(ImageEnum.POWERUP_YELLOW, 32, pos)
@@ -18,14 +20,14 @@ class RegenPowerup(Powerup):
         super().__init__(ImageEnum.POWERUP_RED, 32, pos)
 
         def buff_func(player, buff):
-            if buff.timer.get_time() >= 1000:
+            if buff.timer.get_time() >= CONST_REGEN_HEAL_RATE:
                 player.health.health += 1
 
-                if (buff.duration > 1000):
-                    player.buffs.append(Buff(buff_func, buff.duration - 1000))
+                if (buff.duration > CONST_REGEN_HEAL_RATE):
+                    player.buffs.append(Buff(buff_func, buff.duration - CONST_REGEN_HEAL_RATE))
                 player.buffs.remove(buff)
 
-        b = Buff(buff_func, 4000)
+        b = Buff(buff_func, 600)
 
         self.buff = b
 

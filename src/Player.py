@@ -120,6 +120,7 @@ class Player:
             other.buff.start()
             self.buffs.append(other.buff)
             self.level.destroy_entity(other)
+            play_sound(SoundEnum.POWERUP)
 
         if isinstance(other, Key):
             self.keys[other.key_type.value] += 1
@@ -129,6 +130,7 @@ class Player:
             if self.keys[other.lock_type.value] > 0:
                 self.keys[other.lock_type.value] -= 1
                 self.level.destroy_entity(other)
+                play_sound(SoundEnum.UNLOCK)
 
 
     def handle_collisions(self):
@@ -234,3 +236,10 @@ class Player:
 
         #handle collisions
         self.handle_collisions()
+
+        colliders = []
+        for ent in self.level.entities:
+            if isinstance(ent, Lock) or isinstance(ent, Skeleton):
+                colliders.append(ent)
+
+        self.moving_component.push_out_colliders(colliders)
