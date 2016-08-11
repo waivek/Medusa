@@ -18,6 +18,7 @@ class MovingComponent:
         self.gravity = CONST_GRAVITY
 
         self.collides = True
+        self.bounciness = 0
 
     def point_in_wall(self, x, y):
         cx = int(x/32)
@@ -48,9 +49,9 @@ class MovingComponent:
                         self.move(d)
                         flag = 1
                         if (d[0] is not 0):
-                            self.velocity = (0, self.velocity[1])
+                            self.velocity = (-self.velocity[0]*self.bounciness, self.velocity[1])
                         if (d[1] is not 0):
-                            self.velocity = (self.velocity[0], 0)
+                            self.velocity = (self.velocity[0], -self.velocity[1]*self.bounciness)
                         break
             m+=1
 
@@ -73,9 +74,11 @@ class MovingComponent:
                     if b is False:
                         self.move(d)
                         if (d[0] is not 0):
-                            self.velocity = (0, self.velocity[1])
+                            self.velocity = (-self.velocity[0]*self.bounciness, self.velocity[1])
                         if (d[1] is not 0):
-                            self.velocity = (self.velocity[0], 0)
+                            print(self.velocity)
+                            self.velocity = (self.velocity[0], -self.velocity[1]*self.bounciness)
+                            print(self.velocity)
                         print(m)
                         flag=1
                         break

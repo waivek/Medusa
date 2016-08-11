@@ -27,7 +27,6 @@ class Player:
         self.jump_velocity = CONST_JUMP_VELOCITY
         self.energy_regain_rate = CONST_ENERGY_GAIN_RATE
         self.sprint_energy_rate = CONST_SPRINT_ENERGY_RATE
-        self.gravity = CONST_GRAVITY
 
         self.sprite = AnimationFSM()
         spr0 = AnimatedSprite(ImageEnum.PLAYER1_RIGHT, 8)
@@ -162,7 +161,8 @@ class Player:
         self.jump_velocity = CONST_JUMP_VELOCITY
         self.energy_regain_rate = CONST_ENERGY_GAIN_RATE
         self.sprint_energy_rate = CONST_SPRINT_ENERGY_RATE
-        self.gravity = CONST_GRAVITY
+        self.moving_component.gravity = CONST_GRAVITY
+        self.moving_component.bounciness = 0
 
         for buff in self.buffs:
             buff.update(deltatime)
@@ -180,9 +180,6 @@ class Player:
     def update(self, deltatime):
         #parse buffs
         self.update_buffs(deltatime)
-
-        #set gravity
-        self.moving_component.gravity = self.gravity
 
         #detect input
         keys = pygame.key.get_pressed()

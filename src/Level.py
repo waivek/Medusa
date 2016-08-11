@@ -67,7 +67,7 @@ class Level:
         p = RegenPowerup((32 * 22, 32 * 9))
         self.add_powerup(p)
 
-        p = SpringPowerup((32 * 19, 32 * 9))
+        p = BouncePowerup((32 * 19, 32 * 9))
         self.add_powerup(p)
 
         p = HastePowerup((32 * 2, 32 * 9))

@@ -32,14 +32,14 @@ class RegenPowerup(Powerup):
 
         self.buff = b
 
-class SpringPowerup(Powerup):
+class BouncePowerup(Powerup):
     def __init__(self,pos):
         super().__init__(ImageEnum.POWERUP_DARK, 32, pos)
 
         def buff_func(player, buff):
-            player.jump_velocity *= 1.5
+            player.moving_component.bounciness = 0.9
 
-        buff = Buff(buff_func, 5000)
+        buff = Buff(buff_func, 15000)
 
         self.buff = buff
 
@@ -60,7 +60,8 @@ class GravityPowerup(Powerup):
         super().__init__(ImageEnum.POWERUP_PURPLE, 32, pos)
 
         def buff_func(player, buff):
-            player.gravity /= 3
+            player.moving_component.gravity /= 3
+            player.jump_velocity *= 1.25
 
         buff = Buff(buff_func, 5000)
 
