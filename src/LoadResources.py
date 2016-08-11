@@ -11,9 +11,10 @@ class ImageEnum(Enum):
     PLAYER1_JUMPRIGHT = 3
     BLOCK = 4
     SKY = 5
-    ITEM_ENERGY = 6
-    SKELETON_STANDING = 7
-    SKELETON_WALKING = 8
+    SKELETON_STANDING = 6
+    SKELETON_WALKING = 7
+    HUD_LIFE = 8
+    HUD_ENERGY = 9
 
 
 class SoundEnum(Enum):
@@ -27,9 +28,10 @@ gImagePaths = [
     r"..\raw\Sprites\explorer_jumpright.png",
     r"..\raw\Sprites\wall_block.png",
     r"..\raw\Sprites\sky.png",
-    r"..\raw\Sprites\item_energy.png",
     r"..\raw\Sprites\skeleton.png",
-    r"..\raw\Sprites\skeleton_walking_strip10.png"
+    r"..\raw\Sprites\skeleton_walking_strip10.png",
+    r"..\raw\Sprites\item_life.png",
+    r"..\raw\Sprites\item_energy.png"
 
 ]
 gSoundPaths = [r"..\raw\Sounds\jump.wav",r"..\raw\Sounds\hit.wav"]

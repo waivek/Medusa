@@ -11,7 +11,7 @@ import pygame
 BLOCK_SIZE = 32
 CONST_CAMERA_PLAYER_OFFSET = 160
 
-CONST_JUMP_VELOCITY = 1000
+CONST_JUMP_VELOCITY = 750
 CONST_PLAYER_SPEED = 100
 
 
@@ -21,7 +21,7 @@ class PlayerState(Enum):
     JUMPING = 1
 
 class Player:
-    def __init__(self, tiles, row, col):
+    def __init__(self, tiles, col, row):
         self.size = (BLOCK_SIZE, BLOCK_SIZE)
 
         self.state = PlayerState.JUMPING
@@ -49,6 +49,9 @@ class Player:
         self.moving_component = MovingComponent(self.sprite, tiles, row, col)
         self.sprite.move(self.moving_component.position)
 
+        self.life = 10
+        self.energy = 10
+
     def draw(self, screen, camera):
         self.sprite.draw(screen, camera)
 
@@ -74,7 +77,7 @@ class Player:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE and self.state==PlayerState.GROUND:
                 self.moving_component.velocity = (self.moving_component.velocity[0],self.moving_component.velocity[1] - self.jump_velocity)
-                self.state = PlayerState.JUMPING
+                #self.state = PlayerState.JUMPING
                 play_sound(SoundEnum.JUMP)
 
         elif event.type == pygame.KEYUP:
