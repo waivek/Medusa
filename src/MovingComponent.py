@@ -1,8 +1,6 @@
 from src.WorldConstants import *
 import pygame
 
-CONST_MAX_VELOCITY = 500
-
 class MovingComponent:
     def __init__(self, sprite, tiles, col, row):
         self.position = (0, 0)
@@ -14,6 +12,8 @@ class MovingComponent:
         self.tiles = tiles
         self.tiles_col = col
         self.tiles_row = row
+
+        self.in_air = False
 
     def point_in_wall(self, x, y):
         cx = int(x/32)
@@ -40,10 +40,11 @@ class MovingComponent:
 
                     if b is False:
                         self.move(d)
-                        if(d[0] != 0):
-                            self.velocity = (0,self.velocity[1])
-                        if (d[1] != 0):
-                            self.velocity = (self.velocity[0], 1)
+                        if (d[0] is not 0):
+                            self.velocity = (0, self.velocity[1])
+                        if (d[1] is not 0):
+                            self.velocity = (self.velocity[0], 0)
+
                         flag=1
                         break
             m += 1
@@ -55,16 +56,19 @@ class MovingComponent:
         self.position = (newx, newy)
 
     def update_position(self, displacement):
-        displacement = (int(displacement[0]),int(displacement[1]))
+        old_pos = self.position
 
         #update position
-        self.sprite.move(displacement)
-        newx = self.position[0] + int(displacement[0])
-        newy = self.position[1] + int(displacement[1])
-        self.position = (newx, newy)
+        self.move(displacement)
 
         #check for collisions
         self.snap_out()
+
+        #check if falling
+        if old_pos[1]==self.position[1]:
+            self.in_air = False
+        else:
+            self.in_air = True
 
     def update_velocity(self, acceleration):
         newx = self.velocity[0] + acceleration[0]
@@ -82,7 +86,7 @@ class MovingComponent:
         dt = deltatime / 1000
 
         # update parameters
-        self.update_position((self.velocity[0] * dt, self.velocity[1] * dt))
         self.update_velocity(((self.acceleration[0] * dt, self.acceleration[1] * dt)))
+        self.update_position((self.velocity[0] * dt, self.velocity[1] * dt))
 
         self.acceleration = (self.acceleration[0], CONST_GRAVITY)

@@ -11,8 +11,7 @@ import pygame
 BLOCK_SIZE = 32
 CONST_CAMERA_PLAYER_OFFSET = 160
 
-CONST_GRAVITY = 500
-CONST_JUMP_VELOCITY = 500
+CONST_JUMP_VELOCITY = 1000
 CONST_PLAYER_SPEED = 100
 
 
@@ -110,7 +109,8 @@ class Player:
 
         self.moving_component.update(deltatime)
 
-        if (abs(self.moving_component.velocity[1]) <= 100):
+        print(self.moving_component.velocity)
+        if not (self.moving_component.in_air):
             self.state = PlayerState.GROUND
             self.update_sprite()
         else:
