@@ -4,7 +4,7 @@ from src.Monster import *
 from src.Powerup import *
 from src.LoadResources import *
 from src.HUD import *
-from src.StaminaPowerup import *
+from src.Powerups import *
 import src.Util
 import pygame
 
@@ -59,6 +59,12 @@ class Level:
         p = StaminaPowerup((32*9,32*9))
         self.add_powerup(p)
 
+        p = RegenPowerup((32 * 15, 32 * 9))
+        self.add_powerup(p)
+
+        p = JumpPowerup((32 * 19, 32 * 9))
+        self.add_powerup(p)
+
         self.hud = HUD(self.players[0])
 
     def add_player(self, player):
@@ -110,11 +116,8 @@ class Level:
 
     def update(self, deltatime):
         #update entities and detect collision
-        for player in self.players:
-            player.update(deltatime)
-
-        for monster in self.monsters:
-            monster.update(deltatime)
+        for entity in self.entities:
+            entity.update(deltatime)
 
         #update camera
         self.camera_pos = (self.players[0].moving_component.position[0]-CONST_CAMERA_PLAYER_OFFSET, self.camera_pos[1])

@@ -11,7 +11,10 @@ class AnimatedSprite:
         self.timer = Timer()
         self.current_frame = 0
         self.max_frames = frames
-        self.sprite_rect = gImages[self.image_id.value].get_rect()
+        self.sprite_rec = gImages[self.image_id.value].get_rect()
+
+    def sprite_rect(self):
+        return self.sprite_rec
 
     def next_frame(self):
         self.current_frame += 1
@@ -30,12 +33,15 @@ class AnimatedSprite:
     def draw(self, screen, camera):
         rect = pygame.Rect((self.current_frame*self.bounds[0],0),self.bounds)
 
-        spr_pos = (self.sprite_rect[0]-camera[0],self.sprite_rect[1]-camera[1],self.sprite_rect[2]-camera[0],
-                                  self.sprite_rect[3]-camera[1])
+        spr_pos = (self.sprite_rec[0]-camera[0],self.sprite_rec[1]-camera[1],self.sprite_rec[2]-camera[0],
+                                  self.sprite_rec[3]-camera[1])
         screen.blit(gImages[self.image_id.value], spr_pos, rect)
 
     def get_pos_rect(self):
-        return pygame.Rect(self.sprite_rect.topleft[0],self.sprite_rect.topleft[1],self.bounds[0],self.bounds[1])
+        return pygame.Rect(self.sprite_rec.topleft[0],self.sprite_rec.topleft[1],self.bounds[0],self.bounds[1])
 
     def move(self, displacement):
-        self.sprite_rect = self.sprite_rect.move(displacement)
+        self.sprite_rec = self.sprite_rec.move(displacement)
+
+    def set_location(self, pos):
+        self.sprite_rec.topleft = pos

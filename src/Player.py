@@ -161,7 +161,7 @@ class Player:
             if buff.is_expired:
                 self.buffs.remove(buff)
             else:
-                buff.call_func(self)
+                buff.call_func(self, buff)
 
     def can_sprint(self):
         if self.energy > 0:

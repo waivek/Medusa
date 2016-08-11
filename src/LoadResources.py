@@ -15,7 +15,9 @@ class ImageEnum(Enum):
     SKELETON_WALKING = 7
     HUD_LIFE = 8
     HUD_ENERGY = 9
-
+    POWERUP_GREEN = 10
+    POWERUP_RED = 11
+    POWERUP_YELLOW = 12
 
 class SoundEnum(Enum):
     JUMP = 0
@@ -31,8 +33,10 @@ gImagePaths = [
     r"..\raw\Sprites\skeleton.png",
     r"..\raw\Sprites\skeleton_walking_strip10.png",
     r"..\raw\Sprites\item_life.png",
-    r"..\raw\Sprites\item_energy.png"
-
+    r"..\raw\Sprites\item_energy.png",
+    r"..\raw\Sprites\gem_green_sparkle_strip32.png",
+    r"..\raw\Sprites\gem_red_sparkle_strip32.png",
+    r"..\raw\Sprites\gem_yellow_sparkle_strip32.png"
 ]
 gSoundPaths = [r"..\raw\Sounds\jump.wav",r"..\raw\Sounds\hit.wav"]
 
