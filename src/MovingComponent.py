@@ -86,7 +86,7 @@ class MovingComponent:
         dt = deltatime / 1000
 
         # update parameters
-        self.update_velocity(((self.acceleration[0] * dt, self.acceleration[1] * dt)))
         self.update_position((self.velocity[0] * dt, self.velocity[1] * dt))
+        self.update_velocity(((self.acceleration[0] * dt, self.acceleration[1] * dt)))
 
         self.acceleration = (self.acceleration[0], CONST_GRAVITY)
