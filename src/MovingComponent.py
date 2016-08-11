@@ -14,6 +14,7 @@ class MovingComponent:
         self.tiles_row = row
 
         self.in_air = False
+        self.gravity = CONST_GRAVITY
 
     def point_in_wall(self, x, y):
         cx = int(x/32)
@@ -44,7 +45,7 @@ class MovingComponent:
                             self.velocity = (0, self.velocity[1])
                         if (d[1] is not 0):
                             self.velocity = (self.velocity[0], 0)
-
+                        print(m)
                         flag=1
                         break
             m += 1
@@ -89,4 +90,4 @@ class MovingComponent:
         self.update_position((self.velocity[0] * dt, self.velocity[1] * dt))
         self.update_velocity(((self.acceleration[0] * dt, self.acceleration[1] * dt)))
 
-        self.acceleration = (self.acceleration[0], CONST_GRAVITY)
+        self.acceleration = (self.acceleration[0], self.gravity)

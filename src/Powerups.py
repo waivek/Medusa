@@ -4,7 +4,7 @@ from src.Buff import *
 
 class StaminaPowerup(Powerup):
     def __init__(self,pos):
-        super().__init__(ImageEnum.POWERUP_GREEN, 32, pos)
+        super().__init__(ImageEnum.POWERUP_YELLOW, 32, pos)
 
         def buff_func(player, buff):
             player.energy_regain_rate /= 3
@@ -29,12 +29,35 @@ class RegenPowerup(Powerup):
 
         self.buff = b
 
-class JumpPowerup(Powerup):
+class SpringPowerup(Powerup):
     def __init__(self,pos):
-        super().__init__(ImageEnum.POWERUP_YELLOW, 32, pos)
+        super().__init__(ImageEnum.POWERUP_BLUE, 32, pos)
 
         def buff_func(player, buff):
-            player.jump_velocity *= 2
+            player.jump_velocity *= 1.5
+
+        buff = Buff(buff_func, 5000)
+
+        self.buff = buff
+
+class HastePowerup(Powerup):
+    def __init__(self,pos):
+        super().__init__(ImageEnum.POWERUP_GREEN, 32, pos)
+
+        def buff_func(player, buff):
+            player.speed *= 1.25
+            player.sprint_speed *= 1.5
+
+        buff = Buff(buff_func, 5000)
+
+        self.buff = buff
+
+class GravityPowerup(Powerup):
+    def __init__(self,pos):
+        super().__init__(ImageEnum.POWERUP_DARK, 32, pos)
+
+        def buff_func(player, buff):
+            player.gravity /= 3
 
         buff = Buff(buff_func, 5000)
 

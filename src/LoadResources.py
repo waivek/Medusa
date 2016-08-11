@@ -18,6 +18,10 @@ class ImageEnum(Enum):
     POWERUP_GREEN = 10
     POWERUP_RED = 11
     POWERUP_YELLOW = 12
+    POWERUP_BLUE = 13
+    POWERUP_PURPLE = 14
+    POWERUP_LIGHT = 15
+    POWERUP_DARK = 16
 
 class SoundEnum(Enum):
     JUMP = 0
@@ -36,7 +40,11 @@ gImagePaths = [
     r"..\raw\Sprites\item_energy.png",
     r"..\raw\Sprites\gem_green_sparkle_strip32.png",
     r"..\raw\Sprites\gem_red_sparkle_strip32.png",
-    r"..\raw\Sprites\gem_yellow_sparkle_strip32.png"
+    r"..\raw\Sprites\gem_yellow_sparkle_strip32.png",
+    r"..\raw\Sprites\gem_blue_sparkle_strip32.png",
+    r"..\raw\Sprites\gem_purple_sparkle_strip32.png",
+    r"..\raw\Sprites\gem_light_sparkle_strip32.png",
+    r"..\raw\Sprites\gem_dark_sparkle_strip32.png"
 ]
 gSoundPaths = [r"..\raw\Sounds\jump.wav",r"..\raw\Sounds\hit.wav"]
 

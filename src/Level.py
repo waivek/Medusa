@@ -59,10 +59,16 @@ class Level:
         p = StaminaPowerup((32*9,32*9))
         self.add_powerup(p)
 
-        p = RegenPowerup((32 * 15, 32 * 9))
+        p = GravityPowerup((15 * 22, 32 * 9))
         self.add_powerup(p)
 
-        p = JumpPowerup((32 * 19, 32 * 9))
+        p = RegenPowerup((32 * 22, 32 * 9))
+        self.add_powerup(p)
+
+        p = SpringPowerup((32 * 19, 32 * 9))
+        self.add_powerup(p)
+
+        p = HastePowerup((32 * 2, 32 * 9))
         self.add_powerup(p)
 
         self.hud = HUD(self.players[0])

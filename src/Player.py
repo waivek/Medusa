@@ -11,16 +11,6 @@ import src.Util
 import pygame
 from src.Timer import *
 
-BLOCK_SIZE = 32
-CONST_CAMERA_PLAYER_OFFSET = 160
-
-CONST_JUMP_VELOCITY = 750
-CONST_PLAYER_SPEED = 100
-CONST_PLAYER_SPRINT_SPEED = 300
-CONST_MAX_ENERGY = 10
-CONST_ENERGY_GAIN_RATE = 250
-CONST_SPRINT_ENERGY_RATE = 100
-
 from enum import Enum
 class PlayerState(Enum):
     GROUND = 0
@@ -37,6 +27,7 @@ class Player:
         self.jump_velocity = CONST_JUMP_VELOCITY
         self.energy_regain_rate = CONST_ENERGY_GAIN_RATE
         self.sprint_energy_rate = CONST_SPRINT_ENERGY_RATE
+        self.gravity = CONST_GRAVITY
 
         self.sprite = AnimationFSM()
         spr0 = AnimatedSprite(ImageEnum.PLAYER1_RIGHT, 8)
@@ -155,6 +146,7 @@ class Player:
         self.jump_velocity = CONST_JUMP_VELOCITY
         self.energy_regain_rate = CONST_ENERGY_GAIN_RATE
         self.sprint_energy_rate = CONST_SPRINT_ENERGY_RATE
+        self.gravity = CONST_GRAVITY
 
         for buff in self.buffs:
             buff.update(deltatime)
@@ -170,10 +162,13 @@ class Player:
             return False
 
     def update(self, deltatime):
-
+        #parse buffs
         self.update_buffs(deltatime)
-        print("buff len %d" % len(self.buffs))
 
+        #set gravity
+        self.moving_component.gravity = self.gravity
+
+        #detect input
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT] and not keys[pygame.K_RIGHT]:
             if keys[pygame.K_LSHIFT] and self.can_sprint():
@@ -195,7 +190,7 @@ class Player:
 
         self.moving_component.update(deltatime)
 
-        # print(self.moving_component.velocity)
+        #set sprite
         if not (self.moving_component.in_air):
             self.state = PlayerState.GROUND
             self.update_sprite()
@@ -203,6 +198,7 @@ class Player:
             self.state = PlayerState.JUMPING
             self.update_sprite()
 
+        #sprinting
         t = self.energy_timer.get_time()
         if self.is_sprinting:
             if t > self.sprint_energy_rate:
@@ -219,6 +215,5 @@ class Player:
 
         self.sprite.update(deltatime)
 
-        # self.health.update_health(deltatime)
+        #handle collisions
         self.handle_collisions()
-        print("health %d" % self.health.health)
