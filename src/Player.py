@@ -7,13 +7,17 @@ from src.MovingComponent import *
 import src.Util
 
 import pygame
+from src.Timer import *
 
 BLOCK_SIZE = 32
 CONST_CAMERA_PLAYER_OFFSET = 160
 
-CONST_JUMP_VELOCITY = 300
+CONST_JUMP_VELOCITY = 750
 CONST_PLAYER_SPEED = 100
-
+CONST_PLAYER_SPRINT_SPEED = 300
+CONST_MAX_ENERGY = 10
+CONST_ENERGY_GAIN_RATE = 250
+CONST_SPRINT_ENERGY_RATE = 100
 
 from enum import Enum
 class PlayerState(Enum):
@@ -21,12 +25,13 @@ class PlayerState(Enum):
     JUMPING = 1
 
 class Player:
-    def __init__(self, tiles, row, col, level):
+    def __init__(self, tiles, col, row, level):
         self.size = (BLOCK_SIZE, BLOCK_SIZE)
 
         self.state = PlayerState.JUMPING
 
         self.speed = CONST_PLAYER_SPEED
+        self.sprint_speed = CONST_PLAYER_SPRINT_SPEED
         self.jump_velocity = CONST_JUMP_VELOCITY
 
         self.sprite = AnimationFSM()
@@ -44,12 +49,17 @@ class Player:
         self.sprite.add_sprite(spr5)
 
         self.sprite.set_state(2)
-        self.collision_count = 0
 
+        self.is_sprinting = False
 
         self.moving_component = MovingComponent(self.sprite, tiles, row, col)
         self.sprite.move(self.moving_component.position)
         self.level = level
+
+        self.life = 10
+        self.energy = 10
+
+        self.energy_timer = Timer()
 
         class Health:
             def __init__(self, health, cooldown_seconds):
@@ -59,7 +69,7 @@ class Player:
                 self.time_elapsed_since_hit = self.cooldown_seconds
                 self.timer = Timer()
 
-            def deal_damage(self, damage, deltaTime):
+            def deal_damage(self, damage):
                 t = self.timer.get_time()
                 if t > self.cooldown_seconds * 1000:
                     self.health = self.health - damage
@@ -82,21 +92,6 @@ class Player:
     def draw(self, screen, camera):
         self.sprite.draw(screen, camera)
 
-    def block_velocity(self,pos,target,tiles,col,row):
-        for i in range(col):
-            for j in range(row):
-                if tiles[j][i]:
-                    tile_rect = pygame.Rect(BLOCK_SIZE * i, BLOCK_SIZE * j, BLOCK_SIZE, BLOCK_SIZE)
-                    target = src.Util.reduce_line2(pos, target, tile_rect)
-        return target
-
-
-    def get_displacement(self, position, displacement, tiles, row, col):
-        target = (position[0] + displacement[0], position[1] + displacement[1])
-        out1 = self.block_velocity(position, target, tiles, col, row)
-        d = (out1[0] - position[0], out1[1] - position[1])
-        return d
-
     def getrekt(self):
         return pygame.Rect(self.moving_component.position[0],self.moving_component.position[1],self.size[0],self.size[1])
 
@@ -104,7 +99,7 @@ class Player:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE and self.state==PlayerState.GROUND:
                 self.moving_component.velocity = (self.moving_component.velocity[0],self.moving_component.velocity[1] - self.jump_velocity)
-                self.state = PlayerState.JUMPING
+                #self.state = PlayerState.JUMPING
                 play_sound(SoundEnum.JUMP)
 
         elif event.type == pygame.KEYUP:
@@ -128,7 +123,7 @@ class Player:
                 if self.sprite.state == 1 or self.sprite.state==3:
                     self.sprite.set_state(5)
 
-    def handle_enemy_collisions(self, deltaTime):
+    def handle_enemy_collisions(self):
         from src.Skeleton import Skeleton
         skeletons = self.level.monsters
         def lies_between(x, a, b):
@@ -149,23 +144,36 @@ class Player:
                 collision["up"] = lies_between(other_rect.bottom, player_rect.top, player_rect.bottom)
                 collision["down"] = lies_between(other_rect.top, player_rect.top, player_rect.bottom)
                 if collision["down"] or collision["up"]:
-                    self.health.deal_damage(10, deltaTime)
+                    self.health.deal_damage(10)
 
 
 
 
-
-
-
+    def can_sprint(self):
+        if self.energy > 0:
+            return True
+        else:
+            return False
 
     def update(self, deltatime):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT] and not keys[pygame.K_RIGHT]:
-            self.moving_component.velocity = (-self.speed, self.moving_component.velocity[1])
+            if keys[pygame.K_LSHIFT] and self.can_sprint():
+                self.moving_component.velocity = (-self.sprint_speed, self.moving_component.velocity[1])
+                self.is_sprinting = True
+            else:
+                self.moving_component.velocity = (-self.speed, self.moving_component.velocity[1])
+                self.is_sprinting = False
         elif keys[pygame.K_RIGHT] and not keys[pygame.K_LEFT]:
-            self.moving_component.velocity = (self.speed, self.moving_component.velocity[1])
+            if keys[pygame.K_LSHIFT] and self.can_sprint():
+                self.moving_component.velocity = (self.sprint_speed, self.moving_component.velocity[1])
+                self.is_sprinting = True
+            else:
+                self.moving_component.velocity = (self.speed, self.moving_component.velocity[1])
+                self.is_sprinting = False
         else:
             self.moving_component.velocity = (0, self.moving_component.velocity[1])
+            self.is_sprinting = False
 
         self.moving_component.update(deltatime)
 
@@ -177,8 +185,22 @@ class Player:
             self.state = PlayerState.JUMPING
             self.update_sprite()
 
+        t = self.energy_timer.get_time()
+        if self.is_sprinting:
+            if t > CONST_SPRINT_ENERGY_RATE:
+                self.energy_timer.mod_time(CONST_SPRINT_ENERGY_RATE)
+                self.energy -= 1
+                if self.energy < 0:
+                    self.energy = 0
+        elif not keys[pygame.K_LSHIFT]:
+            if t > CONST_ENERGY_GAIN_RATE:
+                self.energy_timer.mod_time(CONST_ENERGY_GAIN_RATE)
+                self.energy += 1
+                if self.energy >= CONST_MAX_ENERGY:
+                    self.energy = CONST_MAX_ENERGY
+
         self.sprite.update(deltatime)
 
         # self.health.update_health(deltatime)
-        self.handle_enemy_collisions(deltatime)
+        self.handle_enemy_collisions()
         print("health %d" % self.health.health)

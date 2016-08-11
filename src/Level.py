@@ -1,8 +1,9 @@
-from src.Sprite import Sprite
+from src.Sprite import *
 from src.Player import *
 from src.Monster import *
-from src.LoadResources import ImageEnum
-from src.LoadResources import gImages
+from src.Skeleton import *
+from src.LoadResources import *
+from src.HUD import *
 import src.Util
 import pygame
 
@@ -48,6 +49,13 @@ class Level:
         self.monsters = []
         self.players = []
 
+        p = Player(self.map,self.col,self.row, self)
+        m = Skeleton(self.map, self.col, self.row)
+        self.add_player(p)
+        self.add_monster(m)
+
+        self.hud = HUD(self.players[0])
+
     def add_player(self, player):
         assert isinstance(player, Player)
         self.players.append(player)
@@ -70,6 +78,8 @@ class Level:
 
         for monster in self.monsters:
             monster.draw(screen,self.camera_pos)
+
+        self.hud.draw(screen)
 
     def handle_event(self, event):
         for player in self.players:
