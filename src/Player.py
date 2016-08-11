@@ -6,6 +6,7 @@ from src.LoadResources import ImageEnum
 from src.MovingComponent import *
 from src.Skeleton import *
 from src.Powerup import *
+from src.Key import *
 import src.Util
 
 import pygame
@@ -73,6 +74,10 @@ class Player:
 
         self.buffs = []
 
+        self.keys = []
+        for i in range(KeyEnum.NUM.value):
+            self.keys.append(0)
+
 
     def draw(self, screen, camera):
         self.sprite.draw(screen, camera)
@@ -116,6 +121,9 @@ class Player:
             other.buff.start()
             self.buffs.append(other.buff)
             self.level.entities.remove(other)
+
+        if isinstance(other, Key):
+            self.keys[other.key_type] += 1
 
     def handle_collisions(self):
         entities = self.level.entities

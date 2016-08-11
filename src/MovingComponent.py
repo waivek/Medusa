@@ -16,6 +16,8 @@ class MovingComponent:
         self.in_air = False
         self.gravity = CONST_GRAVITY
 
+        self.collides = True
+
     def point_in_wall(self, x, y):
         cx = int(x/32)
         cy = int(y/32)
@@ -34,10 +36,10 @@ class MovingComponent:
                 for j in range(2*m+1):
                     d = (factor*(int(i/2)*((-1)**(i%2))),factor*(int(j/2)*((-1)**(j%2))))
                     b = False
-                    b = b or self.point_in_wall(self.sprite.sprite_rect().topleft[0] + d[0],self.sprite.sprite_rect().topleft[1] + d[1])
-                    b = b or self.point_in_wall(self.sprite.sprite_rect().topright[0] + d[0],self.sprite.sprite_rect().topright[1] + d[1])
-                    b = b or self.point_in_wall(self.sprite.sprite_rect().bottomleft[0] + d[0],self.sprite.sprite_rect().bottomleft[1] + d[1])
-                    b = b or self.point_in_wall(self.sprite.sprite_rect().bottomright[0] + d[0],self.sprite.sprite_rect().bottomright[1] + d[1])
+                    b = b or self.point_in_wall(self.sprite.sprite_rect().topleft[0] + d[0] +1,self.sprite.sprite_rect().topleft[1] + d[1] +1)
+                    b = b or self.point_in_wall(self.sprite.sprite_rect().topright[0] + d[0] -1,self.sprite.sprite_rect().topright[1] + d[1] +1)
+                    b = b or self.point_in_wall(self.sprite.sprite_rect().bottomleft[0] + d[0] +1,self.sprite.sprite_rect().bottomleft[1] + d[1] -1)
+                    b = b or self.point_in_wall(self.sprite.sprite_rect().bottomright[0] + d[0] -1,self.sprite.sprite_rect().bottomright[1] + d[1] -1)
 
                     if b is False:
                         self.move(d)
@@ -63,7 +65,8 @@ class MovingComponent:
         self.move(displacement)
 
         #check for collisions
-        self.snap_out()
+        if self.collides:
+            self.snap_out()
 
         #check if falling
         if old_pos[1]==self.position[1]:

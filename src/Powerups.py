@@ -54,7 +54,7 @@ class HastePowerup(Powerup):
 
 class GravityPowerup(Powerup):
     def __init__(self,pos):
-        super().__init__(ImageEnum.POWERUP_DARK, 32, pos)
+        super().__init__(ImageEnum.POWERUP_PURPLE, 32, pos)
 
         def buff_func(player, buff):
             player.gravity /= 3

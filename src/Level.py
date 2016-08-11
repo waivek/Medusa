@@ -24,14 +24,14 @@ class Level:
         self.map[5][9] = True
         self.map[6][9] = True
         self.map[7][9] = True
-        #self.map[8][9] = True
+        self.map[8][9] = True
         #self.map[9][9] = True
         #self.map[10][9] = True
 
         self.map[5][10] = True
         self.map[6][10] = True
         self.map[7][10] = True
-        #self.map[8][10] = True
+        self.map[8][10] = True
         #self.map[9][10] = True
         #self.map[10][10] = True
 
