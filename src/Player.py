@@ -122,6 +122,7 @@ class Player:
             self.health.deal_damage(1)
 
         if isinstance(other, Powerup):
+            other.buff.start()
             self.buffs.append(other.buff)
             self.level.entities.remove(other)
 
@@ -148,7 +149,7 @@ class Player:
                     self.on_collision(other)
 
 
-    def update_buffs(self):
+    def update_buffs(self, deltatime):
         self.speed = CONST_PLAYER_SPEED
         self.sprint_speed = CONST_PLAYER_SPRINT_SPEED
         self.jump_velocity = CONST_JUMP_VELOCITY
@@ -156,7 +157,11 @@ class Player:
         self.sprint_energy_rate = CONST_SPRINT_ENERGY_RATE
 
         for buff in self.buffs:
-            buff(self)
+            buff.update(deltatime)
+            if buff.is_expired:
+                self.buffs.remove(buff)
+            else:
+                buff.call_func(self)
 
     def can_sprint(self):
         if self.energy > 0:
@@ -166,7 +171,7 @@ class Player:
 
     def update(self, deltatime):
 
-        self.update_buffs()
+        self.update_buffs(deltatime)
         print("buff len %d" % len(self.buffs))
 
         keys = pygame.key.get_pressed()
