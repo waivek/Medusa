@@ -7,13 +7,17 @@ from src.MovingComponent import *
 import src.Util
 
 import pygame
+from src.Timer import *
 
 BLOCK_SIZE = 32
 CONST_CAMERA_PLAYER_OFFSET = 160
 
 CONST_JUMP_VELOCITY = 750
 CONST_PLAYER_SPEED = 100
-
+CONST_PLAYER_SPRINT_SPEED = 300
+CONST_MAX_ENERGY = 10
+CONST_ENERGY_GAIN_RATE = 100
+CONST_SPRINT_ENERGY_RATE = 100
 
 from enum import Enum
 class PlayerState(Enum):
@@ -27,6 +31,7 @@ class Player:
         self.state = PlayerState.JUMPING
 
         self.speed = CONST_PLAYER_SPEED
+        self.sprint_speed = CONST_PLAYER_SPRINT_SPEED
         self.jump_velocity = CONST_JUMP_VELOCITY
 
         self.sprite = AnimationFSM()
@@ -45,6 +50,7 @@ class Player:
 
         self.sprite.set_state(2)
 
+        self.is_sprinting = False
 
         self.moving_component = MovingComponent(self.sprite, tiles, row, col)
         self.sprite.move(self.moving_component.position)
@@ -52,6 +58,8 @@ class Player:
 
         self.life = 10
         self.energy = 10
+
+        self.energy_timer = Timer()
 
     def draw(self, screen, camera):
         self.sprite.draw(screen, camera)
@@ -104,27 +112,44 @@ class Player:
             collision = {}
             collision["right"] = lies_between(other_rect.left, player_rect.left, player_rect.right)
             collision["left"] = lies_between(other_rect.right, player_rect.left, player_rect.right)
-            if collision["left"] or collision["right"]:
-                collision["up"] = lies_between(other_rect.bottom, player_rect.top, player_rect.bottom)
-                collision["down"] = lies_between(other_rect.top, player_rect.top, player_rect.bottom)
+            collision["up"] = lies_between(other_rect.bottom, player_rect.top, player_rect.bottom)
+            collision["down"] = lies_between(other_rect.top, player_rect.top, player_rect.bottom)
                 #if collision["down"] or collision["up"]:
                 #    self.collision_count = self.collision_count + 1
 
+            collide = (collision["right"] or collision["left"]) and (collision["up"] or collision["down"])
+
+            if collide:
+                self.life -= 1
+                if self.life < 0:
+                    self.life = 0
 
 
-
-
-
-
+    def can_sprint(self):
+        if self.energy > 0:
+            return True
+        else:
+            return False
 
     def update(self, deltatime):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT] and not keys[pygame.K_RIGHT]:
-            self.moving_component.velocity = (-self.speed, self.moving_component.velocity[1])
+            if keys[pygame.K_LSHIFT] and self.can_sprint():
+                self.moving_component.velocity = (-self.sprint_speed, self.moving_component.velocity[1])
+                self.is_sprinting = True
+            else:
+                self.moving_component.velocity = (-self.speed, self.moving_component.velocity[1])
+                self.is_sprinting = False
         elif keys[pygame.K_RIGHT] and not keys[pygame.K_LEFT]:
-            self.moving_component.velocity = (self.speed, self.moving_component.velocity[1])
+            if keys[pygame.K_LSHIFT] and self.can_sprint():
+                self.moving_component.velocity = (self.sprint_speed, self.moving_component.velocity[1])
+                self.is_sprinting = True
+            else:
+                self.moving_component.velocity = (self.speed, self.moving_component.velocity[1])
+                self.is_sprinting = False
         else:
             self.moving_component.velocity = (0, self.moving_component.velocity[1])
+            self.is_sprinting = False
 
         self.moving_component.update(deltatime)
 
@@ -135,6 +160,20 @@ class Player:
         else:
             self.state = PlayerState.JUMPING
             self.update_sprite()
+
+        t = self.energy_timer.get_time()
+        if self.is_sprinting:
+            if t > CONST_SPRINT_ENERGY_RATE:
+                self.energy_timer.mod_time(CONST_SPRINT_ENERGY_RATE)
+                self.energy -= 1
+                if self.energy < 0:
+                    self.energy = 0
+        elif not keys[pygame.K_LSHIFT]:
+            if t > CONST_ENERGY_GAIN_RATE:
+                self.energy_timer.mod_time(CONST_ENERGY_GAIN_RATE)
+                self.energy += 1
+                if self.energy >= CONST_MAX_ENERGY:
+                    self.energy = CONST_MAX_ENERGY
 
         self.sprite.update(deltatime)
 

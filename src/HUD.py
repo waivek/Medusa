@@ -15,6 +15,6 @@ class HUD:
             self.life_spr.move((32,0))
 
         self.energy_spr.set_location((0, 32))
-        for i in range(self.player.life):
+        for i in range(self.player.energy):
             self.energy_spr.draw(screen,(0,0))
             self.energy_spr.move((32,0))
