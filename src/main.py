@@ -1,9 +1,7 @@
 import sys
 import pygame
-from src.Level import Level
-from src.Player import Player
+from src.Level import *
 from src.LoadResources import load_resources
-from src.Skeleton import Skeleton
 
 
 def init():
