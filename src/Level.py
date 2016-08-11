@@ -49,7 +49,7 @@ class Level:
         self.monsters = []
         self.players = []
 
-        p = Player(self.map,self.col,self.row)
+        p = Player(self.map,self.col,self.row, self)
         m = Skeleton(self.map, self.col, self.row)
         self.add_player(p)
         self.add_monster(m)

@@ -21,7 +21,7 @@ class PlayerState(Enum):
     JUMPING = 1
 
 class Player:
-    def __init__(self, tiles, col, row):
+    def __init__(self, tiles, col, row, level):
         self.size = (BLOCK_SIZE, BLOCK_SIZE)
 
         self.state = PlayerState.JUMPING
@@ -55,21 +55,6 @@ class Player:
 
     def draw(self, screen, camera):
         self.sprite.draw(screen, camera)
-
-    def block_velocity(self,pos,target,tiles,col,row):
-        for i in range(col):
-            for j in range(row):
-                if tiles[j][i]:
-                    tile_rect = pygame.Rect(BLOCK_SIZE * i, BLOCK_SIZE * j, BLOCK_SIZE, BLOCK_SIZE)
-                    target = src.Util.reduce_line2(pos, target, tile_rect)
-        return target
-
-
-    def get_displacement(self, position, displacement, tiles, row, col):
-        target = (position[0] + displacement[0], position[1] + displacement[1])
-        out1 = self.block_velocity(position, target, tiles, col, row)
-        d = (out1[0] - position[0], out1[1] - position[1])
-        return d
 
     def getrekt(self):
         return pygame.Rect(self.moving_component.position[0],self.moving_component.position[1],self.size[0],self.size[1])
@@ -122,8 +107,8 @@ class Player:
             if collision["left"] or collision["right"]:
                 collision["up"] = lies_between(other_rect.bottom, player_rect.top, player_rect.bottom)
                 collision["down"] = lies_between(other_rect.top, player_rect.top, player_rect.bottom)
-                if collision["down"] or collision["up"]:
-                    self.collision_count = self.collision_count + 1
+                #if collision["down"] or collision["up"]:
+                #    self.collision_count = self.collision_count + 1
 
 
 
