@@ -6,10 +6,11 @@ CONST_REGEN_HEAL_RATE = 100
 
 class StaminaPowerup(Powerup):
     def __init__(self,pos):
-        super().__init__(ImageEnum.POWERUP_YELLOW, 32, pos)
+        super().__init__(ImageEnum.POWERUP_GREEN, 32, pos)
 
         def buff_func(player, buff):
             player.energy_regain_rate /= 3
+            player.sprint_energy_rate *= 2
 
         b = Buff(buff_func, 5000)
 
@@ -17,7 +18,7 @@ class StaminaPowerup(Powerup):
 
 class RegenPowerup(Powerup):
     def __init__(self,pos):
-        super().__init__(ImageEnum.POWERUP_RED, 32, pos)
+        super().__init__(ImageEnum.POWERUP_BLUE, 32, pos)
 
         def buff_func(player, buff):
             if buff.timer.get_time() >= CONST_REGEN_HEAL_RATE:
@@ -33,7 +34,7 @@ class RegenPowerup(Powerup):
 
 class SpringPowerup(Powerup):
     def __init__(self,pos):
-        super().__init__(ImageEnum.POWERUP_BLUE, 32, pos)
+        super().__init__(ImageEnum.POWERUP_DARK, 32, pos)
 
         def buff_func(player, buff):
             player.jump_velocity *= 1.5
@@ -44,7 +45,7 @@ class SpringPowerup(Powerup):
 
 class HastePowerup(Powerup):
     def __init__(self,pos):
-        super().__init__(ImageEnum.POWERUP_GREEN, 32, pos)
+        super().__init__(ImageEnum.POWERUP_LIGHT, 32, pos)
 
         def buff_func(player, buff):
             player.speed *= 1.25
