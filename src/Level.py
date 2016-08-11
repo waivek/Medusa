@@ -1,9 +1,10 @@
 from src.Sprite import *
 from src.Player import *
 from src.Monster import *
-from src.Skeleton import *
+from src.Powerup import *
 from src.LoadResources import *
 from src.HUD import *
+from src.StaminaPowerup import *
 import src.Util
 import pygame
 
@@ -48,21 +49,31 @@ class Level:
 
         self.monsters = []
         self.players = []
+        self.entities = []
 
         p = Player(self.map,self.col,self.row, self)
         m = Skeleton(self.map, self.col, self.row)
         self.add_player(p)
         self.add_monster(m)
 
+        p = StaminaPowerup((32*9,32*9))
+        self.add_powerup(p)
+
         self.hud = HUD(self.players[0])
 
     def add_player(self, player):
         assert isinstance(player, Player)
         self.players.append(player)
+        self.entities.append(player)
 
     def add_monster(self, monster):
         #assert isinstance(monster, Monster)
         self.monsters.append(monster)
+        self.entities.append(monster)
+
+    def add_powerup(self, powerup):
+        assert isinstance(powerup, Powerup)
+        self.entities.append(powerup)
 
     def draw(self, screen):
         self.sky_sprite.draw(screen, (0,0))
@@ -73,11 +84,14 @@ class Level:
                     self.block_sprite.set_location((BLOCK_SIZE*j,BLOCK_SIZE*i))
                     self.block_sprite.draw(screen,self.camera_pos)
 
-        for player in self.players:
-            player.draw(screen,self.camera_pos)
+        #for player in self.players:
+        #    player.draw(screen,self.camera_pos)
 
-        for monster in self.monsters:
-            monster.draw(screen,self.camera_pos)
+        #for monster in self.monsters:
+        #    monster.draw(screen,self.camera_pos)
+
+        for entity in self.entities:
+            entity.draw(screen, self.camera_pos)
 
         self.hud.draw(screen)
 

@@ -10,7 +10,7 @@ class HUD:
 
     def draw(self, screen):
         self.life_spr.set_location((0, 0))
-        for i in range(self.player.life):
+        for i in range(self.player.health.health):
             self.life_spr.draw(screen,(0,0))
             self.life_spr.move((32,0))
 

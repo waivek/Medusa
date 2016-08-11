@@ -4,6 +4,8 @@ from src.LoadResources import SoundEnum
 from src.LoadResources import play_sound
 from src.LoadResources import ImageEnum
 from src.MovingComponent import *
+from src.Skeleton import *
+from src.Powerup import *
 import src.Util
 
 import pygame
@@ -33,6 +35,8 @@ class Player:
         self.speed = CONST_PLAYER_SPEED
         self.sprint_speed = CONST_PLAYER_SPRINT_SPEED
         self.jump_velocity = CONST_JUMP_VELOCITY
+        self.energy_regain_rate = CONST_ENERGY_GAIN_RATE
+        self.sprint_energy_rate = CONST_SPRINT_ENERGY_RATE
 
         self.sprite = AnimationFSM()
         spr0 = AnimatedSprite(ImageEnum.PLAYER1_RIGHT, 8)
@@ -56,9 +60,7 @@ class Player:
         self.sprite.move(self.moving_component.position)
         self.level = level
 
-        self.life = 10
         self.energy = 10
-
         self.energy_timer = Timer()
 
         class Health:
@@ -76,17 +78,9 @@ class Player:
                     self.time_elapsed_since_hit = 0
                     self.timer.reset()
 
-                # print("time_elapsed %d" % self.time_elapsed_since_hit)
-                # if self.time_elapsed_since_hit >= self.cooldown_seconds:
-                #     self.health = self.health - damage
-                #     self.time_elapsed_since_hit = 0
+        self.health = Health(10, 1)
 
-            # def update_health(self, deltaTime):
-            #     self.time_elapsed_since_hit = self.time_elapsed_since_hit + (deltaTime/1000)
-
-        self.health = Health(100, 3)
-
-
+        self.buffs = []
 
 
     def draw(self, screen, camera):
@@ -123,18 +117,25 @@ class Player:
                 if self.sprite.state == 1 or self.sprite.state==3:
                     self.sprite.set_state(5)
 
-    def handle_enemy_collisions(self):
-        from src.Skeleton import Skeleton
-        skeletons = self.level.monsters
+    def on_collision(self, other):
+        if isinstance(other, Skeleton):
+            self.health.deal_damage(1)
+
+        if isinstance(other, Powerup):
+            self.buffs.append(other.buff)
+            self.level.entities.remove(other)
+
+    def handle_collisions(self):
+        entities = self.level.entities
         def lies_between(x, a, b):
             return a <= x <= b
 
-        for skeleton in skeletons:
-            assert(isinstance(skeleton, Skeleton))
+        for other in entities:
+            #assert(isinstance(other, Skeleton))
             player_rect =self.sprite.sprite_rect()
             assert(isinstance(player_rect, pygame.Rect))
 
-            other_rect = skeleton.sprite.sprite_rect()
+            other_rect = other.sprite.sprite_rect()
             assert(isinstance(other_rect, pygame.Rect))
 
             collision = {}
@@ -144,10 +145,18 @@ class Player:
                 collision["up"] = lies_between(other_rect.bottom, player_rect.top, player_rect.bottom)
                 collision["down"] = lies_between(other_rect.top, player_rect.top, player_rect.bottom)
                 if collision["down"] or collision["up"]:
-                    self.health.deal_damage(10)
+                    self.on_collision(other)
 
 
+    def update_buffs(self):
+        self.speed = CONST_PLAYER_SPEED
+        self.sprint_speed = CONST_PLAYER_SPRINT_SPEED
+        self.jump_velocity = CONST_JUMP_VELOCITY
+        self.energy_regain_rate = CONST_ENERGY_GAIN_RATE
+        self.sprint_energy_rate = CONST_SPRINT_ENERGY_RATE
 
+        for buff in self.buffs:
+            buff(self)
 
     def can_sprint(self):
         if self.energy > 0:
@@ -156,6 +165,10 @@ class Player:
             return False
 
     def update(self, deltatime):
+
+        self.update_buffs()
+        print("buff len %d" % len(self.buffs))
+
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT] and not keys[pygame.K_RIGHT]:
             if keys[pygame.K_LSHIFT] and self.can_sprint():
@@ -187,14 +200,14 @@ class Player:
 
         t = self.energy_timer.get_time()
         if self.is_sprinting:
-            if t > CONST_SPRINT_ENERGY_RATE:
-                self.energy_timer.mod_time(CONST_SPRINT_ENERGY_RATE)
+            if t > self.sprint_energy_rate:
+                self.energy_timer.mod_time(self.sprint_energy_rate)
                 self.energy -= 1
                 if self.energy < 0:
                     self.energy = 0
         elif not keys[pygame.K_LSHIFT]:
-            if t > CONST_ENERGY_GAIN_RATE:
-                self.energy_timer.mod_time(CONST_ENERGY_GAIN_RATE)
+            if t > self.energy_regain_rate:
+                self.energy_timer.mod_time(self.energy_regain_rate)
                 self.energy += 1
                 if self.energy >= CONST_MAX_ENERGY:
                     self.energy = CONST_MAX_ENERGY
@@ -202,5 +215,5 @@ class Player:
         self.sprite.update(deltatime)
 
         # self.health.update_health(deltatime)
-        self.handle_enemy_collisions()
+        self.handle_collisions()
         print("health %d" % self.health.health)

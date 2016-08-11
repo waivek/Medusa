@@ -5,14 +5,17 @@ from src.LoadResources import gImages
 class Sprite:
     def __init__(self, spriteenum):
         self.sprite = gImages[spriteenum.value]
-        self.sprite_rect = self.sprite.get_rect()
+        self.sprite_rec = self.sprite.get_rect()
 
     def move(self, displacement):
-        self.sprite_rect = self.sprite_rect.move(displacement)
+        self.sprite_rec = self.sprite_rec.move(displacement)
 
     def set_location(self,pos):
-        self.sprite_rect.topleft = pos
+        self.sprite_rec.topleft = pos
+
+    def sprite_rect(self):
+        return self.sprite_rec
 
     def draw(self, screen, camera):
-        screen.blit(self.sprite, (self.sprite_rect[0]-camera[0],self.sprite_rect[1]-camera[1],self.sprite_rect[2]-camera[0],
-                                  self.sprite_rect[3]-camera[1]))
+        screen.blit(self.sprite, (self.sprite_rec[0]-camera[0],self.sprite_rec[1]-camera[1],self.sprite_rec[2]-camera[0],
+                                  self.sprite_rec[3]-camera[1]))
