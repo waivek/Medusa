@@ -20,7 +20,7 @@ class Key:
         if self.key_type == KeyEnum.SILVER or self.key_type == KeyEnum.GOLD:
             frames = 32
 
-        self.sprite = AnimatedSprite(KeySprites[self.key_type], frames)
+        self.sprite = AnimatedSprite(KeySprites[self.key_type.value], frames)
         self.sprite.set_location(pos)
 
     def draw(self,screen,camera):

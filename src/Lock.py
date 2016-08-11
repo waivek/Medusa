@@ -6,7 +6,7 @@ from enum import Enum
 LockSprites = [ImageEnum.LOCK_COPPER, ImageEnum.LOCK_SILVER, ImageEnum.LOCK_GOLD, ImageEnum.LOCK_DARK, ImageEnum.LOCK_MAGIC]
 
 
-class Key:
+class Lock:
     def __init__(self, locktype, pos):
         self.lock_type = locktype
 
@@ -14,7 +14,7 @@ class Key:
         if self.lock_type == KeyEnum.SILVER or self.lock_type == KeyEnum.GOLD:
             frames = 32
 
-        self.sprite = AnimatedSprite(KeySprites[self.lock_type], frames)
+        self.sprite = AnimatedSprite(LockSprites[self.lock_type.value], frames)
         self.sprite.set_location(pos)
 
     def draw(self, screen, camera):

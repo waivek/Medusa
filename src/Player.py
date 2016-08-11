@@ -1,12 +1,11 @@
-from src.AnimationFSM import AnimationFSM
-from src.AnimatedSprite import AnimatedSprite
-from src.LoadResources import SoundEnum
-from src.LoadResources import play_sound
-from src.LoadResources import ImageEnum
-from src.MovingComponent import *
+#from src.AnimationFSM import AnimationFSM
+#from src.AnimatedSprite import *
+#from src.LoadResources import *
+#from src.MovingComponent import *
 from src.Skeleton import *
 from src.Powerup import *
-from src.Key import *
+#from src.Key import *
+from src.Lock import *
 import src.Util
 
 import pygame
@@ -120,10 +119,17 @@ class Player:
         if isinstance(other, Powerup):
             other.buff.start()
             self.buffs.append(other.buff)
-            self.level.entities.remove(other)
+            self.level.destroy_entity(other)
 
         if isinstance(other, Key):
-            self.keys[other.key_type] += 1
+            self.keys[other.key_type.value] += 1
+            self.level.destroy_entity(other)
+
+        if isinstance(other, Lock):
+            if self.keys[other.lock_type.value] > 0:
+                self.keys[other.lock_type.value] -= 1
+                self.level.destroy_entity(other)
+
 
     def handle_collisions(self):
         entities = self.level.entities
@@ -222,6 +228,9 @@ class Player:
                     self.energy = CONST_MAX_ENERGY
 
         self.sprite.update(deltatime)
+
+        if self.health.health > CONST_MAX_HEALTH:
+            self.health.health = CONST_MAX_HEALTH
 
         #handle collisions
         self.handle_collisions()

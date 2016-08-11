@@ -44,6 +44,8 @@ class Level:
         self.map[10][14] = False
 
         self.sky_sprite = Sprite(ImageEnum.SKY)
+        self.sky_sprite.bounds = (0,0,2000,2000)
+
         self.block_sprite = Sprite(ImageEnum.BLOCK)
         self.camera_pos = (32*10, 0)
 
@@ -71,7 +73,22 @@ class Level:
         p = HastePowerup((32 * 2, 32 * 9))
         self.add_powerup(p)
 
+        k = Key(KeyEnum.SILVER, (32* 5, 32*9))
+        self.add_entity(k)
+
+        k = Key(KeyEnum.DARK, (32 * 7, 32 * 9))
+        self.add_entity(k)
+
+        k = Lock(KeyEnum.SILVER, (32 * 10, 32 * 9))
+        self.add_entity(k)
+
         self.hud = HUD(self.players[0])
+
+    def destroy_entity(self, target):
+        self.entities.remove(target)
+
+    def add_entity(self, entity):
+        self.entities.append(entity)
 
     def add_player(self, player):
         assert isinstance(player, Player)
