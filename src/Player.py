@@ -11,7 +11,7 @@ import pygame
 BLOCK_SIZE = 32
 CONST_CAMERA_PLAYER_OFFSET = 160
 
-CONST_JUMP_VELOCITY = 1000
+CONST_JUMP_VELOCITY = 300
 CONST_PLAYER_SPEED = 100
 
 
@@ -21,7 +21,7 @@ class PlayerState(Enum):
     JUMPING = 1
 
 class Player:
-    def __init__(self, tiles, row, col):
+    def __init__(self, tiles, row, col, level):
         self.size = (BLOCK_SIZE, BLOCK_SIZE)
 
         self.state = PlayerState.JUMPING
@@ -44,10 +44,12 @@ class Player:
         self.sprite.add_sprite(spr5)
 
         self.sprite.set_state(2)
+        self.collision_count = 0
 
 
         self.moving_component = MovingComponent(self.sprite, tiles, row, col)
         self.sprite.move(self.moving_component.position)
+        self.level = level
 
     def draw(self, screen, camera):
         self.sprite.draw(screen, camera)
@@ -98,6 +100,36 @@ class Player:
                 if self.sprite.state == 1 or self.sprite.state==3:
                     self.sprite.set_state(5)
 
+    def handle_enemy_collisions(self):
+        from src.Skeleton import Skeleton
+        skeletons = self.level.monsters
+        def lies_between(x, a, b):
+            return a <= x <= b
+
+        for skeleton in skeletons:
+            assert(isinstance(skeleton, Skeleton))
+            player_rect =self.sprite.sprite_rect()
+            assert(isinstance(player_rect, pygame.Rect))
+
+            other_rect = skeleton.sprite.sprite_rect()
+            assert(isinstance(other_rect, pygame.Rect))
+
+            collision = {}
+            collision["right"] = lies_between(other_rect.left, player_rect.left, player_rect.right)
+            collision["left"] = lies_between(other_rect.right, player_rect.left, player_rect.right)
+            if collision["left"] or collision["right"]:
+                collision["up"] = lies_between(other_rect.bottom, player_rect.top, player_rect.bottom)
+                collision["down"] = lies_between(other_rect.top, player_rect.top, player_rect.bottom)
+                if collision["down"] or collision["up"]:
+                    self.collision_count = self.collision_count + 1
+
+
+
+
+
+
+
+
     def update(self, deltatime):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT] and not keys[pygame.K_RIGHT]:
@@ -109,7 +141,7 @@ class Player:
 
         self.moving_component.update(deltatime)
 
-        print(self.moving_component.velocity)
+        # print(self.moving_component.velocity)
         if not (self.moving_component.in_air):
             self.state = PlayerState.GROUND
             self.update_sprite()
@@ -118,3 +150,5 @@ class Player:
             self.update_sprite()
 
         self.sprite.update(deltatime)
+
+        self.handle_enemy_collisions()

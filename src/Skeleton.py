@@ -34,9 +34,9 @@ class Skeleton:
         self.state = SkeletonState.GROUND
 
     def update_sprite(self):
-        if (self.state == SkeletonState.IN_AIR):
+        if (self.moving_component.in_air):
             self.sprite.set_state(0)
-        elif (self.state == SkeletonState.GROUND):
+        else:
             self.sprite.set_state(1)
 
     def update(self, deltaTime):

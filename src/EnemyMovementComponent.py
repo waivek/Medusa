@@ -6,7 +6,7 @@ class EnemyMovementComponent:
         self.moving_component = moving_component
         self.initial_position_x = moving_component.position[0]
         self.RANGE = 200
-        self.VELOCITY = 300
+        self.VELOCITY =-100
         self.moving_component.velocity = (self.VELOCITY, self.moving_component.velocity[0])
         self.distance_covered = 0
 
