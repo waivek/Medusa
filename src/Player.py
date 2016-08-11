@@ -51,6 +51,34 @@ class Player:
         self.sprite.move(self.moving_component.position)
         self.level = level
 
+        class Health:
+            def __init__(self, health, cooldown_seconds):
+                from src.Timer import  Timer
+                self.health = health
+                self.cooldown_seconds = cooldown_seconds
+                self.time_elapsed_since_hit = self.cooldown_seconds
+                self.timer = Timer()
+
+            def deal_damage(self, damage, deltaTime):
+                t = self.timer.get_time()
+                if t > self.cooldown_seconds * 1000:
+                    self.health = self.health - damage
+                    self.time_elapsed_since_hit = 0
+                    self.timer.reset()
+
+                # print("time_elapsed %d" % self.time_elapsed_since_hit)
+                # if self.time_elapsed_since_hit >= self.cooldown_seconds:
+                #     self.health = self.health - damage
+                #     self.time_elapsed_since_hit = 0
+
+            # def update_health(self, deltaTime):
+            #     self.time_elapsed_since_hit = self.time_elapsed_since_hit + (deltaTime/1000)
+
+        self.health = Health(100, 3)
+
+
+
+
     def draw(self, screen, camera):
         self.sprite.draw(screen, camera)
 
@@ -100,7 +128,7 @@ class Player:
                 if self.sprite.state == 1 or self.sprite.state==3:
                     self.sprite.set_state(5)
 
-    def handle_enemy_collisions(self):
+    def handle_enemy_collisions(self, deltaTime):
         from src.Skeleton import Skeleton
         skeletons = self.level.monsters
         def lies_between(x, a, b):
@@ -121,7 +149,7 @@ class Player:
                 collision["up"] = lies_between(other_rect.bottom, player_rect.top, player_rect.bottom)
                 collision["down"] = lies_between(other_rect.top, player_rect.top, player_rect.bottom)
                 if collision["down"] or collision["up"]:
-                    self.collision_count = self.collision_count + 1
+                    self.health.deal_damage(10, deltaTime)
 
 
 
@@ -151,4 +179,6 @@ class Player:
 
         self.sprite.update(deltatime)
 
-        self.handle_enemy_collisions()
+        # self.health.update_health(deltatime)
+        self.handle_enemy_collisions(deltatime)
+        print("health %d" % self.health.health)
