@@ -19,6 +19,9 @@ class AnimatedSprite:
     def sprite_rect(self):
         return pygame.Rect(self.sprite_rec.topleft[0],self.sprite_rec.topleft[1],self.bounds[0],self.bounds[1])
 
+    def get_center(self):
+        return (self.sprite_rec.topleft[0] + int(self.bounds[0]/2) , self.sprite_rec.topleft[1] + int(self.bounds[1]/2))
+
     def next_frame(self):
         self.current_frame += 1
         self.current_frame %= self.max_frames

@@ -17,7 +17,7 @@ class PlayerState(Enum):
     JUMPING = 1
 
 class Player:
-    def __init__(self, tiles, col, row, level):
+    def __init__(self, pos, level):
         self.size = (BLOCK_SIZE, BLOCK_SIZE)
 
         self.state = PlayerState.JUMPING
@@ -46,8 +46,8 @@ class Player:
 
         self.is_sprinting = False
 
-        self.moving_component = MovingComponent(self.sprite, tiles, row, col)
-        self.sprite.move(self.moving_component.position)
+        self.moving_component = MovingComponent(self.sprite, level.map, level.row, level.col)
+        self.moving_component.move(pos)
         self.level = level
 
         self.energy = 10

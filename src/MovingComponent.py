@@ -53,7 +53,7 @@ class MovingComponent:
                         if (d[1] is not 0):
                             self.velocity = (self.velocity[0], -self.velocity[1]*self.bounciness)
                         break
-            m+=1
+            m += int(m/10)+1
 
     def snap_out(self):
         m = 0

@@ -18,7 +18,10 @@ class Sprite:
         return self.sprite_rec
 
     def sprite_rect(self):
-        return pygame.Rect(self.sprite_rec.topleft[0],self.sprite_rec.topleft[1],self.bounds[0],self.bounds[1])
+        return pygame.Rect(self.sprite_rec.topleft[0],self.sprite_rec.topleft[1],self.bounds[2],self.bounds[3])
+
+    def get_center(self):
+        return (self.sprite_rec.topleft[0] + int(self.bounds[0]/2) , self.sprite_rec.topleft[1] + int(self.bounds[1]/2))
 
     def draw(self, screen, camera):
         screen.blit(self.sprite, (self.sprite_rec[0]-camera[0],self.sprite_rec[1]-camera[1],self.sprite_rec[2]-camera[0],

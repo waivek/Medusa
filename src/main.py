@@ -1,8 +1,6 @@
 import sys
 import pygame
-from src.Level import *
-from src.LoadResources import load_resources
-
+from src.MapEditor import *
 
 def init():
     pygame.init()
@@ -16,7 +14,8 @@ def main():
     size = 800, 400
     screen = pygame.display.set_mode(size)
     black = 0, 0, 0
-    level = Level(20, 100)
+    #level = Level()
+    level = MapEditor()
     #p1 = Player(level.map,level.col,level.row, level)
     #level.add_player(p1)
     #level.add_monster(Skeleton(level.map,level.col,level.row))
@@ -30,6 +29,7 @@ def main():
                 if event.key == pygame.K_ESCAPE:
                     sys.exit()
             level.handle_event(event)
+
         screen.fill(black)
         deltatime = pygame.time.get_ticks() - time
         while deltatime < 16:

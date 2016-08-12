@@ -12,17 +12,18 @@ class SkeletonState(Enum):
     IN_AIR = 1
 
 class Skeleton:
-    def __init__(self, tiles, row, col):
+    def __init__(self, pos, level):
         self.sprite = AnimationFSM()
+        self.level = level
         spr0 = AnimatedSprite(ImageEnum.SKELETON_STANDING, 1)
         spr1 = AnimatedSprite(ImageEnum.SKELETON_WALKING, 10)
         self.sprite.add_sprite(spr0)
         self.sprite.add_sprite(spr1)
         self.sprite.state = 0
         self.state = SkeletonState.IN_AIR
-        self.moving_component = MovingComponent(self.sprite, tiles, row, col)
-        self.moving_component.update_position((100, 10))
-        self.enemy_movement_component = EnemyMovementComponent(self.moving_component)
+        self.moving_component = MovingComponent(self.sprite, level.tiles, level.col, level.row)
+        self.moving_component.update_position(pos)
+        self.enemy_movement_component = EnemyMovementComponent(self.moving_component, self.level)
 
     def draw(self, screen, camera):
         self.sprite.draw(screen, camera)

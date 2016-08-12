@@ -31,3 +31,6 @@ class AnimationFSM:
 
     def sprite_rect(self):
         return self.sprites[self.state].sprite_rect()
+
+    def get_center(self):
+        return self.sprites[self.state].get_center()

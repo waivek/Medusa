@@ -9,39 +9,14 @@ import src.Util
 import pygame
 
 class Level:
-    def __init__(self, row, col):
-        self.row = row
-        self.col = col
+    def __init__(self):
+        self.row = 100
+        self.col = 100
         self.map = \
             [
-                [ y >= (self.row / 2) for x in range(self.col)]
+                [ y >= (10) for x in range(self.col)]
                 for y in range(self.row)
             ]
-        self.map[5][5] = False
-        self.map[5][6] = False
-        self.map[5][7] = True
-        self.map[5][8] = True
-        self.map[5][9] = True
-        self.map[6][9] = True
-        self.map[7][9] = True
-        self.map[8][9] = True
-        #self.map[9][9] = True
-        #self.map[10][9] = True
-
-        self.map[5][10] = True
-        self.map[6][10] = True
-        self.map[7][10] = True
-        self.map[8][10] = True
-        #self.map[9][10] = True
-        #self.map[10][10] = True
-
-        self.map[10][12] = False
-        self.map[11][12] = False
-        self.map[12][12] = False
-        self.map[10][13] = False
-        self.map[11][13] = False
-        self.map[12][13] = False
-        self.map[10][14] = False
 
         self.sky_sprite = Sprite(ImageEnum.SKY)
         self.sky_sprite.bounds = (0,0,2000,2000)
@@ -53,36 +28,40 @@ class Level:
         self.players = []
         self.entities = []
 
-        p = Player(self.map,self.col,self.row, self)
-        m = Skeleton(self.map, self.col, self.row)
-        self.add_player(p)
-        self.add_monster(m)
+        for i in range(self.col):
+            self.map[0][i] = True
+            self.map[i][0] = True
+            self.map[99][i] = True
+            self.map[i][99] = True
 
-        p = StaminaPowerup((32*9,32*9))
-        self.add_powerup(p)
+        self.map[1][9] = True
+        self.map[2][9] = True
+        self.map[3][9] = True
+        self.map[4][9] = True
+        self.map[5][9] = True
+        self.map[6][9] = True
+        self.map[8][9] = True
+        self.map[7][9] = True
+        self.map[7][8] = True
+        self.map[7][7] = True
+        self.map[7][6] = True
+        self.map[7][5] = True
+        self.map[7][4] = True
+        self.map[7][3] = True
+        self.map[7][2] = True
 
-        p = GravityPowerup((15 * 22, 32 * 9))
-        self.add_powerup(p)
+        e = Player((32,32), self)
+        e.moving_component.move((32,32))
+        self.add_player(e)
 
-        p = RegenPowerup((32 * 22, 32 * 9))
-        self.add_powerup(p)
-
-        p = BouncePowerup((32 * 19, 32 * 9))
-        self.add_powerup(p)
-
-        p = HastePowerup((32 * 2, 32 * 9))
-        self.add_powerup(p)
-
-        k = Key(KeyEnum.SILVER, (32* 5, 32*9))
+        k = Key(KeyEnum.DARK, (32 * 6, 32 * 5))
         self.add_entity(k)
 
-        k = Key(KeyEnum.DARK, (32 * 7, 32 * 9))
-        self.add_entity(k)
-
-        k = Lock(KeyEnum.SILVER, (32 * 10, 32 * 9))
+        k = Lock(KeyEnum.DARK, (32 * 9, 32 * 9))
         self.add_entity(k)
 
         self.hud = HUD(self.players[0])
+        self.show_hud = True
 
     def destroy_entity(self, target):
         self.entities.remove(target)
@@ -122,7 +101,8 @@ class Level:
         for entity in self.entities:
             entity.draw(screen, self.camera_pos)
 
-        self.hud.draw(screen)
+        if self.show_hud:
+            self.hud.draw(screen)
 
     def handle_event(self, event):
         for player in self.players:
