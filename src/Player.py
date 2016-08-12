@@ -102,6 +102,51 @@ class Player:
         else:
             return False
 
+    def get_furthest_valid_point(self):
+        player_rect =self.sprite.sprite_rect()
+        player_x, player_y = player_rect.topleft
+
+        mouse_x, mouse_y = self.get_actual_mouse_pos()
+
+        if mouse_x == player_x:
+            mouse_x = mouse_x + 1
+
+        m = (player_y - mouse_y) / (player_x - mouse_x)
+        c = player_y - (m * player_x)
+
+        cur_x = player_x
+
+        res_x, res_y = None, None
+
+        if player_x <= mouse_x:
+            while cur_x <= mouse_x:
+                cur_y = m * cur_x + c
+                if not self.pos_is_tile(cur_x, cur_y):
+                    cur_x = cur_x + 1
+                else:
+                    res_x = cur_x - 1
+                    cur_y = m * cur_x + c
+                    res_y = cur_y
+                    break
+
+        elif mouse_x < player_x:
+            while cur_x >= mouse_x:
+                cur_y = m * cur_x + c
+                if not self.pos_is_tile(cur_x, cur_y):
+                    cur_x = cur_x - 1
+                else:
+                    res_x = cur_x + 1
+                    cur_y = m * cur_x + c
+                    res_y = cur_y
+                    break
+
+        if res_x is None:
+            res_x = mouse_x
+        if res_y is None:
+            res_y = mouse_y
+
+        return res_x, res_y
+
     def draw(self, screen, camera):
         self.sprite.draw(screen, camera)
 
@@ -113,7 +158,9 @@ class Player:
             size = abs(sprite_rect.right - sprite_rect.left)
 
             mouse_x, mouse_y = self.get_actual_mouse_pos()
-            assert mouse_x != player_x, "x1=x2"
+
+            if mouse_x == player_x:
+                mouse_x = mouse_x + 1
 
             m = (player_y - mouse_y) / (player_x - mouse_x)
             c = player_y - (m * player_x)
@@ -121,27 +168,23 @@ class Player:
             cur_x = player_x
             max_dots = 500
 
+            valid_x, valid_y = self.get_furthest_valid_point()
+
             if player_x <= mouse_x:
-                while cur_x <= mouse_x and max_dots > 0:
+                while cur_x <= valid_x and max_dots > 0:
                     cur_y = m * cur_x + c
-                    if not self.pos_is_tile(cur_x, cur_y):
-                        self.dot_spr.set_location((cur_x, cur_y))
-                        self.dot_spr.draw(screen, camera)
-                        cur_x = cur_x + size
-                        max_dots = max_dots - 1
-                    else:
-                        break
+                    self.dot_spr.set_location((cur_x, cur_y))
+                    self.dot_spr.draw(screen, camera)
+                    cur_x = cur_x + size
+                    max_dots = max_dots - 1
 
             elif mouse_x < player_x:
-                while cur_x >= mouse_x and max_dots > 0:
+                while cur_x >= valid_x and max_dots > 0:
                     cur_y = m * cur_x + c
-                    if not self.pos_is_tile(cur_x, cur_y):
-                        self.dot_spr.set_location((cur_x, cur_y))
-                        self.dot_spr.draw(screen, camera)
-                        cur_x = cur_x - size
-                        max_dots = max_dots - 1
-                    else:
-                        break
+                    self.dot_spr.set_location((cur_x, cur_y))
+                    self.dot_spr.draw(screen, camera)
+                    cur_x = cur_x - size
+                    max_dots = max_dots - 1
 
     def getrekt(self):
         return pygame.Rect(self.moving_component.position[0],self.moving_component.position[1],self.size[0],self.size[1])
@@ -151,15 +194,14 @@ class Player:
 
         player_x, player_y = self.sprite.sprite_rect().topleft
 
-        d_x = mouse_x - player_x
-        d_y = mouse_y - player_y
+        valid_x, valid_y = self.get_furthest_valid_point()
+
+
+        d_x = valid_x - player_x
+        d_y = valid_y - player_y
         print("[blink] displacement %d %d" % (d_x, d_y))
 
-        if self.pos_is_tile(mouse_x, mouse_y):
-            print("[blink] wall")
-        else:
-            self.moving_component.move((d_x, d_y))
-            print("[blink] sky")
+        self.moving_component.move((d_x, d_y))
 
     def get_actual_mouse_pos(self):
         x, y = pygame.mouse.get_pos()
