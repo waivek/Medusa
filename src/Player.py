@@ -19,6 +19,8 @@ CONST_MAX_ENERGY = 10
 CONST_ENERGY_GAIN_RATE = 250
 CONST_SPRINT_ENERGY_RATE = 100
 
+BLINK_KEY = pygame.K_LSHIFT
+
 from enum import Enum
 class PlayerState(Enum):
     GROUND = 0
@@ -88,50 +90,72 @@ class Player:
 
         from src.Sprite import Sprite
         self.dot_spr =Sprite(ImageEnum.BLINK_DOT)
-        self.shift_is_pressed = False
+        self.can_blink = False
 
 
+    def pos_is_tile(self, x, y):
+        i = int(x/32)
+        j = int(y/32)
 
+        if self.level.map[j][i]:
+            return True
+        else:
+            return False
 
     def draw(self, screen, camera):
         self.sprite.draw(screen, camera)
 
-        player_rect =self.sprite.sprite_rect()
-        x, y = player_rect.topleft
-        sprite_rect = self.dot_spr.sprite_rect
-        size = abs(sprite_rect.right - sprite_rect.left)
+        if self.can_blink:
+            player_rect =self.sprite.sprite_rect()
+            player_x, player_y = player_rect.topleft
 
-        limit = 10
-        for i in range(limit):
-            x = x + size
-            y = y - size
-            self.dot_spr.set_location((x, y))
-            self.dot_spr.draw(screen, camera)
+            sprite_rect = self.dot_spr.sprite_rect
+            size = abs(sprite_rect.right - sprite_rect.left)
 
+            mouse_x, mouse_y = self.get_actual_mouse_pos()
+            assert mouse_x != player_x, "x1=x2"
 
+            m = (player_y - mouse_y) / (player_x - mouse_x)
+            c = player_y - (m * player_x)
 
+            cur_x = player_x
+            max_dots = 500
 
+            if player_x <= mouse_x:
+                while cur_x <= mouse_x and max_dots > 0:
+                    cur_y = m * cur_x + c
+                    if not self.pos_is_tile(cur_x, cur_y):
+                        self.dot_spr.set_location((cur_x, cur_y))
+                        self.dot_spr.draw(screen, camera)
+                        cur_x = cur_x + size
+                        max_dots = max_dots - 1
+                    else:
+                        break
 
+            elif mouse_x < player_x:
+                while cur_x >= mouse_x and max_dots > 0:
+                    cur_y = m * cur_x + c
+                    if not self.pos_is_tile(cur_x, cur_y):
+                        self.dot_spr.set_location((cur_x, cur_y))
+                        self.dot_spr.draw(screen, camera)
+                        cur_x = cur_x - size
+                        max_dots = max_dots - 1
+                    else:
+                        break
 
     def getrekt(self):
         return pygame.Rect(self.moving_component.position[0],self.moving_component.position[1],self.size[0],self.size[1])
-
-    def print_hello(self):
-        print("hello")
 
     def blink(self):
         mouse_x, mouse_y = self.get_actual_mouse_pos()
 
         player_x, player_y = self.sprite.sprite_rect().topleft
 
-        cx = int(mouse_x/32)
-        cy = int(mouse_y/32)
-
         d_x = mouse_x - player_x
         d_y = mouse_y - player_y
         print("[blink] displacement %d %d" % (d_x, d_y))
 
-        if self.level.map[cy][cx]:
+        if self.pos_is_tile(mouse_x, mouse_y):
             print("[blink] wall")
         else:
             self.moving_component.move((d_x, d_y))
@@ -146,11 +170,6 @@ class Player:
         mouse_y = y
 
         return mouse_x, mouse_y
-        # assert mouse_x != player_x, "x1=x2"
-        # assert mouse_y != player_y, "y1=y2"
-
-        # m = (player_y - mouse_y) / (player_x - mouse_x)
-        # c = player_y - (m * player_x)
 
     def handle_event(self, event):
         if event.type == pygame.KEYDOWN:
@@ -159,12 +178,20 @@ class Player:
                 #self.state = PlayerState.JUMPING
                 play_sound(SoundEnum.JUMP)
 
+            if event.key == BLINK_KEY:
+                self.can_blink = True
+
+
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
                 self.moving_component.velocity = (0, self.moving_component.velocity[1])
 
-        if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.key == pygame.K_LSHIFT or event.key == pygame.K_RSHIFT:
+                self.can_blink = False
+
+        if event.type == pygame.MOUSEBUTTONDOWN and self.can_blink:
             self.blink()
+
 
 
 
