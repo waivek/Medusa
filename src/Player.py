@@ -86,14 +86,71 @@ class Player:
 
         self.health = Health(100, 3)
 
+        from src.Sprite import Sprite
+        self.dot_spr =Sprite(ImageEnum.BLINK_DOT)
+        self.shift_is_pressed = False
+
 
 
 
     def draw(self, screen, camera):
         self.sprite.draw(screen, camera)
 
+        player_rect =self.sprite.sprite_rect()
+        x, y = player_rect.topleft
+        sprite_rect = self.dot_spr.sprite_rect
+        size = abs(sprite_rect.right - sprite_rect.left)
+
+        limit = 10
+        for i in range(limit):
+            x = x + size
+            y = y - size
+            self.dot_spr.set_location((x, y))
+            self.dot_spr.draw(screen, camera)
+
+
+
+
+
+
     def getrekt(self):
         return pygame.Rect(self.moving_component.position[0],self.moving_component.position[1],self.size[0],self.size[1])
+
+    def print_hello(self):
+        print("hello")
+
+    def blink(self):
+        mouse_x, mouse_y = self.get_actual_mouse_pos()
+
+        player_x, player_y = self.sprite.sprite_rect().topleft
+
+        cx = int(mouse_x/32)
+        cy = int(mouse_y/32)
+
+        d_x = mouse_x - player_x
+        d_y = mouse_y - player_y
+        print("[blink] displacement %d %d" % (d_x, d_y))
+
+        if self.level.map[cy][cx]:
+            print("[blink] wall")
+        else:
+            self.moving_component.move((d_x, d_y))
+            print("[blink] sky")
+
+    def get_actual_mouse_pos(self):
+        x, y = pygame.mouse.get_pos()
+        player_x, player_y = self.sprite.sprite_rect().topleft
+        x_origin = player_x - CONST_CAMERA_PLAYER_OFFSET
+
+        mouse_x = x+x_origin
+        mouse_y = y
+
+        return mouse_x, mouse_y
+        # assert mouse_x != player_x, "x1=x2"
+        # assert mouse_y != player_y, "y1=y2"
+
+        # m = (player_y - mouse_y) / (player_x - mouse_x)
+        # c = player_y - (m * player_x)
 
     def handle_event(self, event):
         if event.type == pygame.KEYDOWN:
@@ -105,6 +162,12 @@ class Player:
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
                 self.moving_component.velocity = (0, self.moving_component.velocity[1])
+
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            self.blink()
+
+
+
 
     def update_sprite(self):
         if (self.state == PlayerState.JUMPING):
@@ -203,4 +266,3 @@ class Player:
 
         # self.health.update_health(deltatime)
         self.handle_enemy_collisions()
-        print("health %d" % self.health.health)

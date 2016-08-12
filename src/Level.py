@@ -74,6 +74,7 @@ class Level:
                     self.block_sprite.draw(screen,self.camera_pos)
 
         for player in self.players:
+            assert isinstance(player, Player)
             player.draw(screen,self.camera_pos)
 
         for monster in self.monsters:
