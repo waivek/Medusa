@@ -1,19 +1,8 @@
 from src.Skeleton import *
 from src.Powerup import *
 from src.Lock import *
-import src.Util
-
 import pygame
 from src.Timer import *
-
-# BLOCK_SIZE = 32
-
-# CONST_JUMP_VELOCITY = 750
-# CONST_PLAYER_SPEED = 100
-# CONST_PLAYER_SPRINT_SPEED = 300
-# CONST_MAX_ENERGY = 10
-# CONST_ENERGY_GAIN_RATE = 250
-# CONST_SPRINT_ENERGY_RATE = 100
 
 
 class Line:
@@ -28,6 +17,7 @@ class Line:
     def get_x(self, y1):
         x1 = (y1 - self.c) / self.m
         return x1
+
 from enum import Enum
 class PlayerState(Enum):
     GROUND = 0
@@ -70,7 +60,7 @@ class Player:
         self.energy = 10
         self.energy_timer = Timer()
 
-        self.valid_points = []
+        self.valid_blink_points = []
 
         class Health:
             def __init__(self, health, cooldown_seconds):
@@ -113,7 +103,7 @@ class Player:
         else:
             return False
 
-    def fill_valid_points_list(self):
+    def fill_valid_blink_points(self):
         player_x, player_y = self.sprite.sprite_rect().topleft
         mouse_x, mouse_y = self.get_actual_mouse_pos()
         if mouse_x == player_x:
@@ -122,36 +112,49 @@ class Player:
         c = player_y - (m * player_x)
 
         cur_x = player_x
-        self.valid_points = []
-        if player_x <= mouse_x:
-            while cur_x <= mouse_x:
-                cur_y = m * cur_x + c
-                if self.pos_is_tile(cur_x, cur_y):
-                    break
-                cur_x = cur_x + 1
-                self.valid_points.append((cur_x, cur_y))
+        self.valid_blink_points = []
 
+        step = 0
+
+        if player_x <= mouse_x:
+            step = 1
         elif mouse_x < player_x:
-            while cur_x >= mouse_x:
-                cur_y = m * cur_x + c
-                if self.pos_is_tile(cur_x, cur_y):
-                    break
-                cur_x = cur_x - 1
-                self.valid_points.append((cur_x, cur_y))
+            step = -1
+
+        # range_object = range(player_x, mouse_x, step)
+        for cur_x in range(player_x, mouse_x, step):
+            cur_y = m * cur_x + c
+            if self.pos_is_tile(cur_x, cur_y):
+                break
+            self.valid_blink_points.append((cur_x, cur_y))
+        # if player_x <= mouse_x:
+        #     while cur_x <= mouse_x:
+        #         cur_y = m * cur_x + c
+        #         if self.pos_is_tile(cur_x, cur_y):
+        #             break
+        #         cur_x = cur_x + 1
+        #         self.valid_blink_points.append((cur_x, cur_y))
+        #
+        # elif mouse_x < player_x:
+        #     while cur_x >= mouse_x:
+        #         cur_y = m * cur_x + c
+        #         if self.pos_is_tile(cur_x, cur_y):
+        #             break
+        #         cur_x = cur_x - 1
+        #         self.valid_blink_points.append((cur_x, cur_y))
 
     def draw(self, screen, camera):
         self.sprite.draw(screen, camera)
 
         if self.can_blink:
-            self.fill_valid_points_list()
-            for x, y in self.valid_points:
+            self.fill_valid_blink_points()
+            for x, y in self.valid_blink_points:
                 self.dot_spr.set_location((x, y))
                 self.dot_spr.draw(screen, camera)
 
     def blink(self):
-
         player_x, player_y = self.sprite.sprite_rect().topleft
-        valid_x, valid_y = self.valid_points[-1]
+        valid_x, valid_y = self.valid_blink_points[-1]
 
         damper_x = 16
         damper_y= 24
