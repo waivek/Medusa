@@ -14,8 +14,8 @@ def main():
     size = 800, 400
     screen = pygame.display.set_mode(size)
     black = 0, 0, 0
-    #level = Level()
-    level = MapEditor()
+    level = Level()
+    # level = MapEditor()
     #p1 = Player(level.map,level.col,level.row, level)
     #level.add_player(p1)
     #level.add_monster(Skeleton(level.map,level.col,level.row))

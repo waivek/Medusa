@@ -87,6 +87,7 @@ class Player:
 
         from src.Sprite import Sprite
         self.dot_spr =Sprite(ImageEnum.BLINK_DOT)
+        self.dot_spr.bounds = (0, 0, 4, 4)
         self.can_blink = False
 
         self.keys = []
@@ -154,8 +155,9 @@ class Player:
             player_rect =self.sprite.sprite_rect()
             player_x, player_y = player_rect.topleft
 
-            sprite_rect = self.dot_spr.sprite_rect
+            sprite_rect = self.dot_spr.sprite_rect()
             size = abs(sprite_rect.right - sprite_rect.left)
+            print("[draw] size %d" % size)
 
             mouse_x, mouse_y = self.get_actual_mouse_pos()
 
@@ -206,10 +208,14 @@ class Player:
     def get_actual_mouse_pos(self):
         x, y = pygame.mouse.get_pos()
         player_x, player_y = self.sprite.sprite_rect().topleft
-        x_origin = player_x - CONST_CAMERA_PLAYER_OFFSET
+        # x_origin = player_x - CONST_CAMERA_PLAYER_OFFSET
+        # CONST_CAMERA_PLAYER_OFFSET_X = 400
+        # CONST_CAMERA_PLAYER_OFFSET_Y = 200
+        x_origin = player_x - CONST_CAMERA_PLAYER_OFFSET_X
+        y_origin = player_y - CONST_CAMERA_PLAYER_OFFSET_Y
 
         mouse_x = x+x_origin
-        mouse_y = y
+        mouse_y = y+y_origin
 
         return mouse_x, mouse_y
 

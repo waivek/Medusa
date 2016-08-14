@@ -39,7 +39,7 @@ class MovingComponent:
                 for j in range(2 * m + 1):
                     d = (factor * (int(i / 2) * ((-1) ** (i % 2))), factor * (int(j / 2) * ((-1) ** (j % 2))))
                     b = False
-                    print (m)
+                    # print (m)
                     for k in range(len(colliders)):
                         new_rect = pygame.Rect(my_sprite.topleft[0]+d[0], my_sprite.topleft[1]+d[1], 32, 32)
 
@@ -76,10 +76,10 @@ class MovingComponent:
                         if (d[0] is not 0):
                             self.velocity = (-self.velocity[0]*self.bounciness, self.velocity[1])
                         if (d[1] is not 0):
-                            print(self.velocity)
+                            # print(self.velocity)
                             self.velocity = (self.velocity[0], -self.velocity[1]*self.bounciness)
-                            print(self.velocity)
-                        print(m)
+                            # print(self.velocity)
+                        # print(m)
                         flag=1
                         break
             m += 1
