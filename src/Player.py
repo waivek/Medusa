@@ -6,7 +6,7 @@ from src.Skeleton import *
 from src.Powerup import *
 #from src.Key import *
 from src.Lock import *
-from src.Ammo import *
+from src.WeaponEquipped import *
 import src.Util
 
 import pygame
@@ -116,6 +116,10 @@ class Player:
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
                 self.moving_component.velocity = (0, self.moving_component.velocity[1])
+
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            if self.equipped_weapon is not -1:
+                self.weapon[self.equipped_weapon].use()
 
     def update_sprite(self):
         if (self.state == PlayerState.JUMPING):

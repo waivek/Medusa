@@ -1,4 +1,4 @@
-from src.WeaponEquipped import *
+from src.WeaponItem import *
 
 AmmoSprites = [ImageEnum.AMMO_ARROW, ImageEnum.AMMO_BULLET]
 
