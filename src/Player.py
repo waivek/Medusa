@@ -1,7 +1,7 @@
 from src.Skeleton import *
 from src.Powerup import *
 from src.Lock import *
-import pygame
+# import pygame
 from src.Timer import *
 
 
@@ -17,6 +17,92 @@ class Line:
     def get_x(self, y1):
         x1 = (y1 - self.c) / self.m
         return x1
+
+class Blink_Component:
+    def __init__(self, player):
+        from src.Sprite import Sprite
+        self.valid_blink_points = []
+        self.dot_spr =Sprite(ImageEnum.BLINK_DOT)
+        self.dot_spr.bounds = (0, 0, 4, 4)
+        self.can_blink = False
+        self.player = player
+
+    def get_actual_mouse_pos(self):
+        from src.WorldConstants import CONST_CAMERA_PLAYER_OFFSET_X, CONST_CAMERA_PLAYER_OFFSET_Y
+        import pygame
+        x, y = pygame.mouse.get_pos()
+        player_x, player_y = self.player.sprite.sprite_rect().topleft
+        x_origin = player_x - CONST_CAMERA_PLAYER_OFFSET_X
+        y_origin = player_y - CONST_CAMERA_PLAYER_OFFSET_Y
+
+        mouse_x = x+x_origin
+        mouse_y = y+y_origin
+
+        return mouse_x, mouse_y
+
+    def fill_valid_blink_points(self):
+        player_x, player_y = self.player.sprite.sprite_rect().center
+        mouse_x, mouse_y = self.get_actual_mouse_pos()
+        if mouse_x == player_x:
+            mouse_x = mouse_x + 1
+        m = (player_y - mouse_y) / (player_x - mouse_x)
+        c = player_y - (m * player_x)
+
+        self.valid_blink_points = []
+
+        step = 0
+
+        if player_x <= mouse_x:
+            step = 1
+        elif mouse_x < player_x:
+            step = -1
+
+        for x in range(player_x, mouse_x, step):
+            y = m*x + c
+            if self.pos_is_tile(x, y):
+                break
+            self.valid_blink_points.append((x, y))
+
+    def draw(self, screen, camera):
+        if self.can_blink:
+            self.fill_valid_blink_points()
+            for x, y in self.valid_blink_points:
+                self.dot_spr.set_location((x, y))
+                self.dot_spr.draw(screen, camera)
+
+    def blink(self):
+        player_x, player_y = self.player.sprite.sprite_rect().center
+        valid_x, valid_y = self.valid_blink_points[-1]
+
+        damper_x = 8
+        damper_y= 0
+
+        d_x = (valid_x - player_x) - damper_x
+        d_y = (valid_y - player_y) - damper_y
+
+        self.player.moving_component.move((d_x, d_y))
+
+    def handle_event(self, event):
+        from src.WorldConstants import BLINK_KEY
+        if event.type == pygame.KEYDOWN:
+            if event.key == BLINK_KEY:
+                self.can_blink = True
+
+        elif event.type == pygame.KEYUP:
+            if event.key == BLINK_KEY:
+                self.can_blink = False
+
+        if event.type == pygame.MOUSEBUTTONDOWN and self.can_blink:
+            self.blink()
+
+    def pos_is_tile(self, x, y):
+        i = int(x/32)
+        j = int(y/32)
+
+        if self.player.level.map[j][i]:
+            return True
+        else:
+            return False
 
 from enum import Enum
 class PlayerState(Enum):
@@ -79,10 +165,7 @@ class Player:
 
         self.health = Health(10, 1)
 
-
-
         self.buffs = []
-
 
         from src.Sprite import Sprite
         self.dot_spr =Sprite(ImageEnum.BLINK_DOT)
@@ -93,114 +176,25 @@ class Player:
         for i in range(KeyEnum.NUM.value):
             self.keys.append(0)
 
-
-    def pos_is_tile(self, x, y):
-        i = int(x/32)
-        j = int(y/32)
-
-        if self.level.map[j][i]:
-            return True
-        else:
-            return False
-
-    def fill_valid_blink_points(self):
-        player_x, player_y = self.sprite.sprite_rect().topleft
-        mouse_x, mouse_y = self.get_actual_mouse_pos()
-        if mouse_x == player_x:
-            mouse_x = mouse_x + 1
-        m = (player_y - mouse_y) / (player_x - mouse_x)
-        c = player_y - (m * player_x)
-
-        cur_x = player_x
-        self.valid_blink_points = []
-
-        step = 0
-
-        if player_x <= mouse_x:
-            step = 1
-        elif mouse_x < player_x:
-            step = -1
-
-        # range_object = range(player_x, mouse_x, step)
-        for cur_x in range(player_x, mouse_x, step):
-            cur_y = m * cur_x + c
-            if self.pos_is_tile(cur_x, cur_y):
-                break
-            self.valid_blink_points.append((cur_x, cur_y))
-        # if player_x <= mouse_x:
-        #     while cur_x <= mouse_x:
-        #         cur_y = m * cur_x + c
-        #         if self.pos_is_tile(cur_x, cur_y):
-        #             break
-        #         cur_x = cur_x + 1
-        #         self.valid_blink_points.append((cur_x, cur_y))
-        #
-        # elif mouse_x < player_x:
-        #     while cur_x >= mouse_x:
-        #         cur_y = m * cur_x + c
-        #         if self.pos_is_tile(cur_x, cur_y):
-        #             break
-        #         cur_x = cur_x - 1
-        #         self.valid_blink_points.append((cur_x, cur_y))
+        self.blink_component = Blink_Component(player=self)
 
     def draw(self, screen, camera):
         self.sprite.draw(screen, camera)
+        self.blink_component.draw(screen, camera)
 
-        if self.can_blink:
-            self.fill_valid_blink_points()
-            for x, y in self.valid_blink_points:
-                self.dot_spr.set_location((x, y))
-                self.dot_spr.draw(screen, camera)
-
-    def blink(self):
-        player_x, player_y = self.sprite.sprite_rect().topleft
-        valid_x, valid_y = self.valid_blink_points[-1]
-
-        damper_x = 16
-        damper_y= 24
-
-        d_x = (valid_x - player_x) - damper_x
-        d_y = (valid_y - player_y) - damper_y
-
-        self.moving_component.move((d_x, d_y))
-
-    def get_actual_mouse_pos(self):
-        x, y = pygame.mouse.get_pos()
-        player_x, player_y = self.sprite.sprite_rect().topleft
-        x_origin = player_x - CONST_CAMERA_PLAYER_OFFSET_X
-        y_origin = player_y - CONST_CAMERA_PLAYER_OFFSET_Y
-
-        mouse_x = x+x_origin
-        mouse_y = y+y_origin
-
-        return mouse_x, mouse_y
 
     def handle_event(self, event):
+        self.blink_component.handle_event(event)
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE and self.state==PlayerState.GROUND:
                 self.moving_component.velocity = (self.moving_component.velocity[0],self.moving_component.velocity[1] - self.jump_velocity)
                 play_sound(SoundEnum.JUMP)
-
-            if event.key == BLINK_KEY:
-                self.can_blink = True
-
-
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
                 self.moving_component.velocity = (0, self.moving_component.velocity[1])
 
-            if event.key == BLINK_KEY:
-                self.can_blink = False
-
-        if event.type == pygame.MOUSEBUTTONDOWN and self.can_blink:
-            self.blink()
-
-
-
-
-
     def update_sprite(self):
-        if (self.state == PlayerState.JUMPING):
+        if self.state == PlayerState.JUMPING:
             if self.moving_component.velocity[0] >= 0:
                 self.sprite.set_state(2)
             else:
@@ -236,7 +230,6 @@ class Player:
                 self.level.destroy_entity(other)
                 play_sound(SoundEnum.UNLOCK)
 
-
     def handle_collisions(self):
         entities = self.level.entities
         def lies_between(x, a, b):
@@ -258,7 +251,6 @@ class Player:
                 collision["down"] = lies_between(other_rect.top, player_rect.top, player_rect.bottom)
                 if collision["down"] or collision["up"]:
                     self.on_collision(other)
-
 
     def update_buffs(self, deltatime):
         self.speed = CONST_PLAYER_SPEED
@@ -309,7 +301,7 @@ class Player:
         self.moving_component.update(deltatime)
 
         #set sprite
-        if not (self.moving_component.in_air):
+        if not self.moving_component.in_air:
             self.state = PlayerState.GROUND
             self.update_sprite()
         else:
