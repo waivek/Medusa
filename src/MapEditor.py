@@ -105,7 +105,7 @@ class MapEditor:
 
                 print(self.selected)
                 if(flag==0):
-                    worldpos = (mpos[0]+self.level.camera_pos[0],mpos[1],self.level.camera_pos[1])
+                    worldpos = (mpos[0]+self.level.camera_pos[0],mpos[1]+self.level.camera_pos[1])
                     cell = (int(worldpos[0]/BLOCK_SIZE),int(worldpos[1]/BLOCK_SIZE))
 
                     if self.selected[0]==0:
@@ -146,13 +146,13 @@ class MapEditor:
         if mouse[0]:
             if self.selected[0] == 4:
                 mpos = pygame.mouse.get_pos()
-                worldpos = (mpos[0] + self.level.camera_pos[0], mpos[1], self.level.camera_pos[1])
+                worldpos = (mpos[0] + self.level.camera_pos[0], mpos[1] + self.level.camera_pos[1])
                 cell = (int(worldpos[0] / BLOCK_SIZE), int(worldpos[1] / BLOCK_SIZE))
                 self.level.map[cell[1]][cell[0]] = True
 
         if mouse[2]:
             mpos = pygame.mouse.get_pos()
-            worldpos = (mpos[0] + self.level.camera_pos[0], mpos[1], self.level.camera_pos[1])
+            worldpos = (mpos[0] + self.level.camera_pos[0], mpos[1] + self.level.camera_pos[1])
             cell = (int(worldpos[0] / BLOCK_SIZE), int(worldpos[1] / BLOCK_SIZE))
 
             if self.level.map[cell[1]][cell[0]]:
