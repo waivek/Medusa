@@ -26,5 +26,11 @@ class AnimationFSM:
         for i in range(len(self.sprites)):
             self.sprites[i].move(displacement)
 
+    def full_sprite_rect(self):
+        return self.sprites[self.state].full_sprite_rect()
+
     def sprite_rect(self):
-        return self.sprites[self.state].get_pos_rect()
+        return self.sprites[self.state].sprite_rect()
+
+    def get_center(self):
+        return self.sprites[self.state].get_center()

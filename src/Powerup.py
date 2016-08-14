@@ -1,15 +1,15 @@
 import pygame
-from src.LoadResources import ImageEnum
-from src.Sprite import Sprite
+from src.LoadResources import *
+from src.AnimatedSprite import *
 
 class Powerup:
-    def __init__(self, pos):
-        self.sprite = Sprite(ImageEnum.ITEM_ENERGY)
+    def __init__(self, spriteenum, frames, pos):
+        self.sprite = AnimatedSprite(spriteenum, frames)
         self.sprite.set_location(pos)
+        self.buff = None
 
     def draw(self,screen,camera):
-        self.sprite.draw(self, screen, camera)
+        self.sprite.draw(screen, camera)
 
-    def collide(self, player):
-        player.jump_velocity *= 2
-        player.speed *= 2
+    def update(self, deltatime):
+        self.sprite.update(deltatime)

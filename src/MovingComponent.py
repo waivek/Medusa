@@ -1,4 +1,5 @@
 from src.WorldConstants import *
+import src.Util
 import pygame
 
 class MovingComponent:
@@ -14,6 +15,10 @@ class MovingComponent:
         self.tiles_row = row
 
         self.in_air = False
+        self.gravity = CONST_GRAVITY
+
+        self.collides = True
+        self.bounciness = 0
 
     def point_in_wall(self, x, y):
         cx = int(x/32)
@@ -21,6 +26,34 @@ class MovingComponent:
         if self.tiles[cy][cx]:
             return True
         return False
+
+    def push_out_colliders(self, colliders):
+        m = 0
+        flag = 0
+        factor = 1
+        while flag == 0:
+            my_sprite = self.sprite.sprite_rect()
+            for i in range(2 * m + 1):
+                if flag == 1:
+                    break
+                for j in range(2 * m + 1):
+                    d = (factor * (int(i / 2) * ((-1) ** (i % 2))), factor * (int(j / 2) * ((-1) ** (j % 2))))
+                    b = False
+                    print (m)
+                    for k in range(len(colliders)):
+                        new_rect = pygame.Rect(my_sprite.topleft[0]+d[0], my_sprite.topleft[1]+d[1], 32, 32)
+
+                        b = b or src.Util.rect_intersect(new_rect, colliders[k].sprite.sprite_rect())
+                        #print(my_sprite)
+                    if b is False:
+                        self.move(d)
+                        flag = 1
+                        if (d[0] is not 0):
+                            self.velocity = (-self.velocity[0]*self.bounciness, self.velocity[1])
+                        if (d[1] is not 0):
+                            self.velocity = (self.velocity[0], -self.velocity[1]*self.bounciness)
+                        break
+            m += int(m/10)+1
 
     def snap_out(self):
         m = 0
@@ -33,18 +66,20 @@ class MovingComponent:
                 for j in range(2*m+1):
                     d = (factor*(int(i/2)*((-1)**(i%2))),factor*(int(j/2)*((-1)**(j%2))))
                     b = False
-                    b = b or self.point_in_wall(self.sprite.sprite_rect().topleft[0] + d[0],self.sprite.sprite_rect().topleft[1] + d[1])
-                    b = b or self.point_in_wall(self.sprite.sprite_rect().topright[0] + d[0],self.sprite.sprite_rect().topright[1] + d[1])
-                    b = b or self.point_in_wall(self.sprite.sprite_rect().bottomleft[0] + d[0],self.sprite.sprite_rect().bottomleft[1] + d[1])
-                    b = b or self.point_in_wall(self.sprite.sprite_rect().bottomright[0] + d[0],self.sprite.sprite_rect().bottomright[1] + d[1])
+                    b = b or self.point_in_wall(self.sprite.sprite_rect().topleft[0] + d[0] +1,self.sprite.sprite_rect().topleft[1] + d[1] +1)
+                    b = b or self.point_in_wall(self.sprite.sprite_rect().topright[0] + d[0] -1,self.sprite.sprite_rect().topright[1] + d[1] +1)
+                    b = b or self.point_in_wall(self.sprite.sprite_rect().bottomleft[0] + d[0] +1,self.sprite.sprite_rect().bottomleft[1] + d[1] -1)
+                    b = b or self.point_in_wall(self.sprite.sprite_rect().bottomright[0] + d[0] -1,self.sprite.sprite_rect().bottomright[1] + d[1] -1)
 
                     if b is False:
                         self.move(d)
                         if (d[0] is not 0):
-                            self.velocity = (0, self.velocity[1])
+                            self.velocity = (-self.velocity[0]*self.bounciness, self.velocity[1])
                         if (d[1] is not 0):
-                            self.velocity = (self.velocity[0], 0)
-
+                            print(self.velocity)
+                            self.velocity = (self.velocity[0], -self.velocity[1]*self.bounciness)
+                            print(self.velocity)
+                        print(m)
                         flag=1
                         break
             m += 1
@@ -62,7 +97,8 @@ class MovingComponent:
         self.move(displacement)
 
         #check for collisions
-        self.snap_out()
+        if self.collides:
+            self.snap_out()
 
         #check if falling
         if old_pos[1]==self.position[1]:
@@ -89,4 +125,4 @@ class MovingComponent:
         self.update_position((self.velocity[0] * dt, self.velocity[1] * dt))
         self.update_velocity(((self.acceleration[0] * dt, self.acceleration[1] * dt)))
 
-        self.acceleration = (self.acceleration[0], CONST_GRAVITY)
+        self.acceleration = (self.acceleration[0], self.gravity)

@@ -1,9 +1,11 @@
-from src.AnimationFSM import AnimationFSM
-from src.AnimatedSprite import AnimatedSprite
-from src.LoadResources import SoundEnum
-from src.LoadResources import play_sound
-from src.LoadResources import ImageEnum
-from src.MovingComponent import *
+#from src.AnimationFSM import AnimationFSM
+#from src.AnimatedSprite import *
+#from src.LoadResources import *
+#from src.MovingComponent import *
+from src.Skeleton import *
+from src.Powerup import *
+#from src.Key import *
+from src.Lock import *
 import src.Util
 
 import pygame
@@ -27,7 +29,7 @@ class PlayerState(Enum):
     JUMPING = 1
 
 class Player:
-    def __init__(self, tiles, col, row, level):
+    def __init__(self, pos, level):
         self.size = (BLOCK_SIZE, BLOCK_SIZE)
 
         self.state = PlayerState.JUMPING
@@ -35,6 +37,8 @@ class Player:
         self.speed = CONST_PLAYER_SPEED
         self.sprint_speed = CONST_PLAYER_SPRINT_SPEED
         self.jump_velocity = CONST_JUMP_VELOCITY
+        self.energy_regain_rate = CONST_ENERGY_GAIN_RATE
+        self.sprint_energy_rate = CONST_SPRINT_ENERGY_RATE
 
         self.sprite = AnimationFSM()
         spr0 = AnimatedSprite(ImageEnum.PLAYER1_RIGHT, 8)
@@ -54,13 +58,11 @@ class Player:
 
         self.is_sprinting = False
 
-        self.moving_component = MovingComponent(self.sprite, tiles, row, col)
-        self.sprite.move(self.moving_component.position)
+        self.moving_component = MovingComponent(self.sprite, level.map, level.row, level.col)
+        self.moving_component.move(pos)
         self.level = level
 
-        self.life = 10
         self.energy = 10
-
         self.energy_timer = Timer()
 
         class Health:
@@ -78,20 +80,18 @@ class Player:
                     self.time_elapsed_since_hit = 0
                     self.timer.reset()
 
-                # print("time_elapsed %d" % self.time_elapsed_since_hit)
-                # if self.time_elapsed_since_hit >= self.cooldown_seconds:
-                #     self.health = self.health - damage
-                #     self.time_elapsed_since_hit = 0
+        self.health = Health(10, 1)
 
-            # def update_health(self, deltaTime):
-            #     self.time_elapsed_since_hit = self.time_elapsed_since_hit + (deltaTime/1000)
+        self.buffs = []
 
-        self.health = Health(100, 3)
 
         from src.Sprite import Sprite
         self.dot_spr =Sprite(ImageEnum.BLINK_DOT)
         self.can_blink = False
 
+        self.keys = []
+        for i in range(KeyEnum.NUM.value):
+            self.keys.append(0)
 
     def pos_is_tile(self, x, y):
         i = int(x/32)
@@ -228,7 +228,7 @@ class Player:
             if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
                 self.moving_component.velocity = (0, self.moving_component.velocity[1])
 
-            if event.key == pygame.K_LSHIFT or event.key == pygame.K_RSHIFT:
+            if event.key == BLINK_KEY:
                 self.can_blink = False
 
         if event.type == pygame.MOUSEBUTTONDOWN and self.can_blink:
@@ -255,18 +255,38 @@ class Player:
                 if self.sprite.state == 1 or self.sprite.state==3:
                     self.sprite.set_state(5)
 
-    def handle_enemy_collisions(self):
-        from src.Skeleton import Skeleton
-        skeletons = self.level.monsters
+    def on_collision(self, other):
+        if isinstance(other, Skeleton):
+            self.health.deal_damage(1)
+
+        if isinstance(other, Powerup):
+            other.buff.start()
+            self.buffs.append(other.buff)
+            self.level.destroy_entity(other)
+            play_sound(SoundEnum.POWERUP)
+
+        if isinstance(other, Key):
+            self.keys[other.key_type.value] += 1
+            self.level.destroy_entity(other)
+
+        if isinstance(other, Lock):
+            if self.keys[other.lock_type.value] > 0:
+                self.keys[other.lock_type.value] -= 1
+                self.level.destroy_entity(other)
+                play_sound(SoundEnum.UNLOCK)
+
+
+    def handle_collisions(self):
+        entities = self.level.entities
         def lies_between(x, a, b):
             return a <= x <= b
 
-        for skeleton in skeletons:
-            assert(isinstance(skeleton, Skeleton))
+        for other in entities:
+            #assert(isinstance(other, Skeleton))
             player_rect =self.sprite.sprite_rect()
             assert(isinstance(player_rect, pygame.Rect))
 
-            other_rect = skeleton.sprite.sprite_rect()
+            other_rect = other.sprite.sprite_rect()
             assert(isinstance(other_rect, pygame.Rect))
 
             collision = {}
@@ -276,10 +296,24 @@ class Player:
                 collision["up"] = lies_between(other_rect.bottom, player_rect.top, player_rect.bottom)
                 collision["down"] = lies_between(other_rect.top, player_rect.top, player_rect.bottom)
                 if collision["down"] or collision["up"]:
-                    self.health.deal_damage(10)
+                    self.on_collision(other)
 
 
+    def update_buffs(self, deltatime):
+        self.speed = CONST_PLAYER_SPEED
+        self.sprint_speed = CONST_PLAYER_SPRINT_SPEED
+        self.jump_velocity = CONST_JUMP_VELOCITY
+        self.energy_regain_rate = CONST_ENERGY_GAIN_RATE
+        self.sprint_energy_rate = CONST_SPRINT_ENERGY_RATE
+        self.moving_component.gravity = CONST_GRAVITY
+        self.moving_component.bounciness = 0
 
+        for buff in self.buffs:
+            buff.update(deltatime)
+            if buff.is_expired:
+                self.buffs.remove(buff)
+            else:
+                buff.call_func(self, buff)
 
     def can_sprint(self):
         if self.energy > 0:
@@ -288,6 +322,10 @@ class Player:
             return False
 
     def update(self, deltatime):
+        #parse buffs
+        self.update_buffs(deltatime)
+
+        #detect input
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT] and not keys[pygame.K_RIGHT]:
             if keys[pygame.K_LSHIFT] and self.can_sprint():
@@ -309,7 +347,7 @@ class Player:
 
         self.moving_component.update(deltatime)
 
-        # print(self.moving_component.velocity)
+        #set sprite
         if not (self.moving_component.in_air):
             self.state = PlayerState.GROUND
             self.update_sprite()
@@ -317,21 +355,32 @@ class Player:
             self.state = PlayerState.JUMPING
             self.update_sprite()
 
+        #sprinting
         t = self.energy_timer.get_time()
         if self.is_sprinting:
-            if t > CONST_SPRINT_ENERGY_RATE:
-                self.energy_timer.mod_time(CONST_SPRINT_ENERGY_RATE)
+            if t > self.sprint_energy_rate:
+                self.energy_timer.mod_time(self.sprint_energy_rate)
                 self.energy -= 1
                 if self.energy < 0:
                     self.energy = 0
         elif not keys[pygame.K_LSHIFT]:
-            if t > CONST_ENERGY_GAIN_RATE:
-                self.energy_timer.mod_time(CONST_ENERGY_GAIN_RATE)
+            if t > self.energy_regain_rate:
+                self.energy_timer.mod_time(self.energy_regain_rate)
                 self.energy += 1
                 if self.energy >= CONST_MAX_ENERGY:
                     self.energy = CONST_MAX_ENERGY
 
         self.sprite.update(deltatime)
 
-        # self.health.update_health(deltatime)
-        self.handle_enemy_collisions()
+        if self.health.health > CONST_MAX_HEALTH:
+            self.health.health = CONST_MAX_HEALTH
+
+        #handle collisions
+        self.handle_collisions()
+
+        colliders = []
+        for ent in self.level.entities:
+            if isinstance(ent, Lock) or isinstance(ent, Skeleton):
+                colliders.append(ent)
+
+        self.moving_component.push_out_colliders(colliders)
