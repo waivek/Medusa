@@ -23,6 +23,18 @@ CONST_SPRINT_ENERGY_RATE = 100
 
 BLINK_KEY = pygame.K_LSHIFT
 
+class Line:
+    def __init__(self, x1, y1, x2, y2):
+        self.m = (y2 - y1) / (x2 - x1)
+        self.c = y1 - (self.m * x1)
+
+    def get_y(self, x1):
+        y1 = (self.m * x1) + self.c
+        return y1
+
+    def get_x(self, y1):
+        x1 = (y1 - self.c) / self.m
+        return x1
 from enum import Enum
 class PlayerState(Enum):
     GROUND = 0
@@ -65,6 +77,8 @@ class Player:
         self.energy = 10
         self.energy_timer = Timer()
 
+        self.valid_points = []
+
         class Health:
             def __init__(self, health, cooldown_seconds):
                 from src.Timer import  Timer
@@ -82,6 +96,8 @@ class Player:
 
         self.health = Health(10, 1)
 
+
+
         self.buffs = []
 
 
@@ -93,6 +109,7 @@ class Player:
         self.keys = []
         for i in range(KeyEnum.NUM.value):
             self.keys.append(0)
+
 
     def pos_is_tile(self, x, y):
         i = int(x/32)
@@ -119,11 +136,13 @@ class Player:
 
         res_x, res_y = None, None
 
+        self.valid_points = []
         if player_x <= mouse_x:
             while cur_x <= mouse_x:
                 cur_y = m * cur_x + c
                 if not self.pos_is_tile(cur_x, cur_y):
                     cur_x = cur_x + 1
+                    self.valid_points.append((cur_x, cur_y))
                 else:
                     res_x = cur_x - 1
                     cur_y = m * cur_x + c
@@ -135,6 +154,7 @@ class Player:
                 cur_y = m * cur_x + c
                 if not self.pos_is_tile(cur_x, cur_y):
                     cur_x = cur_x - 1
+                    self.valid_points.append((cur_x, cur_y))
                 else:
                     res_x = cur_x + 1
                     cur_y = m * cur_x + c
@@ -152,58 +172,60 @@ class Player:
         self.sprite.draw(screen, camera)
 
         if self.can_blink:
-            player_rect =self.sprite.sprite_rect()
-            player_x, player_y = player_rect.topleft
+            self.get_furthest_valid_point()
+            for cur_x, cur_y in self.valid_points:
+                self.dot_spr.set_location((cur_x, cur_y))
+                self.dot_spr.draw(screen, camera)
+            # player_rect =self.sprite.sprite_rect()
+            # player_x, player_y = player_rect.topleft
+            #
+            # sprite_rect = self.dot_spr.sprite_rect()
+            # size = abs(sprite_rect.right - sprite_rect.left)
+            #
+            # mouse_x, mouse_y = self.get_actual_mouse_pos()
+            #
+            # if mouse_x == player_x:
+            #     mouse_x = mouse_x + 1
+            #
+            # l = Line(mouse_x, mouse_y, player_x, player_y)
+            #
+            # cur_x = player_x
+            # max_dots = 500
+            #
+            # valid_x, valid_y = self.get_furthest_valid_point()
+            #
+            # if player_x <= mouse_x:
+            #     while cur_x <= valid_x and max_dots > 0:
+            #         cur_y = l.get_y(cur_x)
+            #         self.dot_spr.set_location((cur_x, cur_y))
+            #         self.dot_spr.draw(screen, camera)
+            #         cur_x = cur_x + size
+            #         max_dots = max_dots - 1
+            #
+            # elif mouse_x < player_x:
+            #     while cur_x >= valid_x and max_dots > 0:
+            #         cur_y = l.get_y(cur_x)
+            #         self.dot_spr.set_location((cur_x, cur_y))
+            #         self.dot_spr.draw(screen, camera)
+            #         cur_x = cur_x - size
+            #         max_dots = max_dots - 1
 
-            sprite_rect = self.dot_spr.sprite_rect()
-            size = abs(sprite_rect.right - sprite_rect.left)
-            print("[draw] size %d" % size)
+    def blink(self):
 
-            mouse_x, mouse_y = self.get_actual_mouse_pos()
+        player_x, player_y = self.sprite.sprite_rect().topleft
+        valid_x, valid_y = self.get_furthest_valid_point()
 
-            if mouse_x == player_x:
-                mouse_x = mouse_x + 1
+        damper_x = 16
+        damper_y= 24
+        d_x = (valid_x - player_x) - damper_x
+        d_y = (valid_y - player_y) - damper_y
+        # print("[blink] displacement %d %d" % (d_x, d_y))
 
-            m = (player_y - mouse_y) / (player_x - mouse_x)
-            c = player_y - (m * player_x)
-
-            cur_x = player_x
-            max_dots = 500
-
-            valid_x, valid_y = self.get_furthest_valid_point()
-
-            if player_x <= mouse_x:
-                while cur_x <= valid_x and max_dots > 0:
-                    cur_y = m * cur_x + c
-                    self.dot_spr.set_location((cur_x, cur_y))
-                    self.dot_spr.draw(screen, camera)
-                    cur_x = cur_x + size
-                    max_dots = max_dots - 1
-
-            elif mouse_x < player_x:
-                while cur_x >= valid_x and max_dots > 0:
-                    cur_y = m * cur_x + c
-                    self.dot_spr.set_location((cur_x, cur_y))
-                    self.dot_spr.draw(screen, camera)
-                    cur_x = cur_x - size
-                    max_dots = max_dots - 1
+        self.moving_component.move((d_x, d_y))
 
     def getrekt(self):
         return pygame.Rect(self.moving_component.position[0],self.moving_component.position[1],self.size[0],self.size[1])
 
-    def blink(self):
-        mouse_x, mouse_y = self.get_actual_mouse_pos()
-
-        player_x, player_y = self.sprite.sprite_rect().topleft
-
-        valid_x, valid_y = self.get_furthest_valid_point()
-
-
-        d_x = valid_x - player_x
-        d_y = valid_y - player_y
-        print("[blink] displacement %d %d" % (d_x, d_y))
-
-        self.moving_component.move((d_x, d_y))
 
     def get_actual_mouse_pos(self):
         x, y = pygame.mouse.get_pos()
