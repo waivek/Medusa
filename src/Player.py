@@ -156,14 +156,14 @@ class Player:
 
         if isinstance(other, Ammo):
             if self.weapon[other.ammo_type.value] is not None:
-                self.weapon[other.ammo_type.value] += 5
+                self.weapon[other.ammo_type.value].ammo += 5
                 self.level.destroy_entity(other)
 
         if isinstance(other, WeaponItem):
-            if self.weapon[other.weapon_type.value] is not None:
+            if self.weapon[other.weapon_type.value] is None:
                 self.weapon[other.weapon_type.value] = WeaponEquipped(other.weapon_type,5,self)
             else:
-                self.weapon[other.weapon_type.value] += 5
+                self.weapon[other.weapon_type.value].ammo += 5
             self.level.destroy_entity(other)
 
 

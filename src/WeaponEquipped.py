@@ -4,7 +4,7 @@ class WeaponEquipped:
     def __init__(self, weapon_type, ammo, owner):
         self.weapon_type = weapon_type
         self.ammo = ammo
-        self.sprite = AnimatedSprite(WeaponSprites[weapon_type],1)
+        self.sprite = AnimatedSprite(WeaponSprites[weapon_type.value],1)
         self.owner = owner
 
     def use(self):

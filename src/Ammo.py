@@ -29,4 +29,4 @@ class Ammo:
         posx = int(file.readline())
         posy = int(file.readline())
         pos = (posx, posy)
-        return (WeaponItem(WeaponEnum(weapon_type), pos))
+        return (Ammo(WeaponEnum(weapon_type), pos))
