@@ -72,64 +72,64 @@ class MapEditor:
                 self.level.save_data(r"..\level.txt")
 
         if event.type == pygame.MOUSEBUTTONDOWN:
-            mpos = pygame.mouse.get_pos()
-            flag = 0
-            #print(mpos)
+            if event.button == 1:
+                mpos = pygame.mouse.get_pos()
+                flag = 0
+                #print(mpos)
 
-            if src.Util.point_in_rect(mpos, self.tile_spr.sprite_rect()):
-                self.selected = (4,0)
-                flag = 1
-
-            for i in range(len(self.ents1_spr)):
-                print (self.ents1_spr[i].sprite_rect())
-                if src.Util.point_in_rect(mpos, self.ents1_spr[i].sprite_rect()):
-                    self.selected = (0, i)
+                if src.Util.point_in_rect(mpos, self.tile_spr.sprite_rect()):
+                    self.selected = (4,0)
                     flag = 1
 
-            for i in range(len(self.ents2_spr)):
-                print (self.ents2_spr[i].sprite_rect())
-                if src.Util.point_in_rect(mpos, self.ents2_spr[i].sprite_rect()):
-                    self.selected = (1, i)
-                    flag = 1
+                for i in range(len(self.ents1_spr)):
+                    print (self.ents1_spr[i].sprite_rect())
+                    if src.Util.point_in_rect(mpos, self.ents1_spr[i].sprite_rect()):
+                        self.selected = (0, i)
+                        flag = 1
 
-            for i in range(len(self.key_spr)):
-                if src.Util.point_in_rect(mpos, self.key_spr[i].sprite_rect()):
-                    self.selected = (2, i)
-                    flag = 1
+                for i in range(len(self.ents2_spr)):
+                    print (self.ents2_spr[i].sprite_rect())
+                    if src.Util.point_in_rect(mpos, self.ents2_spr[i].sprite_rect()):
+                        self.selected = (1, i)
+                        flag = 1
 
-            for i in range(len(self.lock_spr)):
-                if src.Util.point_in_rect(mpos, self.lock_spr[i].sprite_rect()):
-                    self.selected = (3, i)
-                    flag = 1
+                for i in range(len(self.key_spr)):
+                    if src.Util.point_in_rect(mpos, self.key_spr[i].sprite_rect()):
+                        self.selected = (2, i)
+                        flag = 1
 
-            print(self.selected)
-            if(flag==0):
-                worldpos = (mpos[0]+self.level.camera_pos[0],mpos[1],self.level.camera_pos[1])
-                cell = (int(worldpos[0]/BLOCK_SIZE),int(worldpos[1]/BLOCK_SIZE))
+                for i in range(len(self.lock_spr)):
+                    if src.Util.point_in_rect(mpos, self.lock_spr[i].sprite_rect()):
+                        self.selected = (3, i)
+                        flag = 1
 
-                if self.selected[0]==0:
-                    e = self.ents1[self.selected[1]]((cell[0]*BLOCK_SIZE, cell[1]*BLOCK_SIZE), self.level)
-                    self.level.add_entity(e)
+                print(self.selected)
+                if(flag==0):
+                    worldpos = (mpos[0]+self.level.camera_pos[0],mpos[1],self.level.camera_pos[1])
+                    cell = (int(worldpos[0]/BLOCK_SIZE),int(worldpos[1]/BLOCK_SIZE))
 
-                if self.selected[0]==1:
-                    e = self.ents2[self.selected[1]]((cell[0]*BLOCK_SIZE, cell[1]*BLOCK_SIZE))
-                    self.level.add_entity(e)
+                    if self.selected[0]==0:
+                        e = self.ents1[self.selected[1]]((cell[0]*BLOCK_SIZE, cell[1]*BLOCK_SIZE), self.level)
+                        self.level.add_entity(e)
 
-                if self.selected[0]==2:
-                    e = Key(KeyEnum(self.selected[1]), (cell[0]*BLOCK_SIZE,cell[1]*BLOCK_SIZE))
-                    self.level.add_entity(e)
+                    if self.selected[0]==1:
+                        e = self.ents2[self.selected[1]]((cell[0]*BLOCK_SIZE, cell[1]*BLOCK_SIZE))
+                        self.level.add_entity(e)
 
-                if self.selected[0]==3:
-                    e = Lock(KeyEnum(self.selected[1]), (cell[0]*BLOCK_SIZE,cell[1]*BLOCK_SIZE))
-                    self.level.add_entity(e)
+                    if self.selected[0]==2:
+                        e = Key(KeyEnum(self.selected[1]), (cell[0]*BLOCK_SIZE,cell[1]*BLOCK_SIZE))
+                        self.level.add_entity(e)
 
-                if self.selected[0]==4:
-                    self.level.map[cell[1]][cell[0]] = True
+                    if self.selected[0]==3:
+                        e = Lock(KeyEnum(self.selected[1]), (cell[0]*BLOCK_SIZE,cell[1]*BLOCK_SIZE))
+                        self.level.add_entity(e)
+
 
     def update(self, deltatime):
         deltatime /= 1000
         speed = 500
         keys = pygame.key.get_pressed()
+
         if keys[pygame.K_LEFT]:
             self.level.camera_pos = (self.level.camera_pos[0] - speed*deltatime, self.level.camera_pos[1])
 
@@ -141,3 +141,23 @@ class MapEditor:
 
         if keys[pygame.K_DOWN]:
             self.level.camera_pos = (self.level.camera_pos[0], self.level.camera_pos[1] + speed*deltatime)
+
+        mouse = pygame.mouse.get_pressed()
+        if mouse[0]:
+            if self.selected[0] == 4:
+                mpos = pygame.mouse.get_pos()
+                worldpos = (mpos[0] + self.level.camera_pos[0], mpos[1], self.level.camera_pos[1])
+                cell = (int(worldpos[0] / BLOCK_SIZE), int(worldpos[1] / BLOCK_SIZE))
+                self.level.map[cell[1]][cell[0]] = True
+
+        if mouse[2]:
+            mpos = pygame.mouse.get_pos()
+            worldpos = (mpos[0] + self.level.camera_pos[0], mpos[1], self.level.camera_pos[1])
+            cell = (int(worldpos[0] / BLOCK_SIZE), int(worldpos[1] / BLOCK_SIZE))
+
+            if self.level.map[cell[1]][cell[0]]:
+                self.level.map[cell[1]][cell[0]] = False
+
+            for e in self.level.entities:
+                if src.Util.point_in_rect(worldpos, e.sprite.sprite_rect()):
+                    self.level.entities.remove(e)
