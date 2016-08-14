@@ -240,3 +240,16 @@ class Player:
                 colliders.append(ent)
 
         self.moving_component.push_out_colliders(colliders)
+
+    def save(self, file):
+        file.write(str(self.moving_component.position[0]))
+        file.write('\n')
+        file.write(str(self.moving_component.position[1]))
+        file.write('\n')
+
+    @staticmethod
+    def load(file, level):
+        posx = int(file.readline())
+        posy = int(file.readline())
+        pos = (posx, posy)
+        return (Player(pos, level))

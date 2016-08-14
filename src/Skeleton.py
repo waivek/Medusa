@@ -21,7 +21,7 @@ class Skeleton:
         self.sprite.add_sprite(spr1)
         self.sprite.state = 0
         self.state = SkeletonState.IN_AIR
-        self.moving_component = MovingComponent(self.sprite, level.tiles, level.col, level.row)
+        self.moving_component = MovingComponent(self.sprite, level.map, level.col, level.row)
         self.moving_component.update_position(pos)
         self.enemy_movement_component = EnemyMovementComponent(self.moving_component, self.level)
 
@@ -46,3 +46,15 @@ class Skeleton:
         self.sprite.update(deltaTime)
         self.update_sprite()
 
+    def save(self, file):
+        file.write(str(self.moving_component.position[0]))
+        file.write('\n')
+        file.write(str(self.moving_component.position[1]))
+        file.write('\n')
+
+    @staticmethod
+    def load(file, level):
+        posx = int(file.readline())
+        posy = int(file.readline())
+        pos = (posx,posy)
+        return (Skeleton(pos, level))
