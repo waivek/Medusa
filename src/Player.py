@@ -1,27 +1,20 @@
-#from src.AnimationFSM import AnimationFSM
-#from src.AnimatedSprite import *
-#from src.LoadResources import *
-#from src.MovingComponent import *
 from src.Skeleton import *
 from src.Powerup import *
-#from src.Key import *
 from src.Lock import *
 import src.Util
 
 import pygame
 from src.Timer import *
 
-BLOCK_SIZE = 32
-CONST_CAMERA_PLAYER_OFFSET = 160
+# BLOCK_SIZE = 32
 
-CONST_JUMP_VELOCITY = 750
-CONST_PLAYER_SPEED = 100
-CONST_PLAYER_SPRINT_SPEED = 300
-CONST_MAX_ENERGY = 10
-CONST_ENERGY_GAIN_RATE = 250
-CONST_SPRINT_ENERGY_RATE = 100
+# CONST_JUMP_VELOCITY = 750
+# CONST_PLAYER_SPEED = 100
+# CONST_PLAYER_SPRINT_SPEED = 300
+# CONST_MAX_ENERGY = 10
+# CONST_ENERGY_GAIN_RATE = 250
+# CONST_SPRINT_ENERGY_RATE = 100
 
-BLINK_KEY = pygame.K_LSHIFT
 
 class Line:
     def __init__(self, x1, y1, x2, y2):
@@ -120,119 +113,57 @@ class Player:
         else:
             return False
 
-    def get_furthest_valid_point(self):
-        player_rect =self.sprite.sprite_rect()
-        player_x, player_y = player_rect.topleft
-
+    def fill_valid_points_list(self):
+        player_x, player_y = self.sprite.sprite_rect().topleft
         mouse_x, mouse_y = self.get_actual_mouse_pos()
-
         if mouse_x == player_x:
             mouse_x = mouse_x + 1
-
         m = (player_y - mouse_y) / (player_x - mouse_x)
         c = player_y - (m * player_x)
 
         cur_x = player_x
-
-        res_x, res_y = None, None
-
         self.valid_points = []
         if player_x <= mouse_x:
             while cur_x <= mouse_x:
                 cur_y = m * cur_x + c
-                if not self.pos_is_tile(cur_x, cur_y):
-                    cur_x = cur_x + 1
-                    self.valid_points.append((cur_x, cur_y))
-                else:
-                    res_x = cur_x - 1
-                    cur_y = m * cur_x + c
-                    res_y = cur_y
+                if self.pos_is_tile(cur_x, cur_y):
                     break
+                cur_x = cur_x + 1
+                self.valid_points.append((cur_x, cur_y))
 
         elif mouse_x < player_x:
             while cur_x >= mouse_x:
                 cur_y = m * cur_x + c
-                if not self.pos_is_tile(cur_x, cur_y):
-                    cur_x = cur_x - 1
-                    self.valid_points.append((cur_x, cur_y))
-                else:
-                    res_x = cur_x + 1
-                    cur_y = m * cur_x + c
-                    res_y = cur_y
+                if self.pos_is_tile(cur_x, cur_y):
                     break
-
-        if res_x is None:
-            res_x = mouse_x
-        if res_y is None:
-            res_y = mouse_y
-
-        return res_x, res_y
+                cur_x = cur_x - 1
+                self.valid_points.append((cur_x, cur_y))
 
     def draw(self, screen, camera):
         self.sprite.draw(screen, camera)
 
         if self.can_blink:
-            self.get_furthest_valid_point()
-            for cur_x, cur_y in self.valid_points:
-                self.dot_spr.set_location((cur_x, cur_y))
+            self.fill_valid_points_list()
+            for x, y in self.valid_points:
+                self.dot_spr.set_location((x, y))
                 self.dot_spr.draw(screen, camera)
-            # player_rect =self.sprite.sprite_rect()
-            # player_x, player_y = player_rect.topleft
-            #
-            # sprite_rect = self.dot_spr.sprite_rect()
-            # size = abs(sprite_rect.right - sprite_rect.left)
-            #
-            # mouse_x, mouse_y = self.get_actual_mouse_pos()
-            #
-            # if mouse_x == player_x:
-            #     mouse_x = mouse_x + 1
-            #
-            # l = Line(mouse_x, mouse_y, player_x, player_y)
-            #
-            # cur_x = player_x
-            # max_dots = 500
-            #
-            # valid_x, valid_y = self.get_furthest_valid_point()
-            #
-            # if player_x <= mouse_x:
-            #     while cur_x <= valid_x and max_dots > 0:
-            #         cur_y = l.get_y(cur_x)
-            #         self.dot_spr.set_location((cur_x, cur_y))
-            #         self.dot_spr.draw(screen, camera)
-            #         cur_x = cur_x + size
-            #         max_dots = max_dots - 1
-            #
-            # elif mouse_x < player_x:
-            #     while cur_x >= valid_x and max_dots > 0:
-            #         cur_y = l.get_y(cur_x)
-            #         self.dot_spr.set_location((cur_x, cur_y))
-            #         self.dot_spr.draw(screen, camera)
-            #         cur_x = cur_x - size
-            #         max_dots = max_dots - 1
 
     def blink(self):
 
         player_x, player_y = self.sprite.sprite_rect().topleft
-        valid_x, valid_y = self.get_furthest_valid_point()
+        valid_x, valid_y = self.valid_points[-1]
 
         damper_x = 16
         damper_y= 24
+
         d_x = (valid_x - player_x) - damper_x
         d_y = (valid_y - player_y) - damper_y
-        # print("[blink] displacement %d %d" % (d_x, d_y))
 
         self.moving_component.move((d_x, d_y))
-
-    def getrekt(self):
-        return pygame.Rect(self.moving_component.position[0],self.moving_component.position[1],self.size[0],self.size[1])
-
 
     def get_actual_mouse_pos(self):
         x, y = pygame.mouse.get_pos()
         player_x, player_y = self.sprite.sprite_rect().topleft
-        # x_origin = player_x - CONST_CAMERA_PLAYER_OFFSET
-        # CONST_CAMERA_PLAYER_OFFSET_X = 400
-        # CONST_CAMERA_PLAYER_OFFSET_Y = 200
         x_origin = player_x - CONST_CAMERA_PLAYER_OFFSET_X
         y_origin = player_y - CONST_CAMERA_PLAYER_OFFSET_Y
 
@@ -245,7 +176,6 @@ class Player:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE and self.state==PlayerState.GROUND:
                 self.moving_component.velocity = (self.moving_component.velocity[0],self.moving_component.velocity[1] - self.jump_velocity)
-                #self.state = PlayerState.JUMPING
                 play_sound(SoundEnum.JUMP)
 
             if event.key == BLINK_KEY:
