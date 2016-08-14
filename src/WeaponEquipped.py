@@ -16,3 +16,4 @@ class WeaponEquipped:
 
     def update(self, deltatime):
         self.sprite.update(deltatime)
+        self.sprite.set_location(self.owner.moving_component.position)

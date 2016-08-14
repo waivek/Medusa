@@ -18,8 +18,10 @@ class EntityEnum(Enum):
     BOUNCE_POWERUP = 6
     KEY = 7
     LOCK = 8
+    WEAPON = 9
+    AMMO = 10
 
-EntityClasses = [Player,Skeleton,RegenPowerup,HastePowerup,StaminaPowerup,GravityPowerup,BouncePowerup,Key,Lock]
+EntityClasses = [Player,Skeleton,RegenPowerup,HastePowerup,StaminaPowerup,GravityPowerup,BouncePowerup,Key,Lock,WeaponItem,Ammo]
 
 class Level:
     def __init__(self):
@@ -162,6 +164,8 @@ class Level:
 
         for i in range(ent_count):
             s = file.readline()
+            if s == '\n':
+                continue
             j = int(s)
             print(EntityClasses[j])
             ent = EntityClasses[j].load(file, level)

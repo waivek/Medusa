@@ -48,6 +48,16 @@ class MapEditor:
             self.lock_spr.append(Sprite(LockSprites[i]))
             self.lock_spr[len(self.lock_spr) - 1].set_location((i * 32, 128))
 
+        self.weapon_spr = []
+        for i in range(WeaponEnum.NUM.value):
+            self.weapon_spr.append(Sprite(WeaponSprites[i]))
+            self.weapon_spr[len(self.weapon_spr) - 1].set_location((i * 32, 160))
+
+        self.ammo_spr = []
+        for i in range(WeaponEnum.NUM.value):
+            self.ammo_spr.append(Sprite(AmmoSprites[i]))
+            self.ammo_spr[len(self.ammo_spr) - 1].set_location((i * 32, 192))
+
     def draw(self, screen):
         self.level.draw(screen)
 
@@ -63,6 +73,12 @@ class MapEditor:
             i.draw(screen,(0,0))
 
         for i in self.lock_spr:
+            i.draw(screen,(0,0))
+
+        for i in self.weapon_spr:
+            i.draw(screen,(0,0))
+
+        for i in self.ammo_spr:
             i.draw(screen,(0,0))
 
     def handle_event(self, event):
@@ -82,13 +98,11 @@ class MapEditor:
                     flag = 1
 
                 for i in range(len(self.ents1_spr)):
-                    print (self.ents1_spr[i].sprite_rect())
                     if src.Util.point_in_rect(mpos, self.ents1_spr[i].sprite_rect()):
                         self.selected = (0, i)
                         flag = 1
 
                 for i in range(len(self.ents2_spr)):
-                    print (self.ents2_spr[i].sprite_rect())
                     if src.Util.point_in_rect(mpos, self.ents2_spr[i].sprite_rect()):
                         self.selected = (1, i)
                         flag = 1
@@ -101,6 +115,16 @@ class MapEditor:
                 for i in range(len(self.lock_spr)):
                     if src.Util.point_in_rect(mpos, self.lock_spr[i].sprite_rect()):
                         self.selected = (3, i)
+                        flag = 1
+
+                for i in range(len(self.weapon_spr)):
+                    if src.Util.point_in_rect(mpos, self.weapon_spr[i].sprite_rect()):
+                        self.selected = (5, i)
+                        flag = 1
+
+                for i in range(len(self.ammo_spr)):
+                    if src.Util.point_in_rect(mpos, self.ammo_spr[i].sprite_rect()):
+                        self.selected = (6, i)
                         flag = 1
 
                 print(self.selected)
@@ -122,6 +146,14 @@ class MapEditor:
 
                     if self.selected[0]==3:
                         e = Lock(KeyEnum(self.selected[1]), (cell[0]*BLOCK_SIZE,cell[1]*BLOCK_SIZE))
+                        self.level.add_entity(e)
+
+                    if self.selected[0]==5:
+                        e = WeaponItem(WeaponEnum(self.selected[1]), (cell[0]*BLOCK_SIZE,cell[1]*BLOCK_SIZE))
+                        self.level.add_entity(e)
+
+                    if self.selected[0]==6:
+                        e = Ammo(WeaponEnum(self.selected[1]), (cell[0]*BLOCK_SIZE,cell[1]*BLOCK_SIZE))
                         self.level.add_entity(e)
 
 

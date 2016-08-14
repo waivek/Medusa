@@ -1,7 +1,6 @@
 import pygame
-from src.LoadResources import gImages
-from src.LoadResources import ImageEnum
-from src.Timer import Timer
+from src.LoadResources import *
+from src.Timer import *
 
 class AnimatedSprite:
     def __init__(self, img_id, frames):

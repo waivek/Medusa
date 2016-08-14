@@ -6,6 +6,7 @@ from src.Skeleton import *
 from src.Powerup import *
 #from src.Key import *
 from src.Lock import *
+from src.Ammo import *
 import src.Util
 
 import pygame
@@ -76,9 +77,15 @@ class Player:
         for i in range(KeyEnum.NUM.value):
             self.keys.append(0)
 
+        self.equipped_weapon = -1
+        self.weapon = []
+        for i in range(WeaponEnum.NUM.value):
+            self.weapon.append(None)
 
     def draw(self, screen, camera):
         self.sprite.draw(screen, camera)
+        if self.equipped_weapon is not -1:
+            self.weapon[self.equipped_weapon].draw(screen, camera)
 
     def getrekt(self):
         return pygame.Rect(self.moving_component.position[0],self.moving_component.position[1],self.size[0],self.size[1])
@@ -89,6 +96,22 @@ class Player:
                 self.moving_component.velocity = (self.moving_component.velocity[0],self.moving_component.velocity[1] - self.jump_velocity)
                 #self.state = PlayerState.JUMPING
                 play_sound(SoundEnum.JUMP)
+
+            elif event.key == pygame.K_e:
+                i = self.equipped_weapon + 1
+                while i < WeaponEnum.NUM.value:
+                    if self.weapon[i] is not None:
+                        self.equipped_weapon = i
+                        break
+                    i+=1
+
+            elif event.key == pygame.K_q:
+                i = self.equipped_weapon - 1
+                while i >= 0:
+                    if self.weapon[i] is not None:
+                        self.equipped_weapon = i
+                        break
+                    i-=1
 
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
@@ -130,6 +153,18 @@ class Player:
                 self.keys[other.lock_type.value] -= 1
                 self.level.destroy_entity(other)
                 play_sound(SoundEnum.UNLOCK)
+
+        if isinstance(other, Ammo):
+            if self.weapon[other.ammo_type.value] is not None:
+                self.weapon[other.ammo_type.value] += 5
+                self.level.destroy_entity(other)
+
+        if isinstance(other, WeaponItem):
+            if self.weapon[other.weapon_type.value] is not None:
+                self.weapon[other.weapon_type.value] = WeaponEquipped(other.weapon_type,5,self)
+            else:
+                self.weapon[other.weapon_type.value] += 5
+            self.level.destroy_entity(other)
 
 
     def handle_collisions(self):
@@ -240,6 +275,9 @@ class Player:
                 colliders.append(ent)
 
         self.moving_component.push_out_colliders(colliders)
+
+        if self.equipped_weapon is not -1:
+            self.weapon[self.equipped_weapon].update(deltatime)
 
     def save(self, file):
         file.write(str(self.moving_component.position[0]))

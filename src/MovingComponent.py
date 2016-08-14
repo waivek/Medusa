@@ -23,6 +23,10 @@ class MovingComponent:
     def point_in_wall(self, x, y):
         cx = int(x/32)
         cy = int(y/32)
+
+        if cx > self.tiles_col or cy > self.tiles_row:
+            return True
+
         if self.tiles[cy][cx]:
             return True
         return False

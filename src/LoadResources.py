@@ -39,6 +39,11 @@ class ImageEnum(Enum):
     LOCK_DARK = 25
     LOCK_MAGIC = 26
 
+    WEAPON_BOW = 27
+    AMMO_ARROW = 28
+    WEAPON_GUN = 29
+    AMMO_BULLET = 30
+
 class SoundEnum(Enum):
     JUMP = 0
     HIT = 1
@@ -72,7 +77,11 @@ gImagePaths = [
     r"..\raw\Sprites\lock_silver_sparkle_strip32.png",
     r"..\raw\Sprites\lock_gold_sparkle_strip32.png",
     r"..\raw\Sprites\lock_black.png",
-    r"..\raw\Sprites\lock_magic.png"
+    r"..\raw\Sprites\lock_magic.png",
+    r"..\raw\Sprites\bow.png",
+    r"..\raw\Sprites\arrow_left.png",
+    r"..\raw\Sprites\gun.png",
+    r"..\raw\Sprites\bullet_left.png"
 ]
 gSoundPaths = [
     r"..\raw\Sounds\jump.wav",

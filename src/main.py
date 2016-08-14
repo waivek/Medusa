@@ -11,7 +11,7 @@ def init():
 def main():
     init()
 
-    size = 800, 400
+    size = CONST_SCREEN_WIDTH, CONST_SCREEN_HEIGHT
     screen = pygame.display.set_mode(size)
     black = 0, 0, 0
     level = Level.load(r"..\level.txt")
