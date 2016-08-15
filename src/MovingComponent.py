@@ -21,6 +21,7 @@ class MovingComponent:
         self.gravity = CONST_GRAVITY
 
         self.collides = True
+        self.collision_bounds = pygame.Rect(1,1,30,30)
         self.bounciness = 0
 
         def passfunc(obj1, obj2):
@@ -62,26 +63,22 @@ class MovingComponent:
 
                     #if d[0] is not m and d[1] is not m:
                     #    continue
-                    from src.Player import Player
-                    # if type(self.obj == Player):
-                    #     print("player")
-                    #     print(self.velocity)
-                    #     print("%d %d" % (i,j))
-                    #     print(d)
-                    #print(type(self.obj))
-                    #print (m)
+
+                    colliding_obj = None
 
                     b = 0
-                    b = b or self.point_in_wall(self.sprite.sprite_rect().topleft[0] + d[0] + 1,
-                                                self.sprite.sprite_rect().topleft[1] + d[1] + 1)
-                    b = b or self.point_in_wall(self.sprite.sprite_rect().topright[0] + d[0] - 1,
-                                                self.sprite.sprite_rect().topright[1] + d[1] + 1)
-                    b = b or self.point_in_wall(self.sprite.sprite_rect().bottomleft[0] + d[0] + 1,
-                                                self.sprite.sprite_rect().bottomleft[1] + d[1] - 1)
-                    b = b or self.point_in_wall(self.sprite.sprite_rect().bottomright[0] + d[0] - 1,
-                                                self.sprite.sprite_rect().bottomright[1] + d[1] - 1)
-
-                    #print(b)
+                    b = b or self.point_in_wall(self.sprite.sprite_rect().topleft[0] + d[0] + self.collision_bounds[0],
+                                                self.sprite.sprite_rect().topleft[1] + d[1] + self.collision_bounds[1])
+                    b = b or self.point_in_wall(self.sprite.sprite_rect().topleft[0] + d[0]
+                                                + self.collision_bounds[0] + self.collision_bounds[2],
+                                                self.sprite.sprite_rect().topleft[1] + d[1] + self.collision_bounds[1])
+                    b = b or self.point_in_wall(self.sprite.sprite_rect().topleft[0] + d[0] + self.collision_bounds[0],
+                                                self.sprite.sprite_rect().topleft[1] + d[1]
+                                                + self.collision_bounds[1] + self.collision_bounds[3])
+                    b = b or self.point_in_wall(self.sprite.sprite_rect().topleft[0] + d[0]
+                                                + self.collision_bounds[0] + self.collision_bounds[2],
+                                                self.sprite.sprite_rect().topleft[1] + d[1]
+                                                + self.collision_bounds[1] + self.collision_bounds[3])
 
                     if b == 0:
                         for k in range(len(colliders)):
@@ -94,7 +91,7 @@ class MovingComponent:
                                     print("colliding:")
                                     print(self.obj)
                                     print(colliders[k])
-                                self.on_collision(self.obj, colliders[k])
+                                colliding_obj = colliders[k]
                                 break
 
                     if b == 0:
@@ -104,8 +101,10 @@ class MovingComponent:
                             self.velocity = (-self.velocity[0] * self.bounciness, self.velocity[1])
                         if (d[1] != 0):
                             self.velocity = (self.velocity[0], -self.velocity[1] * self.bounciness)
-
                         break
+                    elif colliding_obj is not None:
+                        self.on_collision(self.obj, colliding_obj)
+
             m += int(m/10) + 1
 
     def snap_out(self):

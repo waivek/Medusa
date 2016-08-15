@@ -25,6 +25,7 @@ class Skeleton:
         self.moving_component = MovingComponent(self, self.level)
         self.moving_component.update_position(pos)
         self.enemy_movement_component = EnemyMovementComponent(self.moving_component, self.level)
+        self.moving_component.on_collision = Skeleton.on_collision
         self.health = 1
 
     def draw(self, screen, camera):
@@ -44,7 +45,7 @@ class Skeleton:
 
     def update(self, deltaTime):
         self.moving_component.update(deltaTime)
-        self.enemy_movement_component.update(deltaTime)
+        #self.enemy_movement_component.update(deltaTime)
 
         if self.health <= 0:
             self.level.destroy_entity(self)
@@ -64,3 +65,12 @@ class Skeleton:
         posy = int(file.readline())
         pos = (posx,posy)
         return (Skeleton(pos, level))
+
+    @staticmethod
+    def on_collision(this, other):
+        print("collision with")
+        print(type(other))
+        if other.sprite.sprite_rect().topleft[0] > this.sprite.sprite_rect().topleft[0]:
+            this.moving_component.velocity = (-100,this.moving_component.velocity[1])
+        else:
+            this.moving_component.velocity = (100, this.moving_component.velocity[1])

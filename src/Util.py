@@ -1,5 +1,8 @@
 import math
 
+def pixel2cell(x, y):
+    return (int(x/32),int(y/32))
+
 def rad2deg(x):
     return ((x*180)/math.pi)
 

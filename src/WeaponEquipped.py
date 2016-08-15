@@ -31,6 +31,7 @@ def init_weapons():
     def arrowinit(projectile):
         play_sound(SoundEnum.ARROW_SHOOT)
         projectile.moving_component.gravity = 0
+        projectile.moving_component.collision_bounds = pygame.Rect(1,11,30,11)
 
     def arrowupd(projectile):
         if projectile.moving_component.velocity == (0,0):
