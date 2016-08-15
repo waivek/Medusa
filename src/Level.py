@@ -122,3 +122,4 @@ class Level:
 
         #update camera
         self.camera_pos = (self.players[0].moving_component.position[0] - CONST_CAMERA_PLAYER_OFFSET_X, 0)
+        # self.camera_pos = (0, 0)

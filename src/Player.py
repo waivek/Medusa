@@ -27,10 +27,11 @@ class Blink_Component:
         self.can_blink = False
         self.player = player
 
-        self.blink_frames = 12
+        self.blink_frames = 3
         self.is_blinking = False
-        self.frame_displacement = None
+        self.frame_displacement = (None, None)
         self.frames_passed = None
+        self.old_offset = None
 
     def get_actual_mouse_pos(self):
         from src.WorldConstants import CONST_CAMERA_PLAYER_OFFSET_X, CONST_CAMERA_PLAYER_OFFSET_Y
@@ -38,6 +39,7 @@ class Blink_Component:
         x, y = pygame.mouse.get_pos()
         player_x, player_y = self.player.sprite.sprite_rect().topleft
         x_origin = player_x - CONST_CAMERA_PLAYER_OFFSET_X
+        # x_origin = 0
         # y_origin = player_y - CONST_CAMERA_PLAYER_OFFSET_Y
         y_origin = 0
 
@@ -127,12 +129,34 @@ class Blink_Component:
 
     def update(self, deltaTime):
         if self.is_blinking:
-            player_x, player_y = self.player.sprite.sprite_rect().center
-            valid_x, valid_y = self.valid_blink_points[-1]
-            d_x = (valid_x - player_x)
-            d_y = (valid_y - player_y)
-            self.player.moving_component.move((d_x, d_y))
-            self.is_blinking = False
+            is_first_blink_frame = self.frames_passed == None
+            if is_first_blink_frame:
+
+                self.old_offset = CONST_CAMERA_PLAYER_OFFSET_X
+
+                self.frames_passed = 0
+
+                player_x, player_y = self.player.sprite.sprite_rect().center
+                valid_x, valid_y = self.valid_blink_points[-1]
+                d_x = (valid_x - player_x)
+                d_y = (valid_y - player_y)
+
+                self.frame_displacement = (d_x / self.blink_frames,
+                                           d_y / self.blink_frames)
+                self.player.moving_component.move(self.frame_displacement)
+
+                self.frames_passed = self.frames_passed + 1
+            elif not is_first_blink_frame:
+                if self.frames_passed < self.blink_frames:
+                    self.player.moving_component.move(self.frame_displacement)
+                    self.frames_passed = self.frames_passed + 1
+                elif self.frames_passed >= self.blink_frames:
+                    self.is_blinking = False
+                    self.frames_passed = None
+                    self.frame_displacement = (None, None)
+
+            # self.player.moving_component.move((d_x, d_y))
+            # self.is_blinking = False
 
 from enum import Enum
 class PlayerState(Enum):
