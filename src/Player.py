@@ -100,10 +100,6 @@ class Player:
                         break
                     i-=1
 
-        elif event.type == pygame.KEYUP:
-            if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
-                self.moving_component.velocity = (0, self.moving_component.velocity[1])
-
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if self.equipped_weapon is not -1:
                 self.weapon[self.equipped_weapon].use()

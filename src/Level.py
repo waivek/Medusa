@@ -78,8 +78,9 @@ class Level:
             #file.write('\n')
 
     def destroy_entity(self, target):
-        self.entities.remove(target)
-        if isinstance(target, Skeleton) or isinstance(target, Lock):
+        if target in self.entities:
+            self.entities.remove(target)
+        if target in self.colliders:
             self.colliders.remove(target)
 
     def add_entity(self, entity):

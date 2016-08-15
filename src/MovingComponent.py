@@ -45,12 +45,14 @@ class MovingComponent:
         m = 0
         flag = 0
         factor = 1
+        #print(type(self.obj))
+        #print(colliders)
         while flag == 0:
             my_sprite = self.sprite.sprite_rect()
-            for i in range(2 * m + 1):
+            for i in range(2 * m + 2):
                 if flag == 1:
                     break
-                for j in range(2 * m + 1):
+                for j in range(2 * m + 2):
                     if flag==1:
                         break
 
@@ -58,9 +60,14 @@ class MovingComponent:
 
                     #if d[0] is not m and d[1] is not m:
                     #    continue
-
-                    print(type(self.obj))
-                    print (m)
+                    from src.Player import Player
+                    # if type(self.obj == Player):
+                    #     print("player")
+                    #     print(self.velocity)
+                    #     print("%d %d" % (i,j))
+                    #     print(d)
+                    #print(type(self.obj))
+                    #print (m)
 
                     b = 0
                     b = b or self.point_in_wall(self.sprite.sprite_rect().topleft[0] + d[0] + 1,
@@ -72,9 +79,9 @@ class MovingComponent:
                     b = b or self.point_in_wall(self.sprite.sprite_rect().bottomright[0] + d[0] - 1,
                                                 self.sprite.sprite_rect().bottomright[1] + d[1] - 1)
 
-                    print(b)
+                    #print(b)
 
-                    if b is 0:
+                    if b == 0:
                         for k in range(len(colliders)):
                             new_rect = pygame.Rect(my_sprite.topleft[0]+d[0], my_sprite.topleft[1]+d[1], 32, 32)
                             b = b or new_rect.colliderect(colliders[k].sprite.sprite_rect())
@@ -86,16 +93,16 @@ class MovingComponent:
                                 self.on_collision(self.obj, colliders[k])
                                 break
 
-                    if b is 0:
+                    if b == 0:
                         self.move(d)
                         flag = 1
-                        if (d[0] is not 0):
+                        if (d[0] != 0):
                             self.velocity = (-self.velocity[0] * self.bounciness, self.velocity[1])
-                        if (d[1] is not 0):
+                        if (d[1] != 0):
                             self.velocity = (self.velocity[0], -self.velocity[1] * self.bounciness)
 
                         break
-            m += 1
+            m += int(m/10) + 1
 
     def snap_out(self):
         m = 0
@@ -117,11 +124,11 @@ class MovingComponent:
                     b = b or self.point_in_wall(self.sprite.sprite_rect().bottomleft[0] + d[0] +1,self.sprite.sprite_rect().bottomleft[1] + d[1] -1)
                     b = b or self.point_in_wall(self.sprite.sprite_rect().bottomright[0] + d[0] -1,self.sprite.sprite_rect().bottomright[1] + d[1] -1)
 
-                    if b is False:
+                    if b == False:
                         self.move(d)
-                        if (d[0] is not 0):
+                        if (d[0] != 0):
                             self.velocity = (-self.velocity[0]*self.bounciness, self.velocity[1])
-                        if (d[1] is not 0):
+                        if (d[1] != 0):
                             self.velocity = (self.velocity[0], -self.velocity[1]*self.bounciness)
                         #print(m)
                         flag=1
@@ -170,8 +177,9 @@ class MovingComponent:
                                            displacement[1])
 
             copy = []
-            if isinstance(self.obj, Player) or isinstance(self.obj, Projectile):
-                for ent in self.level.colliders:
+            #if isinstance(self.obj, Player) or isinstance(self.obj, Projectile):
+            for ent in self.level.colliders:
+                if ent is not self.obj:
                     if vel_rect.colliderect(ent.sprite.sprite_rect()):
                         copy.append(ent)
             self.push_out_colliders(copy)
@@ -191,6 +199,11 @@ class MovingComponent:
             newx = CONST_MAX_VELOCITY
         if(newy>CONST_MAX_VELOCITY):
             newy=CONST_MAX_VELOCITY
+
+        from src.Player import Player
+
+        if acceleration[0] != 0 and type(self.obj)==Player:
+            print("acc changed----------------------------------0---------------------- %d" % acceleration[0])
 
         self.velocity = (newx, newy)
 

@@ -47,7 +47,7 @@ class Skeleton:
         self.enemy_movement_component.update(deltaTime)
 
         if self.health <= 0:
-            self.level.entities.remove(self)
+            self.level.destroy_entity(self)
 
         self.sprite.update(deltaTime)
         self.update_sprite()

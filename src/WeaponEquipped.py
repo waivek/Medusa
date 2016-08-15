@@ -30,6 +30,7 @@ def init_weapons():
     def dealdmg(projectile, other):
         if isinstance(other, Skeleton):
             other.health -= 1
+            projectile.owner.level.destroy_entity(projectile)
 
     def bow(weapon):
         if weapon.ammo > 0:
