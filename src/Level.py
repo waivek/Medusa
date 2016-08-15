@@ -27,7 +27,7 @@ class Level:
     def __init__(self):
         self.row = 100
         self.col = 100
-        self.map = \
+        self.tiles = \
             [
                 [ y >= (10) for x in range(self.col)]
                 for y in range(self.row)
@@ -43,11 +43,13 @@ class Level:
         self.players = []
         self.entities = []
 
+        self.colliders = []
+
         for i in range(self.col):
-            self.map[0][i] = True
-            self.map[i][0] = True
-            self.map[99][i] = True
-            self.map[i][99] = True
+            self.tiles[0][i] = True
+            self.tiles[i][0] = True
+            self.tiles[99][i] = True
+            self.tiles[i][99] = True
 
         self.hud = None
         self.show_hud = True
@@ -57,7 +59,7 @@ class Level:
         file = open(path, 'r+')
         for i in range(self.col):
             for j in range(self.row):
-                if self.map[j][i]:
+                if self.tiles[j][i]:
                     file.write('1')
                 else:
                     file.write('0')
@@ -77,6 +79,8 @@ class Level:
 
     def destroy_entity(self, target):
         self.entities.remove(target)
+        if isinstance(target, Skeleton) or isinstance(target, Lock):
+            self.colliders.remove(target)
 
     def add_entity(self, entity):
         self.entities.append(entity)
@@ -84,27 +88,15 @@ class Level:
             self.players.append(entity)
             self.hud = HUD(self.players[0])
 
-    def add_player(self, player):
-        assert isinstance(player, Player)
-        self.players.append(player)
-        self.entities.append(player)
-        self.hud = HUD(self.players[0])
-
-    def add_monster(self, monster):
-        #assert isinstance(monster, Monster)
-        self.monsters.append(monster)
-        self.entities.append(monster)
-
-    def add_powerup(self, powerup):
-        assert isinstance(powerup, Powerup)
-        self.entities.append(powerup)
+        if isinstance(entity, Skeleton) or isinstance(entity, Lock):
+            self.colliders.append(entity)
 
     def draw(self, screen):
         self.sky_sprite.draw(screen, (0,0))
 
         for i in range(self.row):
             for j in range(self.col):
-                if self.map[i][j] is True:
+                if self.tiles[i][j] is True:
                     self.block_sprite.set_location((BLOCK_SIZE*j,BLOCK_SIZE*i))
                     self.block_sprite.draw(screen,self.camera_pos)
 
@@ -127,7 +119,7 @@ class Level:
     def point_in_wall(self, x, y):
         for i in range(self.col):
             for j in range(self.row):
-                if self.map[j][i]:
+                if self.tiles[j][i]:
                     tile_rect = pygame.Rect(BLOCK_SIZE * i, BLOCK_SIZE * j, BLOCK_SIZE, BLOCK_SIZE)
                     if src.Util.point_in_rect((x,y),tile_rect):
                         return True
@@ -152,22 +144,22 @@ class Level:
         for i in range(level.col):
             for j in range(level.row):
                 if int(s[c])==1:
-                    level.map[j][i] = True
+                    level.tiles[j][i] = True
                 else:
-                    level.map[j][i] = False
-                print("%d %d %d" % (int(s[c]),j,i))
+                    level.tiles[j][i] = False
+                #print("%d %d %d" % (int(s[c]),j,i))
                 c+=1
 
         s = file.readline()
         ent_count = int(s)
-        print(ent_count)
+        #print(ent_count)
 
         for i in range(ent_count):
             s = file.readline()
             if s == '\n':
                 continue
             j = int(s)
-            print(EntityClasses[j])
+            #print(EntityClasses[j])
             ent = EntityClasses[j].load(file, level)
             level.add_entity(ent)
 

@@ -1,5 +1,8 @@
 from src.Ammo import *
 from src.Projectile import *
+from src.Skeleton import *
+
+WeaponFunctions = []
 
 class WeaponEquipped:
     def __init__(self, weapon_type, ammo, owner):
@@ -9,10 +12,7 @@ class WeaponEquipped:
         self.owner = owner
 
     def use(self):
-        if self.ammo > 0:
-            self.ammo -= 1
-            p = Projectile(AmmoSprites[self.weapon_type.value], self.owner.moving_component.position, (500,0), 10, 0, True, self.owner.level)
-            self.owner.level.add_entity(p)
+        WeaponFunctions[self.weapon_type.value](self)
 
     def draw(self,screen,camera):
         self.sprite.draw(screen, camera)
@@ -20,3 +20,28 @@ class WeaponEquipped:
     def update(self, deltatime):
         self.sprite.update(deltatime)
         self.sprite.set_location(self.owner.moving_component.position)
+
+
+def init_weapons():
+
+    def passfunc(projectile):
+        pass
+
+    def dealdmg(projectile, other):
+        if isinstance(other, Skeleton):
+            other.health -= 1
+
+    def bow(weapon):
+        if weapon.ammo > 0:
+            weapon.ammo -= 1
+            p = Projectile(AmmoSprites[weapon.weapon_type.value], weapon.owner, weapon.owner.moving_component.position, (500, 0),
+                           passfunc,passfunc,dealdmg)
+            weapon.owner.level.add_entity(p)
+    WeaponFunctions.append(bow)
+
+    def gun(weapon):
+        if weapon.ammo > 0:
+            weapon.ammo -= 1
+            p = Projectile(AmmoSprites[weapon.weapon_type.value], weapon.owner.moving_component.position, (1000, 0), 10, 0, True, weapon.owner.level)
+            weapon.owner.level.add_entity(p)
+    WeaponFunctions.append(gun)

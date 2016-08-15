@@ -5,8 +5,11 @@ from src.MapEditor import *
 def init():
     pygame.init()
     pygame.mixer.init(frequency=22050, size=-16, channels=2, buffer=4096)
+
     if not load_resources():
         print("ERROR: unable to load resources")
+
+    init_weapons()
 
 def main():
     init()

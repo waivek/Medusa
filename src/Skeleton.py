@@ -1,12 +1,13 @@
 from src.AnimationFSM import AnimationFSM
 from src.AnimatedSprite import AnimatedSprite
 from src.LoadResources import ImageEnum
-from src.WorldConstants import *
 from src.MovingComponent import MovingComponent
 from src.EnemyMovementComponent import EnemyMovementComponent
+from src.Health import *
 import pygame
 
 from enum import Enum
+
 class SkeletonState(Enum):
     GROUND = 0
     IN_AIR = 1
@@ -21,9 +22,10 @@ class Skeleton:
         self.sprite.add_sprite(spr1)
         self.sprite.state = 0
         self.state = SkeletonState.IN_AIR
-        self.moving_component = MovingComponent(self.sprite, level.map, level.col, level.row)
+        self.moving_component = MovingComponent(self, self.level)
         self.moving_component.update_position(pos)
         self.enemy_movement_component = EnemyMovementComponent(self.moving_component, self.level)
+        self.health = 1
 
     def draw(self, screen, camera):
         self.sprite.draw(screen, camera)
@@ -43,6 +45,10 @@ class Skeleton:
     def update(self, deltaTime):
         self.moving_component.update(deltaTime)
         self.enemy_movement_component.update(deltaTime)
+
+        if self.health <= 0:
+            self.level.entities.remove(self)
+
         self.sprite.update(deltaTime)
         self.update_sprite()
 

@@ -180,15 +180,15 @@ class MapEditor:
                 mpos = pygame.mouse.get_pos()
                 worldpos = (mpos[0] + self.level.camera_pos[0], mpos[1] + self.level.camera_pos[1])
                 cell = (int(worldpos[0] / BLOCK_SIZE), int(worldpos[1] / BLOCK_SIZE))
-                self.level.map[cell[1]][cell[0]] = True
+                self.level.tiles[cell[1]][cell[0]] = True
 
         if mouse[2]:
             mpos = pygame.mouse.get_pos()
             worldpos = (mpos[0] + self.level.camera_pos[0], mpos[1] + self.level.camera_pos[1])
             cell = (int(worldpos[0] / BLOCK_SIZE), int(worldpos[1] / BLOCK_SIZE))
 
-            if self.level.map[cell[1]][cell[0]]:
-                self.level.map[cell[1]][cell[0]] = False
+            if self.level.tiles[cell[1]][cell[0]]:
+                self.level.tiles[cell[1]][cell[0]] = False
 
             for e in self.level.entities:
                 if src.Util.point_in_rect(worldpos, e.sprite.sprite_rect()):
