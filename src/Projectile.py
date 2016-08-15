@@ -27,4 +27,4 @@ class Projectile:
         self.moving_component.update(deltatime)
         self.update_func(self)
 
-        self.sprite.set_rotation(math.pi + math.atan2(self.moving_component.velocity[1],self.moving_component.velocity[0]))
+        self.sprite.set_rotation(math.pi + math.atan2(-self.moving_component.velocity[1],self.moving_component.velocity[0]))

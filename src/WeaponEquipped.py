@@ -42,14 +42,16 @@ def init_weapons():
         if isinstance(other, Skeleton):
             other.health -= 1
             projectile.owner.level.destroy_entity(projectile)
+        else:
+            projectile.owner.level.destroy_entity(projectile)
 
     def bow(weapon, target):
         if weapon.ammo > 0:
             weapon.ammo -= 1
             print(target)
-            vel = Vector2i(-200, 0)
-            rot = math.atan2(-(target[1] - weapon.owner.moving_component.position[1])
-                                 ,-(target[0] - weapon.owner.moving_component.position[0]))
+            vel = Vector2i(200, 0)
+            rot = math.atan2(-(target[1] - weapon.owner.moving_component.position[1]+16)
+                                 ,(target[0] - weapon.owner.moving_component.position[0]+16))
             print(rot)
             vel.rotate(rot)
             vel2 = (vel.x,vel.y)
@@ -59,7 +61,7 @@ def init_weapons():
             weapon.owner.level.add_entity(p)
     WeaponFunctions.append(bow)
 
-    def gun(weapon, mousepos):
+    def gun(weapon, target):
         if weapon.ammo > 0:
             weapon.ammo -= 1
             p = Projectile(AmmoSprites[weapon.weapon_type.value], weapon.owner.moving_component.position, (1000, 0), 10, 0, True, weapon.owner.level)
