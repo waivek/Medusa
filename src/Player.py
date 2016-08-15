@@ -27,13 +27,19 @@ class Blink_Component:
         self.can_blink = False
         self.player = player
 
+        self.blink_frames = 12
+        self.is_blinking = False
+        self.frame_displacement = None
+        self.frames_passed = None
+
     def get_actual_mouse_pos(self):
         from src.WorldConstants import CONST_CAMERA_PLAYER_OFFSET_X, CONST_CAMERA_PLAYER_OFFSET_Y
         import pygame
         x, y = pygame.mouse.get_pos()
         player_x, player_y = self.player.sprite.sprite_rect().topleft
         x_origin = player_x - CONST_CAMERA_PLAYER_OFFSET_X
-        y_origin = player_y - CONST_CAMERA_PLAYER_OFFSET_Y
+        # y_origin = player_y - CONST_CAMERA_PLAYER_OFFSET_Y
+        y_origin = 0
 
         mouse_x = x+x_origin
         mouse_y = y+y_origin
@@ -71,16 +77,31 @@ class Blink_Component:
                 self.dot_spr.draw(screen, camera)
 
     def blink(self):
+        # if not self.is_blinking:
+        # self.is_blinking = True
         player_x, player_y = self.player.sprite.sprite_rect().center
         valid_x, valid_y = self.valid_blink_points[-1]
 
-        damper_x = 8
+        damper_x = 0
         damper_y= 0
 
         d_x = (valid_x - player_x) - damper_x
         d_y = (valid_y - player_y) - damper_y
 
+        # self.frame_displacement = (d_x / self.blink_frames,
+        #                            d_y / self.blink_frames)
+        # self.frames_passed = 0
+
         self.player.moving_component.move((d_x, d_y))
+        # self.player.moving_component.move(self.frame_displacement)
+        # self.frames_passed = self.frames_passed + 1
+
+        # elif  self.is_blinking:
+        #     if self.frames_passed < self.blink_frames:
+        #         self.player.moving_component.move(self.frame_displacement)
+        #         self.frames_passed = self.frames_passed + 1
+        #     elif self.frames_passed >= self.blink_frames:
+        #         self.is_blinking = False
 
     def handle_event(self, event):
         from src.WorldConstants import BLINK_KEY
@@ -93,7 +114,7 @@ class Blink_Component:
                 self.can_blink = False
 
         if event.type == pygame.MOUSEBUTTONDOWN and self.can_blink:
-            self.blink()
+            self.is_blinking = True
 
     def pos_is_tile(self, x, y):
         i = int(x/32)
@@ -103,6 +124,15 @@ class Blink_Component:
             return True
         else:
             return False
+
+    def update(self, deltaTime):
+        if self.is_blinking:
+            player_x, player_y = self.player.sprite.sprite_rect().center
+            valid_x, valid_y = self.valid_blink_points[-1]
+            d_x = (valid_x - player_x)
+            d_y = (valid_y - player_y)
+            self.player.moving_component.move((d_x, d_y))
+            self.is_blinking = False
 
 from enum import Enum
 class PlayerState(Enum):
@@ -275,6 +305,7 @@ class Player:
             return False
 
     def update(self, deltatime):
+        self.blink_component.update(deltatime)
         #parse buffs
         self.update_buffs(deltatime)
 
