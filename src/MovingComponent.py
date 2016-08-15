@@ -33,11 +33,13 @@ class MovingComponent:
         cy = int(y/32)
 
         if cx > self.tiles_col or cy > self.tiles_row:
-            return True
+            #print("out of bounds")
+            return 1
 
         if self.tiles[cy][cx]:
-            return True
-        return False
+            #print("colliding with %d %d" % (cy, cx))
+            return 1
+        return 0
 
     def push_out_colliders(self, colliders):
         m = 0
@@ -57,19 +59,32 @@ class MovingComponent:
                     #if d[0] is not m and d[1] is not m:
                     #    continue
 
+                    print(type(self.obj))
                     print (m)
 
                     b = 0
-                    for k in range(len(colliders)):
-                        new_rect = pygame.Rect(my_sprite.topleft[0]+d[0], my_sprite.topleft[1]+d[1], 32, 32)
-                        b = b or new_rect.colliderect(colliders[k].sprite.sprite_rect())
-                        #b = b or src.Util.rect_intersect(new_rect, colliders[k].sprite.sprite_rect())
-                        if b:
-                            #print("colliding:")
-                            #print(self.obj)
-                            print(colliders[k])
-                            self.on_collision(self.obj, colliders[k])
-                            break
+                    b = b or self.point_in_wall(self.sprite.sprite_rect().topleft[0] + d[0] + 1,
+                                                self.sprite.sprite_rect().topleft[1] + d[1] + 1)
+                    b = b or self.point_in_wall(self.sprite.sprite_rect().topright[0] + d[0] - 1,
+                                                self.sprite.sprite_rect().topright[1] + d[1] + 1)
+                    b = b or self.point_in_wall(self.sprite.sprite_rect().bottomleft[0] + d[0] + 1,
+                                                self.sprite.sprite_rect().bottomleft[1] + d[1] - 1)
+                    b = b or self.point_in_wall(self.sprite.sprite_rect().bottomright[0] + d[0] - 1,
+                                                self.sprite.sprite_rect().bottomright[1] + d[1] - 1)
+
+                    print(b)
+
+                    if b is 0:
+                        for k in range(len(colliders)):
+                            new_rect = pygame.Rect(my_sprite.topleft[0]+d[0], my_sprite.topleft[1]+d[1], 32, 32)
+                            b = b or new_rect.colliderect(colliders[k].sprite.sprite_rect())
+                            #b = b or src.Util.rect_intersect(new_rect, colliders[k].sprite.sprite_rect())
+                            if b:
+                                #print("colliding:")
+                                #print(self.obj)
+                                print(colliders[k])
+                                self.on_collision(self.obj, colliders[k])
+                                break
 
                     if b is 0:
                         self.move(d)
@@ -129,10 +144,37 @@ class MovingComponent:
 
         #check for collisions
         if self.collides:
-            self.snap_out()
+            #self.snap_out()
+            #if isinstance(self.obj, Player) or isinstance(self.obj, Projectile):
+            #    copy = list(self.level.colliders)
+            #    self.push_out_colliders(copy)
+
+            bounds = (32,32)
+
+            vel_rect = None
+            if displacement[0] >= 0:
+                if displacement[1] >= 0:
+                    vel_rect = pygame.Rect(old_pos[0], old_pos[1],
+                                           displacement[0]+bounds[0], displacement[1]+bounds[1])
+                else:
+                    vel_rect = pygame.Rect(old_pos[0], old_pos[1] + bounds[1],
+                                           displacement[0],
+                                           displacement[1] + bounds[1])
+            else:
+                if displacement[1] >= 0:
+                    vel_rect = pygame.Rect(old_pos[0]+ bounds[0], old_pos[1],
+                                           displacement[0], displacement[1]+bounds[1])
+                else:
+                    vel_rect = pygame.Rect(old_pos[0]+ bounds[0], old_pos[1] + bounds[1],
+                                           displacement[0],
+                                           displacement[1])
+
+            copy = []
             if isinstance(self.obj, Player) or isinstance(self.obj, Projectile):
-                copy = list(self.level.colliders)
-                self.push_out_colliders(copy)
+                for ent in self.level.colliders:
+                    if vel_rect.colliderect(ent.sprite.sprite_rect()):
+                        copy.append(ent)
+            self.push_out_colliders(copy)
 
         #check if falling
         if old_pos[1]==self.position[1]:
