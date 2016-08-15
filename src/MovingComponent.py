@@ -45,6 +45,10 @@ class MovingComponent:
         m = 0
         flag = 0
         factor = 1
+        from src.Projectile import Projectile
+
+        if isinstance(self.obj,Projectile):
+            print(colliders)
         while flag == 0:
             my_sprite = self.sprite.sprite_rect()
             for i in range(2 * m + 2):
@@ -85,9 +89,11 @@ class MovingComponent:
                             b = b or new_rect.colliderect(colliders[k].sprite.sprite_rect())
                             #b = b or src.Util.rect_intersect(new_rect, colliders[k].sprite.sprite_rect())
                             if b:
-                                print("colliding:")
-                                print(self.obj)
-                                print(colliders[k])
+                                from src.Projectile import Projectile
+                                if type(self.obj)==Projectile:
+                                    print("colliding:")
+                                    print(self.obj)
+                                    print(colliders[k])
                                 self.on_collision(self.obj, colliders[k])
                                 break
 
@@ -178,8 +184,8 @@ class MovingComponent:
             #if isinstance(self.obj, Player) or isinstance(self.obj, Projectile):
             for ent in self.level.colliders:
                 if ent is not self.obj:
-                    if vel_rect.colliderect(ent.sprite.sprite_rect()):
-                        copy.append(ent)
+                    #if vel_rect.colliderect(ent.sprite.sprite_rect()):
+                    copy.append(ent)
             self.push_out_colliders(copy)
 
         #check if falling
@@ -197,11 +203,6 @@ class MovingComponent:
             newx = CONST_MAX_VELOCITY
         if(newy>CONST_MAX_VELOCITY):
             newy=CONST_MAX_VELOCITY
-
-        from src.Player import Player
-
-        if acceleration[0] != 0 and type(self.obj)==Player:
-            print("acc changed----------------------------------0---------------------- %d" % acceleration[0])
 
         self.velocity = (newx, newy)
 

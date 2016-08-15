@@ -30,13 +30,14 @@ def init_weapons():
 
     def arrowinit(projectile):
         play_sound(SoundEnum.ARROW_SHOOT)
-        projectile.moving_component.gravity = 10
+        projectile.moving_component.gravity = 0
 
     def arrowupd(projectile):
         if projectile.moving_component.velocity == (0,0):
             projectile.owner.level.destroy_entity(projectile)
 
     def dealdmg(projectile, other):
+        print("collision called")
         if isinstance(other, Skeleton):
             other.health -= 1
             projectile.owner.level.destroy_entity(projectile)
