@@ -49,6 +49,7 @@ class SoundEnum(Enum):
     HIT = 1
     POWERUP = 2
     UNLOCK = 3
+    ARROW_SHOOT = 4
 
 gImagePaths = [
     r"..\raw\Sprites\explorer_left_strip8.png",
@@ -87,7 +88,8 @@ gSoundPaths = [
     r"..\raw\Sounds\jump.wav",
     r"..\raw\Sounds\hit.wav",
     r"..\raw\Sounds\curious_up.wav",
-    r"..\raw\Sounds\open.wav"
+    r"..\raw\Sounds\open.wav",
+    r"..\raw\Sounds\miss.wav"
 ]
 
 def load_images():

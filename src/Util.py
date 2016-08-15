@@ -1,5 +1,11 @@
 import math
 
+def rad2deg(x):
+    return ((x*180)/math.pi)
+
+def deg2rad(x):
+    return ((x*math.pi)/180)
+
 def rect_intersect(rect1, rect2):
     flag = 0
     if rect1.topleft[0] >= rect2.topleft[0] \

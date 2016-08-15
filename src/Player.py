@@ -102,7 +102,9 @@ class Player:
 
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if self.equipped_weapon is not -1:
-                self.weapon[self.equipped_weapon].use()
+                mpos = pygame.mouse.get_pos()
+                target = (mpos[0]+self.level.camera_pos[0],mpos[1]+self.level.camera_pos[1])
+                self.weapon[self.equipped_weapon].use(target)
 
     def update_sprite(self):
         if (self.state == PlayerState.JUMPING):

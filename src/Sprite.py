@@ -6,9 +6,11 @@ from src.WorldConstants import *
 
 class Sprite:
     def __init__(self, spriteenum):
+        self.sprite_enum = spriteenum
         self.sprite = gImages[spriteenum.value]
         self.sprite_rec = self.sprite.get_rect()
         self.bounds = (0,0,32,32)
+        self.rotation = 0
 
     def move(self, displacement):
         self.sprite_rec = self.sprite_rec.move(displacement)
@@ -30,3 +32,7 @@ class Sprite:
         if screen_rect.colliderect(self.sprite_rec):
             screen.blit(self.sprite, (self.sprite_rec[0]-camera[0],self.sprite_rec[1]-camera[1],self.sprite_rec[2]-camera[0],
                                   self.sprite_rec[3]-camera[1]), self.bounds)
+
+    def set_rotation(self, angle):
+        self.rotation = angle
+        self.sprite = pygame.transform.rotate(gImages[self.sprite_enum.value], src.Util.rad2deg(angle))

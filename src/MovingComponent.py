@@ -87,8 +87,8 @@ class MovingComponent:
                             b = b or new_rect.colliderect(colliders[k].sprite.sprite_rect())
                             #b = b or src.Util.rect_intersect(new_rect, colliders[k].sprite.sprite_rect())
                             if b:
-                                #print("colliding:")
-                                #print(self.obj)
+                                print("colliding:")
+                                print(self.obj)
                                 print(colliders[k])
                                 self.on_collision(self.obj, colliders[k])
                                 break

@@ -1,10 +1,11 @@
 from src.MovingComponent import *
-from src.AnimatedSprite import *
+from src.Sprite import *
 from src.MovingComponent import *
+import math
 
 class Projectile:
     def __init__(self, spriteenum, owner, pos, velocity, start_func, update_func, collide_func):
-        self.sprite = AnimatedSprite(spriteenum,1)
+        self.sprite = Sprite(spriteenum)
         self.owner = owner
         self.level = owner.level
 
@@ -25,3 +26,5 @@ class Projectile:
     def update(self, deltatime):
         self.moving_component.update(deltatime)
         self.update_func(self)
+
+        self.sprite.set_rotation(math.pi + math.atan2(self.moving_component.velocity[1],self.moving_component.velocity[0]))
