@@ -103,7 +103,7 @@ class Blink_Component:
         i = int(x/32)
         j = int(y/32)
 
-        if self.player.level.map[j][i]:
+        if self.player.level.tiles[j][i]:
             return True
         else:
             return False
