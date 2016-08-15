@@ -71,39 +71,21 @@ class Blink_Component:
                 break
             self.valid_blink_points.append((x, y))
 
+    def pos_is_tile(self, x, y):
+        i = int(x/32)
+        j = int(y/32)
+
+        if self.player.level.map[j][i]:
+            return True
+        else:
+            return False
+
     def draw(self, screen, camera):
         if self.can_blink:
             self.fill_valid_blink_points()
             for x, y in self.valid_blink_points:
                 self.dot_spr.set_location((x, y))
                 self.dot_spr.draw(screen, camera)
-
-    def blink(self):
-        # if not self.is_blinking:
-        # self.is_blinking = True
-        player_x, player_y = self.player.sprite.sprite_rect().center
-        valid_x, valid_y = self.valid_blink_points[-1]
-
-        damper_x = 0
-        damper_y= 0
-
-        d_x = (valid_x - player_x) - damper_x
-        d_y = (valid_y - player_y) - damper_y
-
-        # self.frame_displacement = (d_x / self.blink_frames,
-        #                            d_y / self.blink_frames)
-        # self.frames_passed = 0
-
-        self.player.moving_component.move((d_x, d_y))
-        # self.player.moving_component.move(self.frame_displacement)
-        # self.frames_passed = self.frames_passed + 1
-
-        # elif  self.is_blinking:
-        #     if self.frames_passed < self.blink_frames:
-        #         self.player.moving_component.move(self.frame_displacement)
-        #         self.frames_passed = self.frames_passed + 1
-        #     elif self.frames_passed >= self.blink_frames:
-        #         self.is_blinking = False
 
     def handle_event(self, event):
         from src.WorldConstants import BLINK_KEY
@@ -117,15 +99,6 @@ class Blink_Component:
 
         if event.type == pygame.MOUSEBUTTONDOWN and self.can_blink:
             self.is_blinking = True
-
-    def pos_is_tile(self, x, y):
-        i = int(x/32)
-        j = int(y/32)
-
-        if self.player.level.map[j][i]:
-            return True
-        else:
-            return False
 
     def update(self, deltaTime):
         if self.is_blinking:
@@ -286,8 +259,7 @@ class Player:
 
     def handle_collisions(self):
         entities = self.level.entities
-        def lies_between(x, a, b):
-            return a <= x <= b
+        lies_between = lambda x, a, b : a <= x <= b
 
         for other in entities:
             #assert(isinstance(other, Skeleton))
