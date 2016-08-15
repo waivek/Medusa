@@ -1,3 +1,4 @@
+import math
 class Vector2i:
     def __init__(self, _x, _y):
         self.x = _x
@@ -18,3 +19,7 @@ class Vector2i:
     def multiply_vector(self, other):
         v = Vector2i(self.x * other.x, self.y * other.y)
         return v
+
+    def rotate(self, angle):
+        self.x = math.cos(angle)*self.x - math.sin(angle)*self.y
+        self.y = math.sin(angle)*self.x + math.cos(angle)*self.y

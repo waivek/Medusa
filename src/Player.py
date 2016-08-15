@@ -1,6 +1,10 @@
 from src.Skeleton import *
 from src.Powerup import *
 from src.Lock import *
+from src.WeaponEquipped import *
+import src.Util
+
+import pygame
 # import pygame
 from src.Timer import *
 
@@ -111,6 +115,8 @@ class PlayerState(Enum):
 
 class Player:
     def __init__(self, pos, level):
+        self.level = level
+
         self.size = (BLOCK_SIZE, BLOCK_SIZE)
 
         self.state = PlayerState.JUMPING
@@ -139,29 +145,14 @@ class Player:
 
         self.is_sprinting = False
 
-        self.moving_component = MovingComponent(self.sprite, level.map, level.row, level.col)
+        self.moving_component = MovingComponent(self, self.level)
         self.moving_component.move(pos)
-        self.level = level
+        self.moving_component.on_collision = Player.on_collision
 
         self.energy = 10
         self.energy_timer = Timer()
 
         self.valid_blink_points = []
-
-        class Health:
-            def __init__(self, health, cooldown_seconds):
-                from src.Timer import  Timer
-                self.health = health
-                self.cooldown_seconds = cooldown_seconds
-                self.time_elapsed_since_hit = self.cooldown_seconds
-                self.timer = Timer()
-
-            def deal_damage(self, damage):
-                t = self.timer.get_time()
-                if t > self.cooldown_seconds * 1000:
-                    self.health = self.health - damage
-                    self.time_elapsed_since_hit = 0
-                    self.timer.reset()
 
         self.health = Health(10, 1)
 
@@ -176,10 +167,16 @@ class Player:
         for i in range(KeyEnum.NUM.value):
             self.keys.append(0)
 
+        self.equipped_weapon = -1
+        self.weapon = []
+        for i in range(WeaponEnum.NUM.value):
+            self.weapon.append(None)
         self.blink_component = Blink_Component(player=self)
 
     def draw(self, screen, camera):
         self.sprite.draw(screen, camera)
+        if self.equipped_weapon is not -1:
+            self.weapon[self.equipped_weapon].draw(screen, camera)
         self.blink_component.draw(screen, camera)
 
 
@@ -188,7 +185,30 @@ class Player:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE and self.state==PlayerState.GROUND:
                 self.moving_component.velocity = (self.moving_component.velocity[0],self.moving_component.velocity[1] - self.jump_velocity)
+                #self.state = PlayerState.JUMPING
                 play_sound(SoundEnum.JUMP)
+
+            elif event.key == pygame.K_e:
+                i = self.equipped_weapon + 1
+                while i < WeaponEnum.NUM.value:
+                    if self.weapon[i] is not None:
+                        self.equipped_weapon = i
+                        break
+                    i+=1
+
+            elif event.key == pygame.K_q:
+                i = self.equipped_weapon - 1
+                while i >= 0:
+                    if self.weapon[i] is not None:
+                        self.equipped_weapon = i
+                        break
+                    i-=1
+
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            if self.equipped_weapon is not -1:
+                mpos = pygame.mouse.get_pos()
+                target = (mpos[0]+self.level.camera_pos[0],mpos[1]+self.level.camera_pos[1])
+                self.weapon[self.equipped_weapon].use(target)
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
                 self.moving_component.velocity = (0, self.moving_component.velocity[1])
@@ -210,25 +230,6 @@ class Player:
                 if self.sprite.state == 1 or self.sprite.state==3:
                     self.sprite.set_state(5)
 
-    def on_collision(self, other):
-        if isinstance(other, Skeleton):
-            self.health.deal_damage(1)
-
-        if isinstance(other, Powerup):
-            other.buff.start()
-            self.buffs.append(other.buff)
-            self.level.destroy_entity(other)
-            play_sound(SoundEnum.POWERUP)
-
-        if isinstance(other, Key):
-            self.keys[other.key_type.value] += 1
-            self.level.destroy_entity(other)
-
-        if isinstance(other, Lock):
-            if self.keys[other.lock_type.value] > 0:
-                self.keys[other.lock_type.value] -= 1
-                self.level.destroy_entity(other)
-                play_sound(SoundEnum.UNLOCK)
 
     def handle_collisions(self):
         entities = self.level.entities
@@ -251,6 +252,7 @@ class Player:
                 collision["down"] = lies_between(other_rect.top, player_rect.top, player_rect.bottom)
                 if collision["down"] or collision["up"]:
                     self.on_collision(other)
+
 
     def update_buffs(self, deltatime):
         self.speed = CONST_PLAYER_SPEED
@@ -331,9 +333,52 @@ class Player:
         #handle collisions
         self.handle_collisions()
 
-        colliders = []
-        for ent in self.level.entities:
-            if isinstance(ent, Lock) or isinstance(ent, Skeleton):
-                colliders.append(ent)
+        #self.moving_component.push_out_colliders(self.level.colliders)
 
-        self.moving_component.push_out_colliders(colliders)
+        if self.equipped_weapon is not -1:
+            self.weapon[self.equipped_weapon].update(deltatime)
+
+    def save(self, file):
+        file.write(str(self.moving_component.position[0]))
+        file.write('\n')
+        file.write(str(self.moving_component.position[1]))
+        file.write('\n')
+
+    @staticmethod
+    def load(file, level):
+        posx = int(file.readline())
+        posy = int(file.readline())
+        pos = (posx, posy)
+        return (Player(pos, level))
+
+    def on_collision(self, other):
+        if isinstance(other, Skeleton):
+            self.health.deal_damage(1)
+
+        if isinstance(other, Powerup):
+            other.buff.start()
+            self.buffs.append(other.buff)
+            self.level.destroy_entity(other)
+            play_sound(SoundEnum.POWERUP)
+
+        if isinstance(other, Key):
+            self.keys[other.key_type.value] += 1
+            self.level.destroy_entity(other)
+
+        if isinstance(other, Lock):
+            if self.keys[other.lock_type.value] > 0:
+                self.keys[other.lock_type.value] -= 1
+                self.level.destroy_entity(other)
+                play_sound(SoundEnum.UNLOCK)
+
+        if isinstance(other, Ammo):
+            if self.weapon[other.ammo_type.value] is not None:
+                self.weapon[other.ammo_type.value].ammo += 5
+                self.level.destroy_entity(other)
+
+        if isinstance(other, WeaponItem):
+            if self.weapon[other.weapon_type.value] is None:
+                self.weapon[other.weapon_type.value] = WeaponEquipped(other.weapon_type,5,self)
+            else:
+                self.weapon[other.weapon_type.value].ammo += 5
+            self.level.destroy_entity(other)

@@ -5,17 +5,20 @@ from src.MapEditor import *
 def init():
     pygame.init()
     pygame.mixer.init(frequency=22050, size=-16, channels=2, buffer=4096)
+
     if not load_resources():
         print("ERROR: unable to load resources")
+
+    init_weapons()
 
 def main():
     init()
 
-    size = 800, 400
+    size = CONST_SCREEN_WIDTH, CONST_SCREEN_HEIGHT
     screen = pygame.display.set_mode(size)
     black = 0, 0, 0
-    level = Level()
-    # level = MapEditor()
+    level = Level.load(r"..\level.txt")
+    #level = MapEditor()
     #p1 = Player(level.map,level.col,level.row, level)
     #level.add_player(p1)
     #level.add_monster(Skeleton(level.map,level.col,level.row))
