@@ -19,14 +19,14 @@ class EnemyMovementComponent:
             self.moving_component.velocity = (-self.moving_component.velocity[0], self.moving_component.velocity[1])
 
         cell = src.Util.pixel2cell(self.moving_component.position[0]+16,self.moving_component.position[1]+16)
-        print(cell)
+        #print(cell)
         if self.moving_component.velocity[0] < 0:
-            if self.level.tiles[cell[1]-1][cell[0]]:
+            if self.level.tiles[cell[1]][cell[0]-1]:
+                self.moving_component.velocity = (100, self.moving_component.velocity[1])
+            elif self.level.tiles[cell[1]+1][cell[0]-1] == False:
                 self.moving_component.velocity = (-self.moving_component.velocity[0], self.moving_component.velocity[1])
-            #elif self.level.tiles[cell[1]-1][cell[0]+1] == False:
-            #    self.moving_component.velocity = (-self.moving_component.velocity[0], self.moving_component.velocity[1])
         elif self.moving_component.velocity[0] > 0:
-            if self.level.tiles[cell[1]+1][cell[0]]:
+            if self.level.tiles[cell[1]][cell[0]+1]:
+                self.moving_component.velocity = (-100, self.moving_component.velocity[1])
+            elif self.level.tiles[cell[1]+1][cell[0]+1] == False:
                 self.moving_component.velocity = (-self.moving_component.velocity[0], self.moving_component.velocity[1])
-            #elif self.level.tiles[cell[1]+1][cell[0]+1] == False:
-            #    self.moving_component.velocity = (-self.moving_component.velocity[0], self.moving_component.velocity[1])

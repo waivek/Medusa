@@ -2,6 +2,12 @@ from src.WorldConstants import *
 import src.Util
 import pygame
 
+class BlockCollision:
+    def __init__(self, pos, level):
+        self.x = pos[0]
+        self.y = pos[1]
+        self.level = level
+
 class MovingComponent:
     def __init__(self, obj, level):
         self.obj = obj
@@ -50,6 +56,8 @@ class MovingComponent:
 
         if isinstance(self.obj,Projectile):
             print(colliders)
+
+        colliding_obj = None
         while flag == 0:
             my_sprite = self.sprite.sprite_rect()
             for i in range(2 * m + 2):
@@ -64,25 +72,51 @@ class MovingComponent:
                     #if d[0] is not m and d[1] is not m:
                     #    continue
 
-                    colliding_obj = None
-
-                    b = 0
+                    b = False
                     b = b or self.point_in_wall(self.sprite.sprite_rect().topleft[0] + d[0] + self.collision_bounds[0],
                                                 self.sprite.sprite_rect().topleft[1] + d[1] + self.collision_bounds[1])
+                    if b and colliding_obj is None:
+                        #print("setting block collider")
+                        colliding_obj = BlockCollision(src.Util.pixel2cell(self.sprite.sprite_rect().topleft[0] + d[0] + self.collision_bounds[0],
+                                                self.sprite.sprite_rect().topleft[1] + d[1] + self.collision_bounds[1]), self.level)
+
                     b = b or self.point_in_wall(self.sprite.sprite_rect().topleft[0] + d[0]
                                                 + self.collision_bounds[0] + self.collision_bounds[2],
                                                 self.sprite.sprite_rect().topleft[1] + d[1] + self.collision_bounds[1])
+
+                    if b and colliding_obj is None:
+                        #("setting block collider")
+                        colliding_obj = BlockCollision(src.Util.pixel2cell(self.sprite.sprite_rect().topleft[0] + d[0]
+                                                + self.collision_bounds[0] + self.collision_bounds[2],
+                                                self.sprite.sprite_rect().topleft[1] + d[1] + self.collision_bounds[1]), self.level)
+
                     b = b or self.point_in_wall(self.sprite.sprite_rect().topleft[0] + d[0] + self.collision_bounds[0],
                                                 self.sprite.sprite_rect().topleft[1] + d[1]
                                                 + self.collision_bounds[1] + self.collision_bounds[3])
+
+                    if b and colliding_obj is None:
+                        #print("setting block collider")
+                        colliding_obj = BlockCollision(src.Util.pixel2cell(self.sprite.sprite_rect().topleft[0] + d[0] + self.collision_bounds[0],
+                                                self.sprite.sprite_rect().topleft[1] + d[1]
+                                                + self.collision_bounds[1] + self.collision_bounds[3]), self.level)
+
                     b = b or self.point_in_wall(self.sprite.sprite_rect().topleft[0] + d[0]
                                                 + self.collision_bounds[0] + self.collision_bounds[2],
                                                 self.sprite.sprite_rect().topleft[1] + d[1]
                                                 + self.collision_bounds[1] + self.collision_bounds[3])
 
-                    if b == 0:
+                    if b and colliding_obj is None:
+                        #print("setting block collider")
+                        colliding_obj = BlockCollision(src.Util.pixel2cell(self.sprite.sprite_rect().topleft[0] + d[0]
+                                                + self.collision_bounds[0] + self.collision_bounds[2],
+                                                self.sprite.sprite_rect().topleft[1] + d[1]
+                                                + self.collision_bounds[1] + self.collision_bounds[3]), self.level)
+
+                    if b == False:
                         for k in range(len(colliders)):
-                            new_rect = pygame.Rect(my_sprite.topleft[0]+d[0], my_sprite.topleft[1]+d[1], 32, 32)
+                            new_rect = pygame.Rect(my_sprite.topleft[0]+d[0]+self.collision_bounds[0],
+                                                   my_sprite.topleft[1]+d[1]+self.collision_bounds[1],
+                                                   self.collision_bounds[2], self.collision_bounds[3])
                             b = b or new_rect.colliderect(colliders[k].sprite.sprite_rect())
                             #b = b or src.Util.rect_intersect(new_rect, colliders[k].sprite.sprite_rect())
                             if b:
@@ -91,19 +125,45 @@ class MovingComponent:
                                     print("colliding:")
                                     print(self.obj)
                                     print(colliders[k])
-                                colliding_obj = colliders[k]
+                                if colliding_obj is None:
+                                    print("setting collider")
+                                    colliding_obj = colliders[k]
                                 break
 
-                    if b == 0:
+                    from src.Skeleton import Skeleton
+
+                    if b == False:
                         self.move(d)
                         flag = 1
+                        debug = 0
                         if (d[0] != 0):
                             self.velocity = (-self.velocity[0] * self.bounciness, self.velocity[1])
+                            if type(self.obj)==Skeleton:
+                                print("set vel")
+                                print("p1")
+                                print(colliding_obj)
+                            debug = 1
+                            assert m > 0
+                            assert colliding_obj is not None
+
                         if (d[1] != 0):
                             self.velocity = (self.velocity[0], -self.velocity[1] * self.bounciness)
+                            #print("set vel")
+                            assert m > 0
+                            assert colliding_obj is not None
+
+                        assert colliding_obj is not None or m == 0
+                        if debug>0:
+                            if type(self.obj) == Skeleton:
+                                print("p2")
+                                print(colliding_obj)
+                        if colliding_obj is not None:
+                            self.on_collision(self.obj, colliding_obj)
+                            if debug > 0 and type(self.obj)==Skeleton:
+                                print("called collision")
+                        elif debug > 0and type(self.obj)==Skeleton:
+                            print("not called collision")
                         break
-                    elif colliding_obj is not None:
-                        self.on_collision(self.obj, colliding_obj)
 
             m += int(m/10) + 1
 

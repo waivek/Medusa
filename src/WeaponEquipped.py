@@ -49,7 +49,7 @@ def init_weapons():
         if weapon.ammo > 0:
             weapon.ammo -= 1
             print(target)
-            vel = Vector2i(200, 0)
+            vel = Vector2i(500, 0)
             rot = math.atan2(-(target[1] - weapon.owner.moving_component.position[1]+16)
                                  ,(target[0] - weapon.owner.moving_component.position[0]+16))
             print(rot)

@@ -3,6 +3,7 @@ from src.LoadResources import ImageEnum
 from src.LoadResources import gImages
 import src.Util
 from src.WorldConstants import *
+import math
 
 class Sprite:
     def __init__(self, spriteenum):
@@ -35,4 +36,4 @@ class Sprite:
 
     def set_rotation(self, angle):
         self.rotation = angle
-        self.sprite = pygame.transform.rotate(gImages[self.sprite_enum.value], src.Util.rad2deg(angle))
+        self.sprite = pygame.transform.rotate(gImages[self.sprite_enum.value], math.degrees(angle))

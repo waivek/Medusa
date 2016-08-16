@@ -1,7 +1,7 @@
 from src.AnimationFSM import AnimationFSM
 from src.AnimatedSprite import AnimatedSprite
 from src.LoadResources import ImageEnum
-from src.MovingComponent import MovingComponent
+from src.MovingComponent import *
 from src.EnemyMovementComponent import EnemyMovementComponent
 from src.Health import *
 import pygame
@@ -45,7 +45,7 @@ class Skeleton:
 
     def update(self, deltaTime):
         self.moving_component.update(deltaTime)
-        #self.enemy_movement_component.update(deltaTime)
+        self.enemy_movement_component.update(deltaTime)
 
         if self.health <= 0:
             self.level.destroy_entity(self)
@@ -68,9 +68,20 @@ class Skeleton:
 
     @staticmethod
     def on_collision(this, other):
-        print("collision with")
-        print(type(other))
-        if other.sprite.sprite_rect().topleft[0] > this.sprite.sprite_rect().topleft[0]:
-            this.moving_component.velocity = (-100,this.moving_component.velocity[1])
+        #print("collision with")
+        #print(type(other))
+
+        if isinstance(other, BlockCollision):
+            pass
+            # if other.x*BLOCK_SIZE == this.sprite.sprite_rect().topleft[1]:
+            #     #print("%d %d %d" % (other.x*32,other.y*32,this.sprite.sprite_rect().topleft[1]))
+            #     if other.y * BLOCK_SIZE > this.sprite.sprite_rect().topleft[0]:
+            #         this.moving_component.velocity = (-100, this.moving_component.velocity[1])
+            #     else:
+            #         this.moving_component.velocity = (100, this.moving_component.velocity[1])
         else:
-            this.moving_component.velocity = (100, this.moving_component.velocity[1])
+            if other.sprite.sprite_rect().topleft[0] > this.sprite.sprite_rect().topleft[0]:
+                this.moving_component.velocity = (-100,this.moving_component.velocity[1])
+            else:
+                this.moving_component.velocity = (100, this.moving_component.velocity[1])
+        #print(this.moving_component.velocity)
