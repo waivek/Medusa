@@ -14,6 +14,14 @@ class PlayerState(Enum):
     GROUND = 0
     JUMPING = 1
 
+class PlayerAnimState(Enum):
+    WALK_LEFT = 0
+    WALK_RIGHT = 1
+    JUMP_LEFT = 2
+    JUMP_RIGHT = 3
+    LEFT = 4
+    RIGHT = 5
+
 class Player:
     def __init__(self, pos, level):
         self.level = level
@@ -29,12 +37,12 @@ class Player:
         self.sprint_energy_rate = CONST_SPRINT_ENERGY_RATE
 
         self.sprite = AnimationFSM()
-        spr0 = AnimatedSprite(ImageEnum.PLAYER1_RIGHT, 8)
-        spr1 = AnimatedSprite(ImageEnum.PLAYER1_LEFT, 8)
-        spr2 = AnimatedSprite(ImageEnum.PLAYER1_JUMPRIGHT, 1)
-        spr3 = AnimatedSprite(ImageEnum.PLAYER1_JUMPLEFT, 1)
-        spr4 = AnimatedSprite(ImageEnum.PLAYER1_RIGHT, 1)
-        spr5 = AnimatedSprite(ImageEnum.PLAYER1_LEFT, 1)
+        spr0 = AnimatedSprite(ImageEnum.PLAYER1_LEFT, 8)
+        spr1 = AnimatedSprite(ImageEnum.PLAYER1_RIGHT, 8)
+        spr2 = AnimatedSprite(ImageEnum.PLAYER1_JUMPLEFT, 1)
+        spr3 = AnimatedSprite(ImageEnum.PLAYER1_JUMPRIGHT, 1)
+        spr4 = AnimatedSprite(ImageEnum.PLAYER1_LEFT, 1)
+        spr5 = AnimatedSprite(ImageEnum.PLAYER1_RIGHT, 1)
         self.sprite.add_sprite(spr0)
         self.sprite.add_sprite(spr1)
         self.sprite.add_sprite(spr2)
@@ -42,7 +50,7 @@ class Player:
         self.sprite.add_sprite(spr4)
         self.sprite.add_sprite(spr5)
 
-        self.sprite.set_state(2)
+        self.sprite.set_state(PlayerAnimState.JUMP_LEFT)
 
         self.is_sprinting = False
 
@@ -117,19 +125,19 @@ class Player:
     def update_sprite(self):
         if self.state == PlayerState.JUMPING:
             if self.moving_component.velocity[0] >= 0:
-                self.sprite.set_state(2)
+                self.sprite.set_state(PlayerAnimState.JUMP_RIGHT)
             else:
-                self.sprite.set_state(3)
+                self.sprite.set_state(PlayerAnimState.JUMP_LEFT)
         else:
             if self.moving_component.velocity[0] > 0:
-                self.sprite.set_state(0)
+                self.sprite.set_state(PlayerAnimState.WALK_RIGHT)
             elif self.moving_component.velocity[0] < 0:
-                self.sprite.set_state(1)
+                self.sprite.set_state(PlayerAnimState.WALK_LEFT)
             else:
-                if self.sprite.state == 0 or self.sprite.state==2:
-                    self.sprite.set_state(4)
-                if self.sprite.state == 1 or self.sprite.state==3:
-                    self.sprite.set_state(5)
+                if self.sprite.state == PlayerAnimState.JUMP_RIGHT.value or self.sprite.state==PlayerAnimState.WALK_RIGHT.value:
+                    self.sprite.set_state(PlayerAnimState.RIGHT)
+                if self.sprite.state == PlayerAnimState.JUMP_LEFT.value or self.sprite.state==PlayerAnimState.WALK_LEFT.value:
+                    self.sprite.set_state(PlayerAnimState.LEFT)
 
 
     def handle_collisions(self):

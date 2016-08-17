@@ -12,6 +12,7 @@ class Sprite:
         self.sprite_rec = self.sprite.get_rect()
         self.bounds = (0,0,32,32)
         self.rotation = 0
+        self.is_flipped = False
 
     def move(self, displacement):
         self.sprite_rec = self.sprite_rec.move(displacement)
@@ -35,5 +36,19 @@ class Sprite:
                                   self.sprite_rec[3]-camera[1]), self.bounds)
 
     def set_rotation(self, angle):
+        self.set_rotation_degrees(math.degrees(angle))
+
+    def set_rotation_degrees(self, angle):
         self.rotation = angle
-        self.sprite = pygame.transform.rotate(gImages[self.sprite_enum.value], math.degrees(angle))
+        self.sprite = pygame.transform.rotate(gImages[self.sprite_enum.value], angle)
+        if self.is_flipped:
+            self.is_flipped = False
+            self.flip()
+
+    def flip(self):
+        self.is_flipped = not self.is_flipped
+        self.sprite = pygame.transform.flip(self.sprite, True, False)
+
+    def set_flipped(self, value):
+        if value!=self.is_flipped:
+            self.flip()

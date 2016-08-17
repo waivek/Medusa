@@ -1,6 +1,7 @@
 from src.AnimatedSprite import AnimatedSprite
 from src.LoadResources import gImages
 from src.LoadResources import ImageEnum
+from enum import Enum
 
 class AnimationFSM:
     def __init__(self):
@@ -18,9 +19,14 @@ class AnimationFSM:
         self.sprites[self.state].update(deltatime)
 
     def set_state(self, state):
-        if(self.state!=state):
-            self.state = state
-            self.sprites[self.state].reset()
+        if isinstance(state, Enum):
+            if(self.state!=state.value):
+                self.state = state.value
+                self.sprites[self.state].reset()
+        else:
+            if (self.state != state):
+                self.state = state
+                self.sprites[self.state].reset()
 
     def move(self,displacement):
         for i in range(len(self.sprites)):

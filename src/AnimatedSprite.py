@@ -11,6 +11,7 @@ class AnimatedSprite:
         self.current_frame = 0
         self.max_frames = frames
         self.sprite_rec = gImages[self.image_id.value].get_rect()
+        self.rotation = 0
 
     def full_sprite_rect(self):
         return self.sprite_rec
@@ -47,3 +48,7 @@ class AnimatedSprite:
 
     def set_location(self, pos):
         self.sprite_rec.topleft = pos
+
+    def set_rotation(self, angle):
+        self.rotation = angle
+        self.sprite = pygame.transform.rotate(gImages[self.sprite_enum.value], math.degrees(angle))

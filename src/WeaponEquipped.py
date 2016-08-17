@@ -9,17 +9,25 @@ class WeaponEquipped:
     def __init__(self, weapon_type, ammo, owner):
         self.weapon_type = weapon_type
         self.ammo = ammo
-        self.sprite = AnimatedSprite(WeaponSprites[weapon_type.value],1)
+        self.sprite = Sprite(WeaponSprites[weapon_type.value])
         self.owner = owner
 
     def use(self, mousepos):
         WeaponFunctions[self.weapon_type.value](self, mousepos)
 
     def draw(self,screen,camera):
+        from src.Player import PlayerAnimState
+        self.sprite.set_rotation_degrees(90 - (self.owner.sprite.sprites[self.owner.sprite.state].current_frame % 4)*30)
+        if self.owner.sprite.state == PlayerAnimState.WALK_RIGHT.value or self.owner.sprite.state == PlayerAnimState.RIGHT.value \
+            or self.owner.sprite.state == PlayerAnimState.JUMP_RIGHT.value:
+            self.sprite.set_flipped(True)
+        else:
+            self.sprite.set_flipped(False)
         self.sprite.draw(screen, camera)
+        print(self.sprite.is_flipped)
 
     def update(self, deltatime):
-        self.sprite.update(deltatime)
+        #self.sprite.update(deltatime)
         self.sprite.set_location(self.owner.moving_component.position)
 
 
