@@ -24,23 +24,36 @@ class Sprite:
         return self.sprite_rec
 
     def sprite_rect(self):
-        return pygame.Rect(self.sprite_rec.topleft[0],self.sprite_rec.topleft[1],self.bounds[2],self.bounds[3])
+        return pygame.Rect(self.sprite_rec.topleft[0]+self.bounds[0],self.sprite_rec.topleft[1]+self.bounds[1],self.bounds[2],self.bounds[3])
 
     def get_center(self):
-        return (self.sprite_rec.topleft[0] + int(self.bounds[0]/2) , self.sprite_rec.topleft[1] + int(self.bounds[1]/2))
+        return (self.sprite_rec.topleft[0]+self.bounds[0] + int(self.bounds[2]/2) , self.sprite_rec.topleft[1]+self.bounds[1] + int(self.bounds[3]/2))
 
     def draw(self, screen, camera):
         screen_rect = pygame.Rect(camera[0],camera[1],CONST_SCREEN_WIDTH,CONST_SCREEN_HEIGHT)
         if screen_rect.colliderect(self.sprite_rec):
-            screen.blit(self.sprite, (self.sprite_rec[0]-camera[0],self.sprite_rec[1]-camera[1],self.sprite_rec[2]-camera[0],
-                                  self.sprite_rec[3]-camera[1]), self.bounds)
+            screen.blit(self.sprite, pygame.Rect(self.sprite_rec[0]-camera[0],self.sprite_rec[1]-camera[1],self.sprite_rec[2]-camera[0],
+                                  self.sprite_rec[3]-camera[1]), pygame.Rect(self.bounds))
+
+    def set_rotation_cropped(self, angle):
+        self.set_rotation_cropped_degrees(math.degrees(angle))
+
+    def set_rotation_cropped_degrees(self, angle):
+        self.rotation = angle
+        self.sprite = pygame.transform.rotate(gImages[self.sprite_enum.value], angle)
+        if self.is_flipped:
+            self.is_flipped = False
+            self.flip()
 
     def set_rotation(self, angle):
-        self.set_rotation_degrees(math.degrees(angle))
+        self.set_rotation_cropped_degrees(angle)
 
     def set_rotation_degrees(self, angle):
         self.rotation = angle
         self.sprite = pygame.transform.rotate(gImages[self.sprite_enum.value], angle)
+        self.sprite_rec = self.sprite.get_rect(center=self.sprite_rec.center)
+        self.bounds = (0, 0, self.sprite_rec[2], self.sprite_rec[3])
+
         if self.is_flipped:
             self.is_flipped = False
             self.flip()

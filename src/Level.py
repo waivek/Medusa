@@ -29,9 +29,9 @@ class Level:
         self.col = 100
         self.tiles = \
             [
-                [ y >= (10) for x in range(self.col)]
+                [y >= (10) for x in range(self.col)]
                 for y in range(self.row)
-            ]
+                ]
 
         self.sky_sprite = Sprite(ImageEnum.SKY)
         self.sky_sprite.bounds = (0,0,2000,2000)

@@ -7,6 +7,12 @@ class MapEditor:
         self.level = Level.load(r"..\level.txt")
         self.level.show_hud = False
 
+        if len(self.level.players) >= 1:
+            self.level.camera_pos = (self.level.players[0].moving_component.position[0] - CONST_CAMERA_PLAYER_OFFSET_X,
+                           self.level.players[0].moving_component.position[1] - CONST_CAMERA_PLAYER_OFFSET_Y)
+
+        self.zoomlevel = 1
+
         self.selected = (-1,-1)
 
         self.tile_spr = Sprite(ImageEnum.BLOCK)
@@ -155,6 +161,17 @@ class MapEditor:
                     if self.selected[0]==6:
                         e = Ammo(WeaponEnum(self.selected[1]), (cell[0]*BLOCK_SIZE,cell[1]*BLOCK_SIZE))
                         self.level.add_entity(e)
+
+            #zoom
+            if event.button == 4:
+                self.zoomlevel -= 1
+                if self.zoomlevel < 1:
+                    self.zoomlevel = 1
+
+            if event.button == 5:
+                self.zoomlevel += 1
+                if self.zoomlevel > 5:
+                    self.zoomlevel = 5
 
 
     def update(self, deltatime):

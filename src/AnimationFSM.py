@@ -46,3 +46,6 @@ class AnimationFSM:
         m = pygame.Mask((32,32))
         m.fill()
         return m
+
+    def get_frame(self):
+        return self.sprites[self.state].get_frame()

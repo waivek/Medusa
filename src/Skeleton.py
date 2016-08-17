@@ -1,8 +1,6 @@
-from src.AnimationFSM import AnimationFSM
-from src.AnimatedSprite import AnimatedSprite
-from src.LoadResources import ImageEnum
 from src.MovingComponent import *
 from src.EnemyMovementComponent import EnemyMovementComponent
+from src.EquipComponent import *
 from src.Health import *
 import pygame
 

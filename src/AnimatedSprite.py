@@ -58,3 +58,6 @@ class AnimatedSprite:
         m = pygame.Mask((32,32))
         m.fill()
         return m
+
+    def get_frame(self):
+        return self.current_frame

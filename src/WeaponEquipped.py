@@ -1,6 +1,5 @@
 from src.Ammo import *
 from src.Projectile import *
-from src.Skeleton import *
 
 WeaponFunctions = []
 
@@ -10,13 +9,29 @@ class WeaponEquipped:
         self.ammo = ammo
         self.sprite = Sprite(WeaponSprites[weapon_type.value])
         self.owner = owner
+        self.collision_component = CollisionComponent(self, self.owner.level)
+
+        self.is_attacking = False
+
+        self.weapon_attach = (16,18)
+
+        self.attach_points = []
 
     def use(self, mousepos):
         WeaponFunctions[self.weapon_type.value](self, mousepos)
 
     def draw(self,screen,camera):
         from src.Player import PlayerAnimState
-        self.sprite.set_rotation_degrees(90 - (self.owner.sprite.sprites[self.owner.sprite.state].current_frame % 4)*30)
+
+        self.sprite.sprite_rec = pygame.Rect(0, 0, 2 * self.weapon_attach[0], 2 * self.weapon_attach[1])
+        self.sprite.set_location((self.owner.sprite.sprite_rect().topleft[0] - self.weapon_attach[0]
+                                  + self.attach_points[self.owner.sprite.state][self.owner.sprite.get_frame()][0],
+                                  self.owner.sprite.sprite_rect().topleft[1] - self.weapon_attach[1]
+                                  + self.attach_points[self.owner.sprite.state][self.owner.sprite.get_frame()][1]))
+
+        self.sprite.set_rotation_degrees(self.attach_points[self.owner.sprite.state][self.owner.sprite.get_frame()][2])
+
+
         if self.owner.sprite.state == PlayerAnimState.WALK_RIGHT.value or self.owner.sprite.state == PlayerAnimState.RIGHT.value \
             or self.owner.sprite.state == PlayerAnimState.JUMP_RIGHT.value:
             self.sprite.set_flipped(True)
@@ -27,6 +42,15 @@ class WeaponEquipped:
     def update(self, deltatime):
         #self.sprite.update(deltatime)
         self.sprite.set_location(self.owner.moving_component.position)
+
+        if self.is_attacking:
+            collider = self.collision_component.check_collisions()
+            if collider is not None:
+                if collider is not self.owner:
+                    from src.Skeleton import Skeleton
+                    if isinstance(collider, Skeleton):
+                        collider.health -= 1
+
 
 
 def init_weapons():
@@ -45,6 +69,7 @@ def init_weapons():
 
     def dealdmg(projectile, other):
         print("collision called")
+        from src.Skeleton import Skeleton
         if isinstance(other, Skeleton):
             other.health -= 1
             projectile.owner.level.destroy_entity(projectile)

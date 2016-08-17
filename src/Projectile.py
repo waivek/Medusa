@@ -35,4 +35,4 @@ class Projectile:
         if collider is not None:
             self.collide_func(self, collider)
 
-        self.sprite.set_rotation(math.pi + math.atan2(-self.moving_component.velocity[1],self.moving_component.velocity[0]))
+        self.sprite.set_rotation_cropped(math.pi + math.atan2(-self.moving_component.velocity[1], self.moving_component.velocity[0]))

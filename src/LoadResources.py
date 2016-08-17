@@ -50,6 +50,8 @@ class ImageEnum(Enum):
 
     BLINK_DOT = 35
 
+    WEAPON_SWORD = 36
+
 class SoundEnum(Enum):
     JUMP = 0
     HIT = 1
@@ -58,8 +60,8 @@ class SoundEnum(Enum):
     ARROW_SHOOT = 4
 
 gImagePaths = [
-    r"..\raw\Sprites\explorer_left_strip8.png",
-    r"..\raw\Sprites\explorer_right_strip8.png",
+    r"..\raw\Sprites\player\guy_left.png",
+    r"..\raw\Sprites\player\guy_right.png",
     r"..\raw\Sprites\explorer_jumpleft.png",
     r"..\raw\Sprites\explorer_jumpright.png",
     r"..\raw\Sprites\wall_block.png",
@@ -89,12 +91,12 @@ gImagePaths = [
     r"..\raw\Sprites\lock_gold_sparkle_strip32.png",
     r"..\raw\Sprites\lock_black.png",
     r"..\raw\Sprites\lock_magic.png",
-    r"..\raw\Sprites\bow.png",
+    r"..\raw\Sprites\short_sword.png",
     r"..\raw\Sprites\arrow_left.png",
     r"..\raw\Sprites\gun.png",
     r"..\raw\Sprites\bullet_left.png",
-    r"..\raw\Sprites\red_dot.png"
-
+    r"..\raw\Sprites\red_dot.png",
+    r"..\raw\Sprites\short_sword.png"
 ]
 gSoundPaths = [
     r"..\raw\Sounds\jump.wav",

@@ -58,6 +58,9 @@ class Player:
         self.moving_component.move(pos)
         self.moving_component.on_collision = Player.on_collision
 
+        self.equip_component = EquipComponent(self, self.level)
+        self.equip_component.print_attach_points()
+
         self.energy = 10
         self.energy_timer = Timer()
 
@@ -290,6 +293,7 @@ class Player:
                 self.weapon[other.weapon_type.value] = WeaponEquipped(other.weapon_type,5,self)
                 if self.equipped_weapon == -1:
                     self.equipped_weapon = other.weapon_type.value
+                    self.equip_component.equip_right(self.weapon[other.weapon_type.value])
 
             else:
                 self.weapon[other.weapon_type.value].ammo += 5
