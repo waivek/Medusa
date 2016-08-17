@@ -51,7 +51,7 @@ class MovingComponent:
         return 0
 
     def push_out_colliders(self, colliders):
-        m = 0
+        magnitude = 0
         flag = 0
         factor = 1
         from src.Projectile import Projectile
@@ -62,10 +62,10 @@ class MovingComponent:
         colliding_obj = None
         while flag == 0:
             my_sprite = self.sprite.sprite_rect()
-            for i in range(2 * m + 2):
+            for i in range(2 * magnitude + 2):
                 if flag == 1:
                     break
-                for j in range(2 * m + 2):
+                for j in range(2 * magnitude + 2):
                     if flag==1:
                         break
 
@@ -145,16 +145,16 @@ class MovingComponent:
                                 print("p1")
                                 print(colliding_obj)
                             debug = 1
-                            assert m > 0
+                            assert magnitude > 0
                             assert colliding_obj is not None
 
                         if (d[1] != 0):
                             self.velocity = (self.velocity[0], -self.velocity[1] * self.bounciness)
                             #print("set vel")
-                            assert m > 0
+                            assert magnitude > 0
                             assert colliding_obj is not None
 
-                        assert colliding_obj is not None or m == 0
+                        assert colliding_obj is not None or magnitude == 0
                         if debug>0:
                             if type(self.obj) == Skeleton:
                                 print("p2")
@@ -167,7 +167,7 @@ class MovingComponent:
                             print("not called collision")
                         break
 
-            m += int(m/10) + 1
+            magnitude += int(magnitude/10) + 1
 
     def snap_out(self):
         m = 0

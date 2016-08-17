@@ -23,7 +23,6 @@ class WeaponEquipped:
         else:
             self.sprite.set_flipped(False)
         self.sprite.draw(screen, camera)
-        print(self.sprite.is_flipped)
 
     def update(self, deltatime):
         #self.sprite.update(deltatime)
