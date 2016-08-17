@@ -1,6 +1,7 @@
 from src.MovingComponent import *
 from src.Sprite import *
 from src.MovingComponent import *
+from src.CollisionComponent import *
 import math
 
 class Projectile:
@@ -17,6 +18,9 @@ class Projectile:
         self.moving_component.move(pos)
         self.moving_component.velocity = velocity
         self.moving_component.on_collision = self.collide_func
+        self.moving_component.collides_with_entities = False
+
+        self.collision_component = CollisionComponent(self, self.level)
 
         self.start_func(self)
 
@@ -26,5 +30,9 @@ class Projectile:
     def update(self, deltatime):
         self.moving_component.update(deltatime)
         self.update_func(self)
+
+        collider = self.collision_component.check_collisions()
+        if collider is not None:
+            self.collide_func(self, collider)
 
         self.sprite.set_rotation(math.pi + math.atan2(-self.moving_component.velocity[1],self.moving_component.velocity[0]))

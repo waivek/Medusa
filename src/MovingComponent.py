@@ -9,6 +9,7 @@ class BlockCollision:
         self.level = level
 
 class MovingComponent:
+    #obj must have a .sprite member
     def __init__(self, obj, level):
         self.obj = obj
         self.level = level
@@ -26,7 +27,8 @@ class MovingComponent:
         self.in_air = False
         self.gravity = CONST_GRAVITY
 
-        self.collides = True
+        self.collides_with_tiles = True
+        self.collides_with_entities = True
         self.collision_bounds = pygame.Rect(1,1,30,30)
         self.bounciness = 0
 
@@ -213,7 +215,7 @@ class MovingComponent:
         self.move(displacement)
 
         #check for collisions
-        if self.collides:
+        if self.collides_with_tiles:
             #self.snap_out()
             #if isinstance(self.obj, Player) or isinstance(self.obj, Projectile):
             #    copy = list(self.level.colliders)
@@ -240,11 +242,12 @@ class MovingComponent:
                                            displacement[1])
 
             copy = []
-            #if isinstance(self.obj, Player) or isinstance(self.obj, Projectile):
-            for ent in self.level.colliders:
-                if ent is not self.obj:
-                    #if vel_rect.colliderect(ent.sprite.sprite_rect()):
-                    copy.append(ent)
+            if self.collides_with_entities:
+                #if isinstance(self.obj, Player) or isinstance(self.obj, Projectile):
+                for ent in self.level.colliders:
+                    if ent is not self.obj:
+                        #if vel_rect.colliderect(ent.sprite.sprite_rect()):
+                        copy.append(ent)
             self.push_out_colliders(copy)
 
         #check if falling

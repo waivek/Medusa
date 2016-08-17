@@ -1,6 +1,7 @@
 import pygame
 from src.LoadResources import *
 from src.Timer import *
+import math
 
 class AnimatedSprite:
     def __init__(self, img_id, frames):
@@ -51,4 +52,9 @@ class AnimatedSprite:
 
     def set_rotation(self, angle):
         self.rotation = angle
-        self.sprite = pygame.transform.rotate(gImages[self.sprite_enum.value], math.degrees(angle))
+        self.sprite = pygame.transform.rotate(gImages[self.image_id.value], math.degrees(angle))
+
+    def get_mask(self):
+        m = pygame.Mask((32,32))
+        m.fill()
+        return m

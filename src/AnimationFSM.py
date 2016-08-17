@@ -1,4 +1,5 @@
 from src.AnimatedSprite import AnimatedSprite
+import pygame
 from src.LoadResources import gImages
 from src.LoadResources import ImageEnum
 from enum import Enum
@@ -40,3 +41,8 @@ class AnimationFSM:
 
     def get_center(self):
         return self.sprites[self.state].get_center()
+
+    def get_mask(self):
+        m = pygame.Mask((32,32))
+        m.fill()
+        return m

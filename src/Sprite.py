@@ -52,3 +52,6 @@ class Sprite:
     def set_flipped(self, value):
         if value!=self.is_flipped:
             self.flip()
+
+    def get_mask(self):
+        return pygame.mask.from_surface(self.sprite)
