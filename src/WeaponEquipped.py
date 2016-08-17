@@ -56,8 +56,8 @@ def init_weapons():
         if weapon.ammo > 0:
             weapon.ammo -= 1
             vel = pygame.math.Vector2(500, 0)
-            rot = math.atan2((target[1] - weapon.owner.moving_component.position[1]+16)
-                                 ,(target[0] - weapon.owner.moving_component.position[0]+16))
+            rot = math.atan2((target[1] - weapon.owner.moving_component.position[1])-16
+                                 ,(target[0] - weapon.owner.moving_component.position[0])-16)
             vel = vel.rotate(math.degrees(rot))
             vel2 = (vel.x,vel.y)
             p = Projectile(AmmoSprites[weapon.weapon_type.value], weapon.owner, weapon.owner.moving_component.position, vel2,
