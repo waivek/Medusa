@@ -3,7 +3,8 @@ from src.LoadResources import *
 from src.Key import *
 from enum import Enum
 
-LockSprites = [ImageEnum.LOCK_COPPER, ImageEnum.LOCK_SILVER, ImageEnum.LOCK_GOLD, ImageEnum.LOCK_DARK, ImageEnum.LOCK_MAGIC]
+LockSprites = [ImageEnum.LOCK_COPPER, ImageEnum.LOCK_SILVER, ImageEnum.LOCK_GOLD, ImageEnum.LOCK_DARK, ImageEnum.LOCK_MAGIC,
+               ImageEnum.LOCK_WOOD, ImageEnum.LOCK_BLUE]
 
 
 class Lock:

@@ -27,24 +27,28 @@ class ImageEnum(Enum):
     POWERUP_LIGHT = 15
     POWERUP_DARK = 16
 
-    KEY_COPPER = 17
-    KEY_SILVER = 18
-    KEY_GOLD = 19
-    KEY_DARK = 20
-    KEY_MAGIC = 21
+    KEY_WOOD = 17
+    KEY_BLUE = 18
+    KEY_COPPER = 19
+    KEY_SILVER = 20
+    KEY_GOLD = 21
+    KEY_DARK = 22
+    KEY_MAGIC = 23
 
-    LOCK_COPPER = 22
-    LOCK_SILVER = 23
-    LOCK_GOLD = 24
-    LOCK_DARK = 25
-    LOCK_MAGIC = 26
+    LOCK_WOOD = 24
+    LOCK_BLUE = 25
+    LOCK_COPPER = 26
+    LOCK_SILVER = 27
+    LOCK_GOLD = 28
+    LOCK_DARK = 29
+    LOCK_MAGIC = 30
 
-    WEAPON_BOW = 27
-    AMMO_ARROW = 28
-    WEAPON_GUN = 29
-    AMMO_BULLET = 30
+    WEAPON_BOW = 31
+    AMMO_ARROW = 32
+    WEAPON_GUN = 33
+    AMMO_BULLET = 34
 
-    BLINK_DOT = 31
+    BLINK_DOT = 35
 
 class SoundEnum(Enum):
     JUMP = 0
@@ -59,7 +63,7 @@ gImagePaths = [
     r"..\raw\Sprites\explorer_jumpleft.png",
     r"..\raw\Sprites\explorer_jumpright.png",
     r"..\raw\Sprites\wall_block.png",
-    r"..\raw\Sprites\sky.png",
+    r"..\raw\Sprites\wall_background.png",
     r"..\raw\Sprites\skeleton.png",
     r"..\raw\Sprites\skeleton_walking_strip10.png",
     r"..\raw\Sprites\item_life.png",
@@ -71,11 +75,15 @@ gImagePaths = [
     r"..\raw\Sprites\gem_purple_sparkle_strip32.png",
     r"..\raw\Sprites\gem_light_sparkle_strip32.png",
     r"..\raw\Sprites\gem_dark_sparkle_strip32.png",
+    r"..\raw\Sprites\key_wood.png",
+    r"..\raw\Sprites\key_blue.png",
     r"..\raw\Sprites\key_copper.png",
     r"..\raw\Sprites\key_silver_sparkle_strip32.png",
     r"..\raw\Sprites\key_gold_sparkle_strip32.png",
     r"..\raw\Sprites\key_black.png",
     r"..\raw\Sprites\key_magic.png",
+    r"..\raw\Sprites\lock_wood.png",
+    r"..\raw\Sprites\lock_blue.png",
     r"..\raw\Sprites\lock_copper.png",
     r"..\raw\Sprites\lock_silver_sparkle_strip32.png",
     r"..\raw\Sprites\lock_gold_sparkle_strip32.png",

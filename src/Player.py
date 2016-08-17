@@ -106,7 +106,7 @@ class Player:
                     i-=1
 
         elif event.type == pygame.MOUSEBUTTONDOWN:
-            if self.equipped_weapon is not -1:
+            if self.equipped_weapon != -1:
                 mpos = pygame.mouse.get_pos()
                 target = (mpos[0]+self.level.camera_pos[0],mpos[1]+self.level.camera_pos[1])
                 self.weapon[self.equipped_weapon].use(target)
@@ -183,14 +183,14 @@ class Player:
 
         #detect input
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_LEFT] and not keys[pygame.K_RIGHT]:
+        if keys[pygame.K_a] and not keys[pygame.K_d]:
             if keys[SPRINT_KEY] and self.can_sprint():
                 self.moving_component.velocity = (-self.sprint_speed, self.moving_component.velocity[1])
                 self.is_sprinting = True
             else:
                 self.moving_component.velocity = (-self.speed, self.moving_component.velocity[1])
                 self.is_sprinting = False
-        elif keys[pygame.K_RIGHT] and not keys[pygame.K_LEFT]:
+        elif keys[pygame.K_d] and not keys[pygame.K_a]:
             if keys[SPRINT_KEY] and self.can_sprint():
                 self.moving_component.velocity = (self.sprint_speed, self.moving_component.velocity[1])
                 self.is_sprinting = True
@@ -280,6 +280,9 @@ class Player:
         if isinstance(other, WeaponItem):
             if self.weapon[other.weapon_type.value] is None:
                 self.weapon[other.weapon_type.value] = WeaponEquipped(other.weapon_type,5,self)
+                if self.equipped_weapon == -1:
+                    self.equipped_weapon = other.weapon_type.value
+
             else:
                 self.weapon[other.weapon_type.value].ammo += 5
             self.level.destroy_entity(other)

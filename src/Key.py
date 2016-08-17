@@ -8,9 +8,12 @@ class KeyEnum(Enum):
     GOLD = 2
     DARK = 3
     MAGIC = 4
-    NUM = 5
+    WOOD = 5
+    BLUE = 6
+    NUM = 7
 
-KeySprites = [ImageEnum.KEY_COPPER,ImageEnum.KEY_SILVER,ImageEnum.KEY_GOLD,ImageEnum.KEY_DARK,ImageEnum.KEY_MAGIC]
+KeySprites = [ImageEnum.KEY_COPPER,ImageEnum.KEY_SILVER,ImageEnum.KEY_GOLD,ImageEnum.KEY_DARK,ImageEnum.KEY_MAGIC
+    ,ImageEnum.KEY_WOOD,ImageEnum.KEY_BLUE]
 
 class Key:
     def __init__(self, keytype, pos):

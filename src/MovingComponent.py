@@ -161,7 +161,7 @@ class MovingComponent:
                             self.on_collision(self.obj, colliding_obj)
                             if debug > 0 and type(self.obj)==Skeleton:
                                 print("called collision")
-                        elif debug > 0and type(self.obj)==Skeleton:
+                        elif debug > 0 and type(self.obj)==Skeleton:
                             print("not called collision")
                         break
 
