@@ -1,7 +1,6 @@
 from src.Ammo import *
 from src.Projectile import *
 from src.Skeleton import *
-from src.Vector2i import *
 
 WeaponFunctions = []
 
@@ -56,14 +55,11 @@ def init_weapons():
     def bow(weapon, target):
         if weapon.ammo > 0:
             weapon.ammo -= 1
-            print(target)
-            vel = Vector2i(500, 0)
-            rot = math.atan2(-(target[1] - weapon.owner.moving_component.position[1]+16)
+            vel = pygame.math.Vector2(500, 0)
+            rot = math.atan2((target[1] - weapon.owner.moving_component.position[1]+16)
                                  ,(target[0] - weapon.owner.moving_component.position[0]+16))
-            print(rot)
-            vel.rotate(rot)
+            vel = vel.rotate(math.degrees(rot))
             vel2 = (vel.x,vel.y)
-            print(vel2)
             p = Projectile(AmmoSprites[weapon.weapon_type.value], weapon.owner, weapon.owner.moving_component.position, vel2,
                            arrowinit,arrowupd,dealdmg)
             weapon.owner.level.add_entity(p)
