@@ -54,6 +54,14 @@ class Sprite:
         self.sprite_rec = self.sprite.get_rect(center=self.sprite_rec.center)
         self.bounds = (0, 0, self.sprite_rec[2], self.sprite_rec[3])
 
+    def rotate_around_point(self, angle, point):
+        surface = pygame.Surface((2 * point[0], 2 * point[1]), pygame.SRCALPHA)
+        surface.fill((0, 0, 0, 0))
+        surface.blit(self.sprite, (0, 0, 2 * point[0], 2 * point[1]), self.bounds)
+        self.sprite = pygame.transform.rotate(surface, angle)
+        self.sprite_rec = self.sprite.get_rect(center=self.sprite_rec.center)
+        self.bounds = (0,0,self.sprite_rec[2],self.sprite_rec[3])
+
         if self.is_flipped:
             self.is_flipped = False
             self.flip()

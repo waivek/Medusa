@@ -101,7 +101,7 @@ gImagePaths = [
     r"..\raw\Sprites\gun.png",
     r"..\raw\Sprites\bullet_left.png",
     r"..\raw\Sprites\red_dot.png",
-    r"..\raw\Sprites\weapons\long_short_sword.png",
+    r"..\raw\Sprites\weapons\short_sword.png",
     r"..\raw\Sprites\player\stab_left.png",
     r"..\raw\Sprites\player\stab_right.png",
     r"..\raw\Sprites\player\strike_left.png",

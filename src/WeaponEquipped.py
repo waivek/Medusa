@@ -13,34 +13,46 @@ class WeaponEquipped:
 
         self.is_attacking = False
 
-        self.weapon_attach = (16,50)
+        self.weapon_attach = (16,18)
 
         self.attach_points = []
 
     def use(self, mousepos):
         WeaponFunctions[self.weapon_type.value](self, mousepos)
 
-    def draw(self,screen,camera):
-        #old_rect = self.sprite.sprite_rec
+    def update_sprite(self):
+        # old_rect = self.sprite.sprite_rec
+        self.sprite.sprite = gImages[self.sprite.sprite_enum.value]
+        # surface = pygame.Surface((2 * self.weapon_attach[0], 2 * self.weapon_attach[1]),pygame.SRCALPHA)
+        # surface.fill((0,0,0,0))
+        # self.sprite.draw(surface, (0,0))
+        # surface.blit(self.sprite.sprite,(0,0,2 * self.weapon_attach[0], 2 * self.weapon_attach[1]))
+        # self.sprite.sprite = surface
         self.sprite.sprite_rec = pygame.Rect(0, 0, 2 * self.weapon_attach[0], 2 * self.weapon_attach[1])
         self.sprite.set_location((self.owner.sprite.sprite_rect().topleft[0] - self.weapon_attach[0]
                                   + self.attach_points[self.owner.sprite.state][self.owner.sprite.get_frame()][0],
                                   self.owner.sprite.sprite_rect().topleft[1] - self.weapon_attach[1]
                                   + self.attach_points[self.owner.sprite.state][self.owner.sprite.get_frame()][1]))
-        #print(self.sprite.sprite_rec.topleft)
-        #print(self.owner.sprite.sprite_rect().topleft)
-        self.sprite.set_rotation_degrees(self.attach_points[self.owner.sprite.state][self.owner.sprite.get_frame()][2])
+        print(self.sprite.sprite_rec)
+        # print(self.sprite.sprite_rec.topleft)
+        # print(self.owner.sprite.sprite_rect().topleft)
+        self.sprite.rotate_around_point(self.attach_points[self.owner.sprite.state][self.owner.sprite.get_frame()][2],
+                                        (self.weapon_attach[0], self.weapon_attach[1]))
+        print(self.sprite.sprite_rec)
 
-
-        if self.owner.facing==Facing.RIGHT:
+        if self.owner.facing == Facing.RIGHT:
             self.sprite.set_flipped(True)
         else:
             self.sprite.set_flipped(False)
+
+    def draw(self,screen,camera):
+        self.update_sprite()
         self.sprite.draw(screen, camera)
 
     def update(self, deltatime):
         #self.sprite.update(deltatime)
         self.sprite.set_location(self.owner.moving_component.position)
+        self.update_sprite()
 
         if self.owner.is_attacking:
             collider = self.collision_component.check_collisions()
