@@ -1,7 +1,5 @@
-from src.Line import *
 from src.LoadResources import *
-
-class BlinkComponent:
+class Blink_Component:
     def __init__(self, player):
         from src.Sprite import Sprite
         self.valid_blink_points = []
@@ -10,11 +8,19 @@ class BlinkComponent:
         self.can_blink = False
         self.player = player
 
+        self.blink_frames = 3
+        self.is_blinking = False
+        self.frame_displacement = (None, None)
+        self.frames_passed = None
+        # self.old_offset = None
+
     def get_actual_mouse_pos(self):
         from src.WorldConstants import CONST_CAMERA_PLAYER_OFFSET_X, CONST_CAMERA_PLAYER_OFFSET_Y
         import pygame
         x, y = pygame.mouse.get_pos()
         player_x, player_y = self.player.sprite.sprite_rect().topleft
+        # x_origin = 0
+        # y_origin = 0
         x_origin = player_x - CONST_CAMERA_PLAYER_OFFSET_X
         y_origin = player_y - CONST_CAMERA_PLAYER_OFFSET_Y
 
@@ -46,24 +52,21 @@ class BlinkComponent:
                 break
             self.valid_blink_points.append((x, y))
 
+    def pos_is_tile(self, x, y):
+        i = int(x/32)
+        j = int(y/32)
+
+        if self.player.level.tiles[j][i]:
+            return True
+        else:
+            return False
+
     def draw(self, screen, camera):
         if self.can_blink:
             self.fill_valid_blink_points()
             for x, y in self.valid_blink_points:
                 self.dot_spr.set_location((x, y))
                 self.dot_spr.draw(screen, camera)
-
-    def blink(self):
-        player_x, player_y = self.player.sprite.sprite_rect().center
-        valid_x, valid_y = self.valid_blink_points[-1]
-
-        damper_x = 8
-        damper_y= 0
-
-        d_x = (valid_x - player_x) - damper_x
-        d_y = (valid_y - player_y) - damper_y
-
-        self.player.moving_component.move((d_x, d_y))
 
     def handle_event(self, event):
         from src.WorldConstants import BLINK_KEY
@@ -76,13 +79,37 @@ class BlinkComponent:
                 self.can_blink = False
 
         if event.type == pygame.MOUSEBUTTONDOWN and self.can_blink:
-            self.blink()
+            self.is_blinking = True
 
-    def pos_is_tile(self, x, y):
-        i = int(x/32)
-        j = int(y/32)
+    def update(self, deltaTime):
+        # from src.WorldConstants import CONST_CAMERA_PLAYER_OFFSET_X, CONST_CAMERA_PLAYER_OFFSET_Y
+        if self.is_blinking:
+            is_first_blink_frame = self.frames_passed == None
+            if is_first_blink_frame:
 
-        if self.player.level.tiles[j][i]:
-            return True
-        else:
-            return False
+                # self.old_offset = CONST_CAMERA_PLAYER_OFFSET_X
+
+                self.frames_passed = 0
+
+                player_x, player_y = self.player.sprite.sprite_rect().center
+                valid_x, valid_y = self.valid_blink_points[-1]
+                d_x = (valid_x - player_x)
+                d_y = (valid_y - player_y)
+
+                self.frame_displacement = (d_x / self.blink_frames,
+                                           d_y / self.blink_frames)
+                self.player.moving_component.move(self.frame_displacement)
+
+                self.frames_passed = self.frames_passed + 1
+            elif not is_first_blink_frame:
+                if self.frames_passed < self.blink_frames:
+                    self.player.moving_component.move(self.frame_displacement)
+                    self.frames_passed = self.frames_passed + 1
+                elif self.frames_passed >= self.blink_frames:
+                    self.is_blinking = False
+                    self.frames_passed = None
+                    self.frame_displacement = (None, None)
+
+                    # self.player.moving_component.move((d_x, d_y))
+                    # self.is_blinking = False
+
