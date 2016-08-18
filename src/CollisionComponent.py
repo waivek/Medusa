@@ -16,6 +16,7 @@ class CollisionComponent:
         my_rect = self.sprite.sprite_rect()
         for i in colliders:
             their_mask = i.sprite.get_mask()
+            #their_mask.fill()
             their_rect = i.sprite.sprite_rect()
 
             offset = (their_rect.topleft[0]-my_rect.topleft[0], their_rect.topleft[1]-my_rect.topleft[1])

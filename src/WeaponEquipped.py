@@ -44,8 +44,11 @@ class WeaponEquipped:
 
         if self.owner.is_attacking:
             collider = self.collision_component.check_collisions()
+            print("checking collisions")
             if collider is not None:
+                print(collider)
                 if collider is not self.owner:
+                    print("colliding")
                     from src.Skeleton import Skeleton
                     if isinstance(collider, Skeleton):
                         collider.health -= 1
@@ -59,7 +62,7 @@ def init_weapons():
 
     def arrowinit(projectile):
         play_sound(SoundEnum.ARROW_SHOOT)
-        projectile.moving_component.gravity = 0
+        projectile.moving_component.gravity = 100
         projectile.moving_component.collision_bounds = pygame.Rect(1,11,30,11)
 
     def arrowupd(projectile):

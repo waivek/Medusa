@@ -138,8 +138,9 @@ class Player:
 
     def update_sprite(self):
         if self.is_attacking:
-           if self.sprite.get_loop() > 0:
-               self.is_attacking = False
+            if self.sprite.get_loop() > 0:
+                self.is_attacking = False
+                self.weapon[self.equipped_weapon].is_attacking = False
 
         if not self.is_attacking:
             if self.state == PlayerState.JUMPING:
@@ -211,7 +212,7 @@ class Player:
     def update(self, deltatime):
         #parse buffs
         self.update_buffs(deltatime)
-        
+
         #detect input
         keys = pygame.key.get_pressed()
         if keys[pygame.K_a] and not keys[pygame.K_d]:
