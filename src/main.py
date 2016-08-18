@@ -5,6 +5,15 @@ from src.MapEditor import *
 CONST_MAX_FPS = 60
 CONST_DELTATIME_MAX = 50
 
+#todo - pixel perfect collision for arrow against wall
+#todo - sound and particle effects for combat
+#todo - fix double jump bug
+#todo - fix skeleton collision vs. lock
+#done - unable attack from right side bug
+#todo - remove hat from jumping animation
+#todo - make collider masks pixel perfect
+#todo - fix weapon attach points not working properly
+
 def init():
     pygame.init()
     pygame.mixer.init(frequency=22050, size=-16, channels=2, buffer=4096)

@@ -13,7 +13,7 @@ class WeaponEquipped:
 
         self.is_attacking = False
 
-        self.weapon_attach = (16,18)
+        self.weapon_attach = (16,50)
 
         self.attach_points = []
 
@@ -21,14 +21,14 @@ class WeaponEquipped:
         WeaponFunctions[self.weapon_type.value](self, mousepos)
 
     def draw(self,screen,camera):
-        from src.Player import PlayerAnimState
-
+        #old_rect = self.sprite.sprite_rec
         self.sprite.sprite_rec = pygame.Rect(0, 0, 2 * self.weapon_attach[0], 2 * self.weapon_attach[1])
         self.sprite.set_location((self.owner.sprite.sprite_rect().topleft[0] - self.weapon_attach[0]
                                   + self.attach_points[self.owner.sprite.state][self.owner.sprite.get_frame()][0],
                                   self.owner.sprite.sprite_rect().topleft[1] - self.weapon_attach[1]
                                   + self.attach_points[self.owner.sprite.state][self.owner.sprite.get_frame()][1]))
-
+        #print(self.sprite.sprite_rec.topleft)
+        #print(self.owner.sprite.sprite_rect().topleft)
         self.sprite.set_rotation_degrees(self.attach_points[self.owner.sprite.state][self.owner.sprite.get_frame()][2])
 
 
