@@ -9,6 +9,20 @@ import pygame
 # import pygame
 from src.Timer import *
 
+
+class Line:
+    def __init__(self, x1, y1, x2, y2):
+        self.m = (y2 - y1) / (x2 - x1)
+        self.c = y1 - (self.m * x1)
+
+    def get_y(self, x1):
+        y1 = (self.m * x1) + self.c
+        return y1
+
+    def get_x(self, y1):
+        x1 = (y1 - self.c) / self.m
+        return x1
+
 from enum import Enum
 class PlayerState(Enum):
     GROUND = 0
@@ -25,8 +39,10 @@ class PlayerAnimState(Enum):
     STAB_RIGHT = 7
 
 class Player:
+
     def __init__(self, pos, level):
         self.level = level
+
 
         self.size = (BLOCK_SIZE, BLOCK_SIZE)
 
@@ -92,49 +108,8 @@ class Player:
         self.weapon = []
         for i in range(WeaponEnum.NUM.value):
             self.weapon.append(None)
-        self.blink_component = BlinkComponent(player=self)
+        self.blink_component = Blink_Component(player=self)
 
-    def draw(self, screen, camera):
-        self.sprite.draw(screen, camera)
-        if self.equipped_weapon is not -1:
-            self.weapon[self.equipped_weapon].draw(screen, camera)
-        self.blink_component.draw(screen, camera)
-
-
-    def handle_event(self, event):
-        self.blink_component.handle_event(event)
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE and self.state==PlayerState.GROUND:
-                self.moving_component.velocity = (self.moving_component.velocity[0],self.moving_component.velocity[1] - self.jump_velocity)
-                #self.state = PlayerState.JUMPING
-                play_sound(SoundEnum.JUMP)
-
-            elif event.key == pygame.K_e:
-                i = self.equipped_weapon + 1
-                while i < WeaponEnum.NUM.value:
-                    if self.weapon[i] is not None:
-                        self.equipped_weapon = i
-                        break
-                    i+=1
-
-            elif event.key == pygame.K_q:
-                i = self.equipped_weapon - 1
-                while i >= 0:
-                    if self.weapon[i] is not None:
-                        self.equipped_weapon = i
-                        break
-                    i-=1
-
-        elif event.type == pygame.MOUSEBUTTONDOWN:
-            if self.equipped_weapon != -1:
-                mpos = pygame.mouse.get_pos()
-                target = (mpos[0]+self.level.camera_pos[0],mpos[1]+self.level.camera_pos[1])
-                self.weapon[self.equipped_weapon].use(target)
-                self.is_attacking = True
-
-        elif event.type == pygame.KEYUP:
-            if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
-                self.moving_component.velocity = (0, self.moving_component.velocity[1])
 
     def update_sprite(self):
         if self.is_attacking:
@@ -166,8 +141,7 @@ class Player:
 
     def handle_collisions(self):
         entities = self.level.entities
-        def lies_between(x, a, b):
-            return a <= x <= b
+        lies_between = lambda x, a, b : a <= x <= b
 
         for other in entities:
             #assert(isinstance(other, Skeleton))
@@ -209,7 +183,59 @@ class Player:
         else:
             return False
 
+    def draw(self, screen, camera):
+        self.sprite.draw(screen, camera)
+        if self.equipped_weapon is not -1:
+            self.weapon[self.equipped_weapon].draw(screen, camera)
+        self.blink_component.draw(screen, camera)
+
+    def handle_event(self, event):
+        self.blink_component.handle_event(event)
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE and self.state==PlayerState.GROUND:
+                self.moving_component.velocity = (self.moving_component.velocity[0],self.moving_component.velocity[1] - self.jump_velocity)
+                #self.state = PlayerState.JUMPING
+                play_sound(SoundEnum.JUMP)
+
+            elif event.key == pygame.K_e:
+                i = self.equipped_weapon + 1
+                while i < WeaponEnum.NUM.value:
+                    if self.weapon[i] is not None:
+                        self.equipped_weapon = i
+                        break
+                    i+=1
+
+            elif event.key == pygame.K_q:
+                i = self.equipped_weapon - 1
+                while i >= 0:
+                    if self.weapon[i] is not None:
+                        self.equipped_weapon = i
+                        break
+                    i-=1
+
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            if self.equipped_weapon != -1:
+                mpos = pygame.mouse.get_pos()
+                target = (mpos[0]+self.level.camera_pos[0],mpos[1]+self.level.camera_pos[1])
+                self.weapon[self.equipped_weapon].use(target)
+                self.is_attacking = True
+
+        elif event.type == pygame.KEYUP:
+            if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
+                self.moving_component.velocity = (0, self.moving_component.velocity[1])
+
+    # def handle_event(self, event):
+    #     self.blink_component.handle_event(event)
+    #     if event.type == pygame.KEYDOWN:
+    #         if event.key == pygame.K_SPACE and self.state==PlayerState.GROUND:
+    #             self.moving_component.velocity = (self.moving_component.velocity[0],self.moving_component.velocity[1] - self.jump_velocity)
+    #             play_sound(SoundEnum.JUMP)
+    #     elif event.type == pygame.KEYUP:
+    #         if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
+    #             self.moving_component.velocity = (0, self.moving_component.velocity[1])
+
     def update(self, deltatime):
+        self.blink_component.update(deltatime)
         #parse buffs
         self.update_buffs(deltatime)
 
