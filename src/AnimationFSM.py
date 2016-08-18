@@ -49,3 +49,6 @@ class AnimationFSM:
 
     def get_frame(self):
         return self.sprites[self.state].get_frame()
+
+    def get_loop(self):
+        return self.sprites[self.state].loop_count

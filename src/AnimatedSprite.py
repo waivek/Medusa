@@ -13,6 +13,7 @@ class AnimatedSprite:
         self.max_frames = frames
         self.sprite_rec = gImages[self.image_id.value].get_rect()
         self.rotation = 0
+        self.loop_count = 0
 
     def full_sprite_rect(self):
         return self.sprite_rec
@@ -26,9 +27,12 @@ class AnimatedSprite:
     def next_frame(self):
         self.current_frame += 1
         self.current_frame %= self.max_frames
+        if self.current_frame==0:
+            self.loop_count += 1
 
     def reset(self):
         self.current_frame = 0
+        self.loop_count = 0
         self.timer.reset()
 
     def update(self, deltatime):

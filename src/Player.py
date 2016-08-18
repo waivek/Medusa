@@ -130,35 +130,37 @@ class Player:
                 mpos = pygame.mouse.get_pos()
                 target = (mpos[0]+self.level.camera_pos[0],mpos[1]+self.level.camera_pos[1])
                 self.weapon[self.equipped_weapon].use(target)
+                self.is_attacking = True
+
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
                 self.moving_component.velocity = (0, self.moving_component.velocity[1])
 
     def update_sprite(self):
         if self.is_attacking:
-            return
+           if self.sprite.get_loop() > 0:
+               self.is_attacking = False
 
-        if self.state == PlayerState.JUMPING:
-            if self.moving_component.velocity[0] >= 0:
-                self.sprite.set_state(PlayerAnimState.JUMP_RIGHT)
-                self.facing = Facing.RIGHT
-            else:
-                self.sprite.set_state(PlayerAnimState.JUMP_LEFT)
-                self.facing = Facing.LEFT
-        else:
-            if self.moving_component.velocity[0] > 0:
-                self.sprite.set_state(PlayerAnimState.WALK_RIGHT)
-                self.facing = Facing.RIGHT
-            elif self.moving_component.velocity[0] < 0:
-                self.sprite.set_state(PlayerAnimState.WALK_LEFT)
-                self.facing = Facing.LEFT
-            else:
-                if self.sprite.state == PlayerAnimState.JUMP_RIGHT.value or self.sprite.state==PlayerAnimState.WALK_RIGHT.value:
-                    self.sprite.set_state(PlayerAnimState.RIGHT)
+        if not self.is_attacking:
+            if self.state == PlayerState.JUMPING:
+                if self.moving_component.velocity[0] >= 0:
+                    self.sprite.set_state(PlayerAnimState.JUMP_RIGHT)
                     self.facing = Facing.RIGHT
-                if self.sprite.state == PlayerAnimState.JUMP_LEFT.value or self.sprite.state==PlayerAnimState.WALK_LEFT.value:
-                    self.sprite.set_state(PlayerAnimState.LEFT)
+                else:
+                    self.sprite.set_state(PlayerAnimState.JUMP_LEFT)
                     self.facing = Facing.LEFT
+            else:
+                if self.moving_component.velocity[0] > 0:
+                    self.sprite.set_state(PlayerAnimState.WALK_RIGHT)
+                    self.facing = Facing.RIGHT
+                elif self.moving_component.velocity[0] < 0:
+                    self.sprite.set_state(PlayerAnimState.WALK_LEFT)
+                    self.facing = Facing.LEFT
+                else:
+                    if self.facing == Facing.RIGHT:
+                        self.sprite.set_state(PlayerAnimState.RIGHT)
+                    if self.facing == Facing.LEFT:
+                        self.sprite.set_state(PlayerAnimState.LEFT)
 
 
     def handle_collisions(self):
@@ -209,7 +211,7 @@ class Player:
     def update(self, deltatime):
         #parse buffs
         self.update_buffs(deltatime)
-
+        
         #detect input
         keys = pygame.key.get_pressed()
         if keys[pygame.K_a] and not keys[pygame.K_d]:

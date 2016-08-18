@@ -42,7 +42,7 @@ class WeaponEquipped:
         #self.sprite.update(deltatime)
         self.sprite.set_location(self.owner.moving_component.position)
 
-        if self.is_attacking:
+        if self.owner.is_attacking:
             collider = self.collision_component.check_collisions()
             if collider is not None:
                 if collider is not self.owner:
