@@ -1,4 +1,5 @@
 import pygame
+from enum import Enum
 
 CONST_GRAVITY = 1000
 BLOCK_SIZE = 32
@@ -18,4 +19,8 @@ CONST_SCREEN_WIDTH = 800
 
 BLINK_KEY = pygame.K_LCTRL
 SPRINT_KEY = pygame.K_LSHIFT
+
+class Facing(Enum):
+    LEFT = 0
+    RIGHT = 1
 

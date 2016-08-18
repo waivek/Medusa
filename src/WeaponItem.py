@@ -3,10 +3,10 @@ from src.AnimatedSprite import *
 
 class WeaponEnum(Enum):
     BOW = 0
-    GUN = 1
+    SHORTSWORD = 1
     NUM = 2
 
-WeaponSprites = [ImageEnum.WEAPON_BOW, ImageEnum.WEAPON_GUN]
+WeaponSprites = [ImageEnum.WEAPON_BOW, ImageEnum.WEAPON_SHORTSWORD]
 
 class WeaponItem:
     def __init__(self, weapon_type, pos):

@@ -32,8 +32,7 @@ class WeaponEquipped:
         self.sprite.set_rotation_degrees(self.attach_points[self.owner.sprite.state][self.owner.sprite.get_frame()][2])
 
 
-        if self.owner.sprite.state == PlayerAnimState.WALK_RIGHT.value or self.owner.sprite.state == PlayerAnimState.RIGHT.value \
-            or self.owner.sprite.state == PlayerAnimState.JUMP_RIGHT.value:
+        if self.owner.facing==Facing.RIGHT:
             self.sprite.set_flipped(True)
         else:
             self.sprite.set_flipped(False)
@@ -89,9 +88,11 @@ def init_weapons():
             weapon.owner.level.add_entity(p)
     WeaponFunctions.append(bow)
 
-    def gun(weapon, target):
-        if weapon.ammo > 0:
-            weapon.ammo -= 1
-            p = Projectile(AmmoSprites[weapon.weapon_type.value], weapon.owner.moving_component.position, (1000, 0), 10, 0, True, weapon.owner.level)
-            weapon.owner.level.add_entity(p)
-    WeaponFunctions.append(gun)
+    def sword(weapon, target):
+        from src.Player import PlayerAnimState
+        weapon.is_attacking = True
+        if weapon.owner.facing == Facing.LEFT:
+            weapon.owner.sprite.set_state(PlayerAnimState.STAB_LEFT)
+        else:
+            weapon.owner.sprite.set_state(PlayerAnimState.STAB_RIGHT)
+    WeaponFunctions.append(sword)

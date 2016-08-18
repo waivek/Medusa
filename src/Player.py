@@ -21,6 +21,8 @@ class PlayerAnimState(Enum):
     JUMP_RIGHT = 3
     LEFT = 4
     RIGHT = 5
+    STAB_LEFT = 6
+    STAB_RIGHT = 7
 
 class Player:
     def __init__(self, pos, level):
@@ -36,6 +38,9 @@ class Player:
         self.energy_regain_rate = CONST_ENERGY_GAIN_RATE
         self.sprint_energy_rate = CONST_SPRINT_ENERGY_RATE
 
+        self.facing = Facing.LEFT
+        self.is_attacking = False
+
         self.sprite = AnimationFSM()
         spr0 = AnimatedSprite(ImageEnum.PLAYER1_LEFT, 8)
         spr1 = AnimatedSprite(ImageEnum.PLAYER1_RIGHT, 8)
@@ -43,12 +48,16 @@ class Player:
         spr3 = AnimatedSprite(ImageEnum.PLAYER1_JUMPRIGHT, 1)
         spr4 = AnimatedSprite(ImageEnum.PLAYER1_LEFT, 1)
         spr5 = AnimatedSprite(ImageEnum.PLAYER1_RIGHT, 1)
+        spr6 = AnimatedSprite(ImageEnum.PLAYER1_STABLEFT, 4)
+        spr7 = AnimatedSprite(ImageEnum.PLAYER1_STABRIGHT, 4)
         self.sprite.add_sprite(spr0)
         self.sprite.add_sprite(spr1)
         self.sprite.add_sprite(spr2)
         self.sprite.add_sprite(spr3)
         self.sprite.add_sprite(spr4)
         self.sprite.add_sprite(spr5)
+        self.sprite.add_sprite(spr6)
+        self.sprite.add_sprite(spr7)
 
         self.sprite.set_state(PlayerAnimState.JUMP_LEFT)
 
@@ -126,21 +135,30 @@ class Player:
                 self.moving_component.velocity = (0, self.moving_component.velocity[1])
 
     def update_sprite(self):
+        if self.is_attacking:
+            return
+
         if self.state == PlayerState.JUMPING:
             if self.moving_component.velocity[0] >= 0:
                 self.sprite.set_state(PlayerAnimState.JUMP_RIGHT)
+                self.facing = Facing.RIGHT
             else:
                 self.sprite.set_state(PlayerAnimState.JUMP_LEFT)
+                self.facing = Facing.LEFT
         else:
             if self.moving_component.velocity[0] > 0:
                 self.sprite.set_state(PlayerAnimState.WALK_RIGHT)
+                self.facing = Facing.RIGHT
             elif self.moving_component.velocity[0] < 0:
                 self.sprite.set_state(PlayerAnimState.WALK_LEFT)
+                self.facing = Facing.LEFT
             else:
                 if self.sprite.state == PlayerAnimState.JUMP_RIGHT.value or self.sprite.state==PlayerAnimState.WALK_RIGHT.value:
                     self.sprite.set_state(PlayerAnimState.RIGHT)
+                    self.facing = Facing.RIGHT
                 if self.sprite.state == PlayerAnimState.JUMP_LEFT.value or self.sprite.state==PlayerAnimState.WALK_LEFT.value:
                     self.sprite.set_state(PlayerAnimState.LEFT)
+                    self.facing = Facing.LEFT
 
 
     def handle_collisions(self):
