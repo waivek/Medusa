@@ -216,11 +216,12 @@ class Player:
                     i-=1
 
         elif event.type == pygame.MOUSEBUTTONDOWN:
-            if self.equipped_weapon != -1:
-                mpos = pygame.mouse.get_pos()
-                target = (mpos[0]+self.level.camera_pos[0],mpos[1]+self.level.camera_pos[1])
-                self.weapon[self.equipped_weapon].use(target)
-                self.is_attacking = True
+            if self.blink_component.state != BlinkState.SHOWING_LINE:
+                if self.equipped_weapon != -1:
+                    mpos = pygame.mouse.get_pos()
+                    target = (mpos[0]+self.level.camera_pos[0],mpos[1]+self.level.camera_pos[1])
+                    self.weapon[self.equipped_weapon].use(target)
+                    self.is_attacking = True
 
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
