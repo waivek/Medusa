@@ -137,7 +137,9 @@ class PlayerState(Enum):
     JUMPING = 1
 
 class Player:
+
     def __init__(self, pos, level):
+
         self.size = (BLOCK_SIZE, BLOCK_SIZE)
 
         self.state = PlayerState.JUMPING
@@ -204,21 +206,6 @@ class Player:
             self.keys.append(0)
 
         self.blink_component = Blink_Component(player=self)
-
-    def draw(self, screen, camera):
-        self.sprite.draw(screen, camera)
-        self.blink_component.draw(screen, camera)
-
-
-    def handle_event(self, event):
-        self.blink_component.handle_event(event)
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE and self.state==PlayerState.GROUND:
-                self.moving_component.velocity = (self.moving_component.velocity[0],self.moving_component.velocity[1] - self.jump_velocity)
-                play_sound(SoundEnum.JUMP)
-        elif event.type == pygame.KEYUP:
-            if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
-                self.moving_component.velocity = (0, self.moving_component.velocity[1])
 
     def update_sprite(self):
         if self.state == PlayerState.JUMPING:
@@ -299,6 +286,20 @@ class Player:
             return True
         else:
             return False
+
+    def draw(self, screen, camera):
+        self.sprite.draw(screen, camera)
+        self.blink_component.draw(screen, camera)
+
+    def handle_event(self, event):
+        self.blink_component.handle_event(event)
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE and self.state==PlayerState.GROUND:
+                self.moving_component.velocity = (self.moving_component.velocity[0],self.moving_component.velocity[1] - self.jump_velocity)
+                play_sound(SoundEnum.JUMP)
+        elif event.type == pygame.KEYUP:
+            if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
+                self.moving_component.velocity = (0, self.moving_component.velocity[1])
 
     def update(self, deltatime):
         self.blink_component.update(deltatime)
