@@ -8,6 +8,8 @@ class HUD:
         self.player = player
         self.life_spr = Sprite(ImageEnum.HUD_LIFE)
         self.energy_spr = Sprite(ImageEnum.HUD_ENERGY)
+        self.blink_spr = Sprite(ImageEnum.CAN_BLINK)
+        self.no_blink_spr = Sprite(ImageEnum.NO_BLINK)
         self.key_spr = []
         for i in range(KeyEnum.NUM.value):
             self.key_spr.append(Sprite(KeySprites[i]))
@@ -31,3 +33,12 @@ class HUD:
                 self.key_spr[j].draw(screen, (0, 0))
                 for k in range(KeyEnum.NUM.value):
                     self.key_spr[k].move((32, 0))
+        assert isinstance(screen, pygame.Surface)
+        # self.blink_spr.set_location((0, screen.get_width() - 32))
+        if self.player.blink_component.cooldown_passed:
+            self.blink_spr.set_location((screen.get_width() - 32, 0))
+            self.blink_spr.draw(screen, (0, 0))
+        elif not self.player.blink_component.cooldown_passed:
+            self.no_blink_spr.set_location((screen.get_width() - 32, 0))
+            self.no_blink_spr.draw(screen, (0, 0))
+

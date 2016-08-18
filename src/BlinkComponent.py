@@ -13,9 +13,8 @@ class Blink_Component:
         self.is_blinking = False
         self.frame_displacement = (None, None)
         self.frames_passed = None
-        # self.old_offset = None
         self.timer = Timer()
-        self.cooldown_seconds = 3
+        self.cooldown_ms = 1500
         self.cooldown_passed = False
 
     def get_actual_mouse_pos(self):
@@ -75,7 +74,6 @@ class Blink_Component:
     def handle_event(self, event):
         from src.WorldConstants import BLINK_KEY
         if event.type == pygame.KEYDOWN:
-            # cooldown_passed = self.timer.get_time() > self.cooldown_seconds * 1000
             if event.key == BLINK_KEY and self.cooldown_passed:
                 self.can_blink = True
 
@@ -88,16 +86,13 @@ class Blink_Component:
 
     def update(self, deltaTime):
         print("Time %d" % self.timer.get_time())
-        # from src.WorldConstants import CONST_CAMERA_PLAYER_OFFSET_X, CONST_CAMERA_PLAYER_OFFSET_Y
-        self.cooldown_passed = self.timer.get_time() > self.cooldown_seconds * 1000
-        if not self.cooldown_passed and not self.can_blink:
+        self.cooldown_passed = self.timer.get_time() > self.cooldown_ms
+        if not self.cooldown_passed:
             self.can_blink = False
 
         if self.is_blinking:
             is_first_blink_frame = self.frames_passed == None
             if is_first_blink_frame:
-
-                # self.old_offset = CONST_CAMERA_PLAYER_OFFSET_X
 
                 self.frames_passed = 0
 
@@ -120,7 +115,4 @@ class Blink_Component:
                     self.frames_passed = None
                     self.frame_displacement = (None, None)
                     self.timer.reset()
-
-                    # self.player.moving_component.move((d_x, d_y))
-                    # self.is_blinking = False
 
