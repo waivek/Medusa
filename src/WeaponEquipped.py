@@ -51,8 +51,8 @@ class WeaponEquipped:
 
     def update(self, deltatime):
         #self.sprite.update(deltatime)
-        self.sprite.set_location(self.owner.moving_component.position)
-        self.update_sprite()
+        #self.sprite.set_location(self.owner.moving_component.position)
+        #self.update_sprite()
 
         if self.owner.is_attacking:
             collider = self.collision_component.check_collisions()
@@ -64,6 +64,7 @@ class WeaponEquipped:
                     from src.Skeleton import Skeleton
                     if isinstance(collider, Skeleton):
                         collider.health -= 1
+                        play_sound(SoundEnum.METAL_MEDIUM_SLICE_METAL)
 
 
 
@@ -87,8 +88,10 @@ def init_weapons():
         if isinstance(other, Skeleton):
             other.health -= 1
             projectile.owner.level.destroy_entity(projectile)
+            play_sound(SoundEnum.ARROW_HIT_ENEMY)
         else:
             projectile.owner.level.destroy_entity(projectile)
+            play_sound(SoundEnum.ARROW_HIT_STONE)
 
     def bow(weapon, target):
         if weapon.ammo > 0:

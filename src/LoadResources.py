@@ -63,6 +63,10 @@ class SoundEnum(Enum):
     POWERUP = 2
     UNLOCK = 3
     ARROW_SHOOT = 4
+    ARROW_HIT_ENEMY = 5
+    ARROW_HIT_STONE = 6
+    METAL_MEDIUM_SLICE_METAL = 7
+    METAL_MEDIUM_SLICE_STONE = 8
 
 gImagePaths = [
     r"..\raw\Sprites\player\guy_left.png",
@@ -112,7 +116,11 @@ gSoundPaths = [
     r"..\raw\Sounds\hit.wav",
     r"..\raw\Sounds\curious_up.wav",
     r"..\raw\Sounds\open.wav",
-    r"..\raw\Sounds\miss.wav"
+    r"..\raw\Sounds\miss.wav",
+    r"..\raw\Sounds\DryadMissile1.wav",
+    r"..\raw\Sounds\DryadMissile2.wav",
+    r"..\raw\Sounds\MetalMediumSliceMetal2.wav",
+    r"..\raw\Sounds\MetalMediumSliceStone3.wav"
 ]
 
 def load_images():
