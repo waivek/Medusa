@@ -12,7 +12,7 @@ CONST_DELTATIME_MAX = 50
 #done - unable attack from right side bug
 #todo - remove hat from jumping animation
 #todo - make collider masks pixel perfect
-#todo - fix weapon swapping bug
+#done - fix weapon swapping bug
 #done - fix weapon attach points not working properly
 
 def init():

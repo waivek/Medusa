@@ -202,6 +202,7 @@ class Player:
                 while i < WeaponEnum.NUM.value:
                     if self.weapon[i] is not None:
                         self.equipped_weapon = i
+                        self.equip_component.equip_right(self.weapon[self.equipped_weapon])
                         break
                     i+=1
 
@@ -210,6 +211,7 @@ class Player:
                 while i >= 0:
                     if self.weapon[i] is not None:
                         self.equipped_weapon = i
+                        self.equip_component.equip_right(self.weapon[self.equipped_weapon])
                         break
                     i-=1
 
