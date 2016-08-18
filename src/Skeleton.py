@@ -14,20 +14,32 @@ class Skeleton:
     def __init__(self, pos, level):
         self.sprite = AnimationFSM()
         self.level = level
-        spr0 = AnimatedSprite(ImageEnum.SKELETON_STANDING, 1)
-        spr1 = AnimatedSprite(ImageEnum.SKELETON_WALKING, 10)
-        self.sprite.add_sprite(spr0)
+        #spr0 = AnimatedSprite(ImageEnum.SKELETON_STANDING, 1)
+        spr1 = AnimatedSprite(ImageEnum.SKELETON_WALKLEFT, 4)
+        spr2 = AnimatedSprite(ImageEnum.SKELETON_WALKRIGHT, 4)
+        spr3 = AnimatedSprite(ImageEnum.SKELETON_STABLEFT, 4)
+        spr4 = AnimatedSprite(ImageEnum.SKELETON_STABRIGHT, 4)
+        #self.sprite.add_sprite(spr0)
         self.sprite.add_sprite(spr1)
+        self.sprite.add_sprite(spr2)
+        self.sprite.add_sprite(spr3)
+        self.sprite.add_sprite(spr4)
         self.sprite.state = 0
         self.state = SkeletonState.IN_AIR
         self.moving_component = MovingComponent(self, self.level)
         self.moving_component.update_position(pos)
-        self.enemy_movement_component = EnemyMovementComponent(self.moving_component, self.level)
+        self.enemy_movement_component = EnemyMovementComponent(self, self.level)
         self.moving_component.on_collision = Skeleton.on_collision
         self.health = 1
+        self.equip_component = EquipComponent(self, self.level)
+        self.weapon = WeaponEquipped(WeaponEnum.SHORTSWORD,5,self)
+        self.equip_component.equip_right(self.weapon)
+        self.is_attacking = False
+        self.facing = Facing.LEFT
 
     def draw(self, screen, camera):
         self.sprite.draw(screen, camera)
+        self.equip_component.draw_right(screen, camera)
 
     def getrekt(self):
         return pygame.Rect(self.moving_component.position[0],self.moving_component.position[1],self.moving_component.size[0],self.moving_component.size[1])
@@ -36,14 +48,31 @@ class Skeleton:
         self.state = SkeletonState.GROUND
 
     def update_sprite(self):
-        if (self.moving_component.in_air):
-            self.sprite.set_state(0)
+        if self.is_attacking:
+            if self.sprite.get_loop()>0:
+                self.is_attacking = False
+
+        if not self.is_attacking:
+            if self.moving_component.velocity[0] < 0:
+                self.sprite.set_state(0)
+                self.facing = Facing.LEFT
+            elif self.moving_component.velocity[0] > 0:
+                self.sprite.set_state(1)
+                self.facing = Facing.RIGHT
+
+    def attack(self):
+        self.is_attacking = True
+        self.weapon.is_attacking = True
+        if self.facing == Facing.LEFT:
+            self.sprite.set_state(2)
         else:
-            self.sprite.set_state(1)
+            self.sprite.set_state(3)
 
     def update(self, deltaTime):
         self.moving_component.update(deltaTime)
         self.enemy_movement_component.update(deltaTime)
+        self.weapon.update(deltaTime)
+        print(self.is_attacking)
 
         if self.health <= 0:
             self.level.destroy_entity(self)

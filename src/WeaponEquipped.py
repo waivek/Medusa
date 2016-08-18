@@ -33,12 +33,8 @@ class WeaponEquipped:
                                   + self.attach_points[self.owner.sprite.state][self.owner.sprite.get_frame()][0],
                                   self.owner.sprite.sprite_rect().topleft[1] - self.weapon_attach[1]
                                   + self.attach_points[self.owner.sprite.state][self.owner.sprite.get_frame()][1]))
-        print(self.sprite.sprite_rec)
-        # print(self.sprite.sprite_rec.topleft)
-        # print(self.owner.sprite.sprite_rect().topleft)
         self.sprite.rotate_around_point(self.attach_points[self.owner.sprite.state][self.owner.sprite.get_frame()][2],
                                         (self.weapon_attach[0], self.weapon_attach[1]))
-        print(self.sprite.sprite_rec)
 
         if self.owner.facing == Facing.RIGHT:
             self.sprite.set_flipped(True)
@@ -62,8 +58,12 @@ class WeaponEquipped:
                 if collider is not self.owner:
                     print("colliding")
                     from src.Skeleton import Skeleton
+                    from src.Player import Player
                     if isinstance(collider, Skeleton):
                         collider.health -= 1
+                        play_sound(SoundEnum.METAL_MEDIUM_SLICE_METAL)
+                    if isinstance(collider, Player):
+                        collider.health.deal_damage(1)
                         play_sound(SoundEnum.METAL_MEDIUM_SLICE_METAL)
 
 

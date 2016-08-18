@@ -185,8 +185,9 @@ class Player:
 
     def draw(self, screen, camera):
         self.sprite.draw(screen, camera)
-        if self.equipped_weapon is not -1:
-            self.weapon[self.equipped_weapon].draw(screen, camera)
+        self.equip_component.draw_right(screen, camera)
+        #if self.equipped_weapon is not -1:
+        #    self.weapon[self.equipped_weapon].draw(screen, camera)
         self.blink_component.draw(screen, camera)
 
     def handle_event(self, event):
@@ -314,8 +315,8 @@ class Player:
         return (Player(pos, level))
 
     def on_collision(self, other):
-        if isinstance(other, Skeleton):
-            self.health.deal_damage(1)
+        #if isinstance(other, Skeleton):
+        #    self.health.deal_damage(1)
 
         if isinstance(other, Powerup):
             other.buff.start()

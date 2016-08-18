@@ -37,17 +37,19 @@ class EquipComponent:
             print("")
 
     def draw_right(self, screen, camera):
-        self.equip_right.draw(screen, camera)
+        if self.right_hand is not None:
+            self.right_hand.draw(screen, camera)
 
     def draw_left(self, screen, camera):
-        self.equip_left.draw(screen, camera)
+        if self.left_hand is not None:
+            self.left_hand.draw(screen, camera)
 
     def equip_right(self, weapon):
         assert isinstance(weapon, WeaponEquipped)
-        self.left_hand = weapon
-        self.left_hand.attach_points = self.attach_points
+        self.right_hand = weapon
+        self.right_hand.attach_points = self.attach_points
 
     def equip_left(self, weapon):
         assert isinstance(weapon, WeaponEquipped)
-        self.right_hand = weapon
-        self.right_hand.attach_points = self.attach_points
+        self.left_hand = weapon
+        self.left_hand.attach_points = self.attach_points

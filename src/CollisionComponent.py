@@ -18,7 +18,14 @@ class CollisionComponent:
 
     #returns a collider if it colliders, otherwise returns None
     def check_collisions(self):
-        colliders = self.level.colliders
+        colliders = list(self.level.colliders)
+
+        from src.Skeleton import Skeleton
+        if isinstance(self.obj.owner, Skeleton):
+            colliders.append(self.level.players[0])
+            if self.obj.owner in colliders:
+                colliders.remove(self.obj.owner)
+
         my_mask = self.sprite.get_mask()
         my_rect = self.sprite.sprite_rect()
 

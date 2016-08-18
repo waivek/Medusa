@@ -56,8 +56,14 @@ class ImageEnum(Enum):
     PLAYER1_STABRIGHT = 38
     PLAYER1_STRIKELEFT = 39
     PLAYER1_STRIKERIGHT = 40
+
     CAN_BLINK = 41
     NO_BLINK = 42
+
+    SKELETON_WALKLEFT = 43
+    SKELETON_WALKRIGHT = 44
+    SKELETON_STABLEFT = 45
+    SKELETON_STABRIGHT = 46
 
 class SoundEnum(Enum):
     JUMP = 0
@@ -113,7 +119,11 @@ gImagePaths = [
     r"..\raw\Sprites\player\strike_left.png",
     r"..\raw\Sprites\player\strike_right.png",
     r"..\raw\Sprites\custom_sprites\can_blink.png",
-    r"..\raw\Sprites\custom_sprites\no_blink.png"
+    r"..\raw\Sprites\custom_sprites\no_blink.png",
+    r"..\raw\Sprites\skeleton\walk_left.png",
+    r"..\raw\Sprites\skeleton\walk_right.png",
+    r"..\raw\Sprites\skeleton\stab_left.png",
+    r"..\raw\Sprites\skeleton\stab_right.png",
 ]
 gSoundPaths = [
     r"..\raw\Sounds\jump.wav",
