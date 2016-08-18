@@ -1,7 +1,7 @@
 import pygame
-from src.LoadResources import gImages
-from src.LoadResources import ImageEnum
-from src.Timer import Timer
+from src.LoadResources import *
+from src.Timer import *
+import math
 
 class AnimatedSprite:
     def __init__(self, img_id, frames):
@@ -12,6 +12,8 @@ class AnimatedSprite:
         self.current_frame = 0
         self.max_frames = frames
         self.sprite_rec = gImages[self.image_id.value].get_rect()
+        self.rotation = 0
+        self.loop_count = 0
 
     def full_sprite_rect(self):
         return self.sprite_rec
@@ -25,9 +27,12 @@ class AnimatedSprite:
     def next_frame(self):
         self.current_frame += 1
         self.current_frame %= self.max_frames
+        if self.current_frame==0:
+            self.loop_count += 1
 
     def reset(self):
         self.current_frame = 0
+        self.loop_count = 0
         self.timer.reset()
 
     def update(self, deltatime):
@@ -48,3 +53,15 @@ class AnimatedSprite:
 
     def set_location(self, pos):
         self.sprite_rec.topleft = pos
+
+    def set_rotation(self, angle):
+        self.rotation = angle
+        self.sprite = pygame.transform.rotate(gImages[self.image_id.value], math.degrees(angle))
+
+    def get_mask(self):
+        m = pygame.Mask((32,32))
+        m.fill()
+        return m
+
+    def get_frame(self):
+        return self.current_frame

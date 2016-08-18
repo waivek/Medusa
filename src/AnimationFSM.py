@@ -1,6 +1,8 @@
 from src.AnimatedSprite import AnimatedSprite
+import pygame
 from src.LoadResources import gImages
 from src.LoadResources import ImageEnum
+from enum import Enum
 
 class AnimationFSM:
     def __init__(self):
@@ -18,9 +20,14 @@ class AnimationFSM:
         self.sprites[self.state].update(deltatime)
 
     def set_state(self, state):
-        if(self.state!=state):
-            self.state = state
-            self.sprites[self.state].reset()
+        if isinstance(state, Enum):
+            if(self.state!=state.value):
+                self.state = state.value
+                self.sprites[self.state].reset()
+        else:
+            if (self.state != state):
+                self.state = state
+                self.sprites[self.state].reset()
 
     def move(self,displacement):
         for i in range(len(self.sprites)):
@@ -34,3 +41,14 @@ class AnimationFSM:
 
     def get_center(self):
         return self.sprites[self.state].get_center()
+
+    def get_mask(self):
+        m = pygame.Mask((32,32))
+        m.fill()
+        return m
+
+    def get_frame(self):
+        return self.sprites[self.state].get_frame()
+
+    def get_loop(self):
+        return self.sprites[self.state].loop_count

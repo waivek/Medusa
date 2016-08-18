@@ -1,4 +1,5 @@
 from src.MovingComponent import MovingComponent
+import src.Util
 
 class EnemyMovementComponent:
     def __init__(self, moving_component, level):
@@ -17,4 +18,15 @@ class EnemyMovementComponent:
         if abs(d_x) >= 500:
             self.moving_component.velocity = (-self.moving_component.velocity[0], self.moving_component.velocity[1])
 
-
+        cell = src.Util.pixel2cell(self.moving_component.position[0]+16,self.moving_component.position[1]+16)
+        #print(cell)
+        if self.moving_component.velocity[0] < 0:
+            if self.level.tiles[cell[1]][cell[0]-1]:
+                self.moving_component.velocity = (100, self.moving_component.velocity[1])
+            elif self.level.tiles[cell[1]+1][cell[0]-1] == False:
+                self.moving_component.velocity = (-self.moving_component.velocity[0], self.moving_component.velocity[1])
+        elif self.moving_component.velocity[0] > 0:
+            if self.level.tiles[cell[1]][cell[0]+1]:
+                self.moving_component.velocity = (-100, self.moving_component.velocity[1])
+            elif self.level.tiles[cell[1]+1][cell[0]+1] == False:
+                self.moving_component.velocity = (-self.moving_component.velocity[0], self.moving_component.velocity[1])
