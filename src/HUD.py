@@ -33,12 +33,13 @@ class HUD:
                 self.key_spr[j].draw(screen, (0, 0))
                 for k in range(KeyEnum.NUM.value):
                     self.key_spr[k].move((32, 0))
+
         assert isinstance(screen, pygame.Surface)
-        # self.blink_spr.set_location((0, screen.get_width() - 32))
-        if self.player.blink_component.cooldown_passed:
-            self.blink_spr.set_location((screen.get_width() - 32, 0))
-            self.blink_spr.draw(screen, (0, 0))
-        elif not self.player.blink_component.cooldown_passed:
+        is_cooling_down = self.player.blink_component.state == BlinkState.COOLING_DOWN
+        if is_cooling_down:
             self.no_blink_spr.set_location((screen.get_width() - 32, 0))
             self.no_blink_spr.draw(screen, (0, 0))
+        elif not is_cooling_down:
+            self.blink_spr.set_location((screen.get_width() - 32, 0))
+            self.blink_spr.draw(screen, (0, 0))
 

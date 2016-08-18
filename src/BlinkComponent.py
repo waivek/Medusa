@@ -1,4 +1,11 @@
 from src.LoadResources import *
+from enum import Enum
+class BlinkState(Enum):
+    CAN_BLINK = 0
+    SHOWING_LINE = 1
+    BLINKING = 2
+    COOLING_DOWN = 3
+
 class Blink_Component:
     def __init__(self, player):
         from src.Timer import Timer
@@ -14,8 +21,10 @@ class Blink_Component:
         self.frame_displacement = (None, None)
         self.frames_passed = None
         self.timer = Timer()
-        self.cooldown_ms = 1500
+        self.cooldown_ms = 2500
         self.cooldown_passed = False
+
+        self.state = BlinkState.CAN_BLINK
 
     def get_actual_mouse_pos(self):
         from src.WorldConstants import CONST_CAMERA_PLAYER_OFFSET_X, CONST_CAMERA_PLAYER_OFFSET_Y
@@ -65,32 +74,36 @@ class Blink_Component:
             return False
 
     def draw(self, screen, camera):
-        if self.can_blink:
+        if self.state == BlinkState.SHOWING_LINE:
             self.fill_valid_blink_points()
             for x, y in self.valid_blink_points:
                 self.dot_spr.set_location((x, y))
                 self.dot_spr.draw(screen, camera)
 
     def handle_event(self, event):
-        from src.WorldConstants import BLINK_KEY
-        if event.type == pygame.KEYDOWN:
-            if event.key == BLINK_KEY and self.cooldown_passed:
-                self.can_blink = True
-
-        elif event.type == pygame.KEYUP:
-            if event.key == BLINK_KEY:
-                self.can_blink = False
-
-        if event.type == pygame.MOUSEBUTTONDOWN and self.can_blink:
-            self.is_blinking = True
+        pass
 
     def update(self, deltaTime):
-        print("Time %d" % self.timer.get_time())
-        self.cooldown_passed = self.timer.get_time() > self.cooldown_ms
-        if not self.cooldown_passed:
-            self.can_blink = False
 
-        if self.is_blinking:
+        keys = pygame.key.get_pressed()
+        mice = pygame.mouse.get_pressed()
+        left_pressed = bool(mice[0])
+        from src.WorldConstants import BLINK_KEY
+
+        if False:
+            pass
+
+        elif self.state == BlinkState.CAN_BLINK :
+            if keys[BLINK_KEY]:
+                self.state = BlinkState.SHOWING_LINE
+
+        elif self.state == BlinkState.SHOWING_LINE :
+            if not keys[BLINK_KEY]:
+                self.state = BlinkState.CAN_BLINK
+            elif left_pressed:
+                self.state = BlinkState.BLINKING
+
+        elif self.state == BlinkState.BLINKING :
             is_first_blink_frame = self.frames_passed == None
             if is_first_blink_frame:
 
@@ -111,8 +124,12 @@ class Blink_Component:
                     self.player.moving_component.move(self.frame_displacement)
                     self.frames_passed = self.frames_passed + 1
                 elif self.frames_passed >= self.blink_frames:
-                    self.is_blinking = False
                     self.frames_passed = None
                     self.frame_displacement = (None, None)
                     self.timer.reset()
+                    self.state = BlinkState.COOLING_DOWN
+        elif self.state == BlinkState.COOLING_DOWN :
+            cooldown_passed = self.timer.get_time() > self.cooldown_ms
+            if cooldown_passed:
+                self.state = BlinkState.CAN_BLINK
 
