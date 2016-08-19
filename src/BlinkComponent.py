@@ -102,6 +102,7 @@ class Blink_Component:
                 self.state = BlinkState.CAN_BLINK
             elif left_pressed:
                 self.state = BlinkState.BLINKING
+                play_sound(SoundEnum.BLINK)
 
         elif self.state == BlinkState.BLINKING :
             is_first_blink_frame = self.frames_passed == None
