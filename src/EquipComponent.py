@@ -19,6 +19,8 @@ class EquipComponent:
 
         self.load_attach_points(r"..\raw\Sprites\player\attach.txt")
 
+        self.is_attacking = False
+
     def load_attach_points(self, filename):
         file = open(filename, "r")
         for i in range(len(self.attach_points)):
@@ -53,3 +55,13 @@ class EquipComponent:
         assert isinstance(weapon, WeaponEquipped)
         self.left_hand = weapon
         self.left_hand.attach_points = self.attach_points
+
+    def attack_right(self, target):
+        if self.right_hand is not None:
+            self.right_hand.use(target)
+            self.is_attacking = True
+
+    def attack_left(self, target):
+        if self.left_hand is not None:
+            self.left_hand.use(target)
+            self.is_attacking = True

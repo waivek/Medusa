@@ -55,7 +55,6 @@ class Player:
         self.sprint_energy_rate = CONST_SPRINT_ENERGY_RATE
 
         self.facing = Facing.LEFT
-        self.is_attacking = False
 
         self.sprite = AnimationFSM()
         spr0 = AnimatedSprite(ImageEnum.PLAYER1_LEFT, 8)
@@ -112,12 +111,12 @@ class Player:
 
 
     def update_sprite(self):
-        if self.is_attacking:
+        if self.equip_component.is_attacking:
             if self.sprite.get_loop() > 0:
-                self.is_attacking = False
+                self.equip_component.is_attacking = False
                 self.weapon[self.equipped_weapon].is_attacking = False
 
-        if not self.is_attacking:
+        if not self.equip_component.is_attacking:
             if self.state == PlayerState.JUMPING:
                 if self.moving_component.velocity[0] >= 0:
                     self.sprite.set_state(PlayerAnimState.JUMP_RIGHT)
@@ -222,7 +221,7 @@ class Player:
                     mpos = pygame.mouse.get_pos()
                     target = (mpos[0]+self.level.camera_pos[0],mpos[1]+self.level.camera_pos[1])
                     self.weapon[self.equipped_weapon].use(target)
-                    self.is_attacking = True
+                    self.equip_component.is_attacking = True
 
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:

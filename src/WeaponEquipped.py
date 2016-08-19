@@ -50,20 +50,20 @@ class WeaponEquipped:
         #self.sprite.set_location(self.owner.moving_component.position)
         #self.update_sprite()
 
-        if self.owner.is_attacking:
-            collider = self.collision_component.check_collisions()
+        if self.owner.equip_component.is_attacking:
+            collisions = self.collision_component.check_collisions()
             print("checking collisions")
-            if collider is not None:
-                print(collider)
-                if collider is not self.owner:
+            for collision in collisions:
+                print(collision)
+                if collision is not self.owner:
                     print("colliding")
                     from src.Skeleton import Skeleton
                     from src.Player import Player
-                    if isinstance(collider, Skeleton):
-                        collider.health -= 1
+                    if isinstance(collision, Skeleton):
+                        collision.health -= 1
                         play_sound(SoundEnum.METAL_MEDIUM_SLICE_METAL)
-                    if isinstance(collider, Player):
-                        collider.health.deal_damage(1)
+                    if isinstance(collision, Player):
+                        collision.health.deal_damage(1)
                         play_sound(SoundEnum.METAL_MEDIUM_SLICE_METAL)
 
 

@@ -34,7 +34,7 @@ class Skeleton:
         self.equip_component = EquipComponent(self, self.level)
         self.weapon = WeaponEquipped(WeaponEnum.SHORTSWORD,5,self)
         self.equip_component.equip_right(self.weapon)
-        self.is_attacking = False
+
         self.facing = Facing.LEFT
 
     def draw(self, screen, camera):
@@ -48,11 +48,11 @@ class Skeleton:
         self.state = SkeletonState.GROUND
 
     def update_sprite(self):
-        if self.is_attacking:
+        if self.equip_component.is_attacking:
             if self.sprite.get_loop()>0:
-                self.is_attacking = False
+                self.equip_component.is_attacking = False
 
-        if not self.is_attacking:
+        if not self.equip_component.is_attacking:
             if self.moving_component.velocity[0] < 0:
                 self.sprite.set_state(0)
                 self.facing = Facing.LEFT
@@ -61,7 +61,7 @@ class Skeleton:
                 self.facing = Facing.RIGHT
 
     def attack(self):
-        self.is_attacking = True
+        self.equip_component.is_attacking = True
         self.weapon.is_attacking = True
         if self.facing == Facing.LEFT:
             self.sprite.set_state(2)
@@ -72,7 +72,7 @@ class Skeleton:
         self.moving_component.update(deltaTime)
         self.enemy_movement_component.update(deltaTime)
         self.weapon.update(deltaTime)
-        print(self.is_attacking)
+        #print(self.equip_component.is_attacking)
 
         if self.health <= 0:
             self.level.destroy_entity(self)

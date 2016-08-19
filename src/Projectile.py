@@ -31,8 +31,9 @@ class Projectile:
         self.moving_component.update(deltatime)
         self.update_func(self)
 
-        collider = self.collision_component.check_collisions()
-        if collider is not None:
-            self.collide_func(self, collider)
+        colliders = self.collision_component.check_collisions()
+        for collider in colliders:
+            if collider is not None:
+                self.collide_func(self, collider)
 
         self.sprite.set_rotation_cropped(math.pi + math.atan2(-self.moving_component.velocity[1], self.moving_component.velocity[0]))

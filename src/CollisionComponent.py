@@ -23,11 +23,11 @@ class CollisionComponent:
         from src.Skeleton import Skeleton
         if isinstance(self.obj.owner, Skeleton):
             colliders.append(self.level.players[0])
-            if self.obj.owner in colliders:
-                colliders.remove(self.obj.owner)
 
         my_mask = self.sprite.get_mask()
         my_rect = self.sprite.sprite_rect()
+
+        colliding_objects = []
 
         # mask = pygame.Mask((100,100))
         # mask.clear()
@@ -52,6 +52,6 @@ class CollisionComponent:
             #    print_mask(my_mask)
             #print(overlap)
             if overlap is not None:
-                return coll
+                colliding_objects.append(coll)
 
-        return None
+        return colliding_objects
