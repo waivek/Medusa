@@ -80,7 +80,7 @@ class Player:
 
         self.moving_component = MovingComponent(self, self.level)
         self.moving_component.move(pos)
-        self.moving_component.on_collision = Player.on_collision
+        #self.moving_component.on_collision = Player.on_collision
 
         self.equipment = []
         self.equipped_weapon = -1

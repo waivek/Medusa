@@ -37,18 +37,8 @@ class MovingComponent:
 
         self.on_collision = passfunc
 
-    def point_in_wall(self, x, y):
-        cx = int(x/32)
-        cy = int(y/32)
-
-        if cx > self.tiles_col or cy > self.tiles_row:
-            #print("out of bounds")
-            return 1
-
-        if self.tiles[cy][cx]:
-            #print("colliding with %d %d" % (cy, cx))
-            return 1
-        return 0
+    def point_in_wall(self,x,y):
+        return self.level.point_in_wall((x,y))
 
     def push_out_colliders(self, colliders):
         magnitude = 0

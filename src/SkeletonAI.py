@@ -24,8 +24,9 @@ class SkeletonAI:
             else:
                 pos = (pos[0]+BLOCK_SIZE,pos[1])
 
-            if self.level.point_in_collider(pos[0],pos[1]) or self.level.point_in_wall(pos[0],pos[1])\
-                    or (not self.level.point_in_wall(pos[0],pos[1]+BLOCK_SIZE)):
+            if self.level.point_in_wall(pos) \
+                or (not self.level.point_in_wall((pos[0],pos[1]+BLOCK_SIZE)))\
+                or self.level.point_in_collider(pos):
                 self.obj.move_direction(src.Util.turn_around(self.obj.facing))
             else:
                 self.obj.move_direction(self.obj.facing)

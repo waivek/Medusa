@@ -123,18 +123,31 @@ class Level:
         for player in self.players:
             player.handle_event(event)
 
-    def point_in_wall(self, x, y):
-        for i in range(self.col):
-            for j in range(self.row):
-                if self.tiles[j][i]:
-                    tile_rect = pygame.Rect(BLOCK_SIZE * i, BLOCK_SIZE * j, BLOCK_SIZE, BLOCK_SIZE)
-                    if src.Util.point_in_rect((x,y),tile_rect):
-                        return True
-        return False
+    def point_in_wall(self, p):
+        cx = int(p[0]/32)
+        cy = int(p[1]/32)
 
-    def point_in_collider(self, x, y):
+        if cx > self.col or cy > self.row:
+            #print("out of bounds")
+            return 1
+
+        if self.tiles[cy][cx]:
+            #print("colliding with %d %d" % (cy, cx))
+            return 1
+        return 0
+
+    # def point_in_wall(self, x, y):
+    #     for i in range(self.col):
+    #         for j in range(self.row):
+    #             if self.tiles[j][i]:
+    #                 tile_rect = pygame.Rect(BLOCK_SIZE * i, BLOCK_SIZE * j, BLOCK_SIZE, BLOCK_SIZE)
+    #                 if tile_rect.collidepoint(x,y):
+    #                     return True
+    #     return False
+
+    def point_in_collider(self, p):
         for collider in self.colliders:
-            if src.Util.point_in_rect((x,y), collider.sprite.sprite_rect()):
+            if collider.sprite.sprite_rect().collidepoint(p):
                 return True
         return False
 
