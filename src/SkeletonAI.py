@@ -3,8 +3,8 @@ from src.WorldConstants import *
 import src.Util
 
 class SkeletonAIEnum(Enum):
-    MOVING = 0
-    ATTACKING = 1
+    PATROL = 0
+    AGGRO = 1
     CHASING_PLAYER = 2
 
 class SkeletonAI:
@@ -13,10 +13,12 @@ class SkeletonAI:
         self.level = obj.level
         self.player = self.level.players[0]
 
-        self.state = SkeletonAIEnum.MOVING
+        self.state = SkeletonAIEnum.PATROL
 
     def update(self, deltatime):
-        if self.state == SkeletonAIEnum.MOVING:
+
+
+        if self.state == SkeletonAIEnum.PATROL:
             center = self.obj.sprite.get_center()
             pos = center
             if self.obj.facing == Facing.LEFT:

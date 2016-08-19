@@ -1,5 +1,7 @@
 from src.LoadResources import *
 from enum import Enum
+from src.Line import *
+
 class BlinkState(Enum):
     CAN_BLINK = 0
     SHOWING_LINE = 1
@@ -11,7 +13,7 @@ class Blink_Component:
         from src.Timer import Timer
         from src.Sprite import Sprite
         self.valid_blink_points = []
-        self.dot_spr =Sprite(ImageEnum.BLINK_DOT)
+        self.dot_spr = Sprite(ImageEnum.BLINK_DOT)
         self.dot_spr.bounds = (0, 0, 4, 4)
         self.can_blink = False
         self.player = player
@@ -49,20 +51,23 @@ class Blink_Component:
         m = (player_y - mouse_y) / (player_x - mouse_x)
         c = player_y - (m * player_x)
 
-        self.valid_blink_points = []
+        #self.valid_blink_points = []
 
-        step = 0
+        line = Line(player_x,player_y,mouse_x,mouse_y)
+        self.valid_blink_points = line.get_valid_points(self.player.level,1)
 
-        if player_x <= mouse_x:
-            step = 1
-        elif mouse_x < player_x:
-            step = -1
-
-        for x in range(player_x, mouse_x, step):
-            y = m*x + c
-            if self.player.level.point_in_wall((x, y)) or self.player.level.point_in_collider((x, y)):
-                break
-            self.valid_blink_points.append((x, y))
+        # step = 0
+        #
+        # if player_x <= mouse_x:
+        #     step = 1
+        # elif mouse_x < player_x:
+        #     step = -1
+        #
+        # for x in range(player_x, mouse_x, step):
+        #     y = m*x + c
+        #     if self.player.level.point_in_wall((x, y)) or self.player.level.point_in_collider((x, y)):
+        #         break
+        #     self.valid_blink_points.append((x, y))
 
     def draw(self, screen, camera):
         if self.state == BlinkState.SHOWING_LINE:
