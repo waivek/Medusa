@@ -6,7 +6,6 @@ from src.Line import *
 class SkeletonAIEnum(Enum):
     PATROL = 0
     AGGRO = 1
-    CHASING_PLAYER = 2
 
 class SkeletonAI:
     def __init__(self, obj):
@@ -26,12 +25,14 @@ class SkeletonAI:
         colliders = list(self.level.colliders)
         colliders.remove(self.obj)
 
+        can_see_player = False
+
         if line.check_collision(self.level,BLOCK_SIZE,colliders) == False:
             self.last_known_player_pos = player_center
+            can_see_player = True
 
         if self.last_known_player_pos is not None:
             self.state = SkeletonAIEnum.AGGRO
-            print(self.state)
         else:
             self.state = SkeletonAIEnum.PATROL
 
@@ -50,9 +51,13 @@ class SkeletonAI:
                 self.obj.move_direction(self.obj.facing)
 
         elif self.state == SkeletonAIEnum.AGGRO:
-            if abs(self.last_known_player_pos[0]-my_center[0]) < 50:
-                self.obj.stand_still()
-                self.obj.attack()
+            if abs(self.last_known_player_pos[0]-my_center[0]) < 35:
+                if can_see_player:
+                    self.obj.stand_still()
+                    self.obj.attack()
+                else:
+                    self.last_known_player_pos = None
+                    self.state = SkeletonAIEnum.PATROL
             elif self.last_known_player_pos[0] < my_center[0]:
                 self.obj.move_direction(Facing.LEFT)
             else:
