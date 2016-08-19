@@ -145,8 +145,8 @@ class Level:
     #                     return True
     #     return False
 
-    def point_in_collider(self, p):
-        for collider in self.colliders:
+    def point_in_collider(self, p, colliders):
+        for collider in colliders:
             if collider.sprite.sprite_rect().collidepoint(p):
                 return True
         return False

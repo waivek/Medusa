@@ -1,6 +1,6 @@
 from src.LoadResources import *
-from enum import Enum
 from src.Line import *
+from src.WorldConstants import *
 
 class BlinkState(Enum):
     CAN_BLINK = 0
@@ -47,14 +47,14 @@ class Blink_Component:
         player_x, player_y = self.player.sprite.sprite_rect().center
         mouse_x, mouse_y = self.get_actual_mouse_pos()
         if mouse_x == player_x:
-            mouse_x = mouse_x + 1
+            mouse_x += 1
         m = (player_y - mouse_y) / (player_x - mouse_x)
         c = player_y - (m * player_x)
 
         #self.valid_blink_points = []
 
         line = Line(player_x,player_y,mouse_x,mouse_y)
-        self.valid_blink_points = line.get_valid_points(self.player.level,1)
+        self.valid_blink_points = line.get_valid_points(self.player.level,BLOCK_SIZE,self.player.level.colliders)
 
         # step = 0
         #

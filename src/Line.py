@@ -28,20 +28,20 @@ class Line:
         x1 = (y1 - self.c) / self.m
         return x1
 
-    def check_collision(self, level, step):
-        for t in range(0, self.distance, step):
+    def check_collision(self, level, step, colliders):
+        for t in range(0, int(self.distance), step):
             x = self.p1[0] + self.x_t * t
             y = self.p1[1] + self.y_t * t
-            if level.point_in_wall((x, y)) or level.point_in_collider((x, y)):
+            if level.point_in_wall((x, y)) or level.point_in_collider((x, y), colliders):
                 return True
         return False
 
-    def get_valid_points(self, level, step):
+    def get_valid_points(self, level, step, colliders):
         points = []
         for t in range(0, int(self.distance), step):
             x = self.p1[0] + self.x_t * t
             y = self.p1[1] + self.y_t * t
-            if level.point_in_wall((x, y)) or level.point_in_collider((x, y)):
+            if level.point_in_wall((x, y)) or level.point_in_collider((x, y), colliders):
                 break
             points.append((x,y))
         return points

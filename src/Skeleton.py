@@ -72,14 +72,14 @@ class Skeleton:
             self.sprite.set_state(3)
 
     def update(self, deltaTime):
-        if self.health <= 0:
-            self.level.destroy_entity(self)
-
         self.moving_component.update(deltaTime)
         self.weapon.update(deltaTime)
         self.ai_component.update(deltaTime)
         self.sprite.update(deltaTime)
         self.update_sprite()
+
+        if self.health <= 0:
+            self.level.destroy_entity(self)
 
     def move_direction(self, direction):
         if direction==Facing.LEFT:
