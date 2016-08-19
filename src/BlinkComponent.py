@@ -60,18 +60,9 @@ class Blink_Component:
 
         for x in range(player_x, mouse_x, step):
             y = m*x + c
-            if self.pos_is_tile(x, y):
+            if self.player.level.point_in_wall((x, y)) or self.player.level.point_in_collider((x, y)):
                 break
             self.valid_blink_points.append((x, y))
-
-    def pos_is_tile(self, x, y):
-        i = int(x/32)
-        j = int(y/32)
-
-        if self.player.level.tiles[j][i]:
-            return True
-        else:
-            return False
 
     def draw(self, screen, camera):
         if self.state == BlinkState.SHOWING_LINE:

@@ -1,5 +1,4 @@
 from src.MovingComponent import *
-from src.EnemyMovementComponent import EnemyMovementComponent
 from src.EquipComponent import *
 from src.Health import *
 from src.SkeletonAI import SkeletonAI
