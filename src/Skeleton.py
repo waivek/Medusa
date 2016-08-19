@@ -2,6 +2,7 @@ from src.MovingComponent import *
 from src.EnemyMovementComponent import EnemyMovementComponent
 from src.EquipComponent import *
 from src.Health import *
+from src.SkeletonAI import SkeletonAI
 import pygame
 
 from enum import Enum
@@ -28,12 +29,15 @@ class Skeleton:
         self.state = SkeletonState.IN_AIR
         self.moving_component = MovingComponent(self, self.level)
         self.moving_component.update_position(pos)
-        self.enemy_movement_component = EnemyMovementComponent(self, self.level)
+        #self.enemy_movement_component = EnemyMovementComponent(self, self.level)
         self.moving_component.on_collision = Skeleton.on_collision
         self.health = 1
+
         self.equip_component = EquipComponent(self, self.level)
         self.weapon = WeaponEquipped(WeaponEnum.SHORTSWORD,5,self)
         self.equip_component.equip_right(self.weapon)
+
+        self.ai_component = SkeletonAI(self)
 
         self.facing = Facing.LEFT
 
@@ -69,16 +73,23 @@ class Skeleton:
             self.sprite.set_state(3)
 
     def update(self, deltaTime):
-        self.moving_component.update(deltaTime)
-        self.enemy_movement_component.update(deltaTime)
-        self.weapon.update(deltaTime)
-        #print(self.equip_component.is_attacking)
-
         if self.health <= 0:
             self.level.destroy_entity(self)
 
+        self.moving_component.update(deltaTime)
+        self.weapon.update(deltaTime)
+        self.ai_component.update(deltaTime)
         self.sprite.update(deltaTime)
         self.update_sprite()
+
+    def move_direction(self, direction):
+        if direction==Facing.LEFT:
+            self.moving_component.velocity = (-100, self.moving_component.velocity[1])
+        else:
+            self.moving_component.velocity = (100, self.moving_component.velocity[1])
+
+    def stand_still(self):
+        self.moving_component.velocity = (0, self.moving_component.velocity[1])
 
     def save(self, file):
         file.write(str(self.moving_component.position[0]))

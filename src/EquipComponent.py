@@ -65,3 +65,20 @@ class EquipComponent:
         if self.left_hand is not None:
             self.left_hand.use(target)
             self.is_attacking = True
+
+    def stop_attacking(self):
+        self.is_attacking = False
+        if self.right_hand is not None:
+            self.right_hand.is_attacking = False
+        if self.left_hand is not None:
+            self.left_hand.is_attacking = False
+
+    def update(self, deltatime):
+        if self.is_attacking:
+            if self.sprite.get_loop() > 0:
+                self.stop_attacking()
+
+        if self.right_hand is not None:
+            self.right_hand.update(deltatime)
+        if self.left_hand is not None:
+            self.left_hand.update(deltatime)

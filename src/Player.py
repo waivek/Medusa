@@ -82,6 +82,9 @@ class Player:
         self.moving_component.move(pos)
         self.moving_component.on_collision = Player.on_collision
 
+        self.equipment = []
+        self.equipped_weapon = -1
+
         self.equip_component = EquipComponent(self, self.level)
         self.equip_component.print_attach_points()
 
@@ -103,19 +106,12 @@ class Player:
         for i in range(KeyEnum.NUM.value):
             self.keys.append(0)
 
-        self.equipped_weapon = -1
-        self.weapon = []
         for i in range(WeaponEnum.NUM.value):
-            self.weapon.append(None)
+            self.equipment.append(None)
         self.blink_component = Blink_Component(player=self)
 
 
     def update_sprite(self):
-        if self.equip_component.is_attacking:
-            if self.sprite.get_loop() > 0:
-                self.equip_component.is_attacking = False
-                self.weapon[self.equipped_weapon].is_attacking = False
-
         if not self.equip_component.is_attacking:
             if self.state == PlayerState.JUMPING:
                 if self.moving_component.velocity[0] >= 0:
@@ -200,18 +196,18 @@ class Player:
             elif event.key == pygame.K_e:
                 i = self.equipped_weapon + 1
                 while i < WeaponEnum.NUM.value:
-                    if self.weapon[i] is not None:
+                    if self.equipment[i] is not None:
                         self.equipped_weapon = i
-                        self.equip_component.equip_right(self.weapon[self.equipped_weapon])
+                        self.equip_component.equip_right(self.equipment[self.equipped_weapon])
                         break
                     i+=1
 
             elif event.key == pygame.K_q:
                 i = self.equipped_weapon - 1
                 while i >= 0:
-                    if self.weapon[i] is not None:
+                    if self.equipment[i] is not None:
                         self.equipped_weapon = i
-                        self.equip_component.equip_right(self.weapon[self.equipped_weapon])
+                        self.equip_component.equip_right(self.equipment[self.equipped_weapon])
                         break
                     i-=1
 
@@ -220,7 +216,7 @@ class Player:
                 if self.equipped_weapon != -1:
                     mpos = pygame.mouse.get_pos()
                     target = (mpos[0]+self.level.camera_pos[0],mpos[1]+self.level.camera_pos[1])
-                    self.weapon[self.equipped_weapon].use(target)
+                    self.equipment[self.equipped_weapon].use(target)
                     self.equip_component.is_attacking = True
 
         elif event.type == pygame.KEYUP:
@@ -263,6 +259,7 @@ class Player:
             self.is_sprinting = False
 
         self.moving_component.update(deltatime)
+        self.equip_component.update(deltatime)
 
         #set sprite
         if not self.moving_component.in_air:
@@ -294,11 +291,6 @@ class Player:
 
         #handle collisions
         self.handle_collisions()
-
-        #self.moving_component.push_out_colliders(self.level.colliders)
-
-        if self.equipped_weapon is not -1:
-            self.weapon[self.equipped_weapon].update(deltatime)
 
     def save(self, file):
         file.write(str(self.moving_component.position[0]))
@@ -334,17 +326,14 @@ class Player:
                 play_sound(SoundEnum.UNLOCK)
 
         if isinstance(other, Ammo):
-            if self.weapon[other.ammo_type.value] is not None:
-                self.weapon[other.ammo_type.value].ammo += 5
+            if self.equipment[other.ammo_type.value] is not None:
+                self.equipment[other.ammo_type.value].ammo += 5
                 self.level.destroy_entity(other)
 
         if isinstance(other, WeaponItem):
-            if self.weapon[other.weapon_type.value] is None:
-                self.weapon[other.weapon_type.value] = WeaponEquipped(other.weapon_type,5,self)
-                if self.equipped_weapon == -1:
-                    self.equipped_weapon = other.weapon_type.value
-                    self.equip_component.equip_right(self.weapon[other.weapon_type.value])
-
+            self.equipment[other.weapon_type.value] = WeaponEquipped(other.weapon_type, 5, self)
+            if self.equip_component.right_hand is None:
+                self.equip_component.equip_right(self.equipment[other.weapon_type.value])
             else:
-                self.weapon[other.weapon_type.value].ammo += 5
+                self.equipment[other.weapon_type.value].ammo += 5
             self.level.destroy_entity(other)

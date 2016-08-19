@@ -30,6 +30,8 @@ class EnemyMovementComponent:
             self.moving_component.velocity = (0,self.moving_component.velocity[1])
             print("attack")
         else:
+            if self.obj.equip_component.is_attacking:
+                self.obj.equip_component.is_attacking = False
             if self.moving_component.velocity[0] < 0:
                 if self.level.tiles[cell[1]][cell[0]-1]:
                     self.moving_component.velocity = (100, self.moving_component.velocity[1])

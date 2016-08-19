@@ -68,14 +68,22 @@ class Level:
         file.write(str(len(self.entities)))
         file.write('\n')
 
-        for ent in self.entities:
+        for ent in self.players:
             for i in range(len(EntityClasses)):
                 if type(ent)==EntityClasses[i]:
                     file.write(str(i))
 
             file.write('\n')
             ent.save(file)
-            #file.write('\n')
+
+        for ent in self.entities:
+            if type(ent)!=Player:
+                for i in range(len(EntityClasses)):
+                    if type(ent)==EntityClasses[i]:
+                        file.write(str(i))
+
+                file.write('\n')
+                ent.save(file)
 
     def destroy_entity(self, target):
         if target in self.entities:
@@ -122,6 +130,12 @@ class Level:
                     tile_rect = pygame.Rect(BLOCK_SIZE * i, BLOCK_SIZE * j, BLOCK_SIZE, BLOCK_SIZE)
                     if src.Util.point_in_rect((x,y),tile_rect):
                         return True
+        return False
+
+    def point_in_collider(self, x, y):
+        for collider in self.colliders:
+            if src.Util.point_in_rect((x,y), collider.sprite.sprite_rect()):
+                return True
         return False
 
     def update(self, deltatime):

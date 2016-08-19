@@ -8,7 +8,7 @@ CONST_DELTATIME_MAX = 50
 #todo - pixel perfect collision for arrow against wall
 #todo - sound and particle effects for combat
 #todo - fix double jump bug
-#todo - fix skeleton collision vs. lock
+#done - fix skeleton collision vs. lock
 #done - unable attack from right side bug
 #todo - remove hat from jumping animation
 #todo - make collider masks pixel perfect

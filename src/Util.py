@@ -1,4 +1,10 @@
 import math
+from src.WorldConstants import *
+
+def turn_around(facing):
+    if facing == Facing.LEFT:
+        return Facing.RIGHT
+    return Facing.LEFT
 
 def pixel2cell(x, y):
     return (int(x/32),int(y/32))
