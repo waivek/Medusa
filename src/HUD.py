@@ -14,8 +14,8 @@ class HUD:
         self.life_spr.set_location((0, 0))
         self.energy_spr.set_location((0, 32))
 
-        self.life_bar = BarUI((32,2),(200,0,0),28,3)
-        self.energy_bar = BarUI((32,34),(0,200,0),28,3)
+        self.life_bar = BarUI((32,2),(238,36,38),28,3)
+        self.energy_bar = BarUI((32,34),(107,205,104),28,3)
 
         self.blink_spr = Sprite(ImageEnum.CAN_BLINK)
         self.no_blink_spr = Sprite(ImageEnum.NO_BLINK)
