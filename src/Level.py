@@ -156,6 +156,8 @@ class Level:
         for entity in self.entities:
             entity.update(deltatime)
 
+        self.hud.update(deltatime)
+
         #update camera
         self.camera_pos = (self.players[0].moving_component.position[0] - CONST_CAMERA_PLAYER_OFFSET_X,
                            self.players[0].moving_component.position[1] - CONST_CAMERA_PLAYER_OFFSET_Y)

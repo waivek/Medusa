@@ -87,12 +87,14 @@ class Player:
         self.equip_component = EquipComponent(self, self.level)
         self.equip_component.print_attach_points()
 
-        self.energy = 10
+        self.energy = CONST_INIT_ENERGY
         self.energy_timer = Timer()
 
         self.valid_blink_points = []
 
-        self.health = Health(10, 1)
+        self.health = Health(CONST_INIT_HEALTH, 1)
+        self.max_health = CONST_INIT_HEALTH
+        self.max_energy = CONST_INIT_ENERGY
 
         self.buffs = []
 
@@ -281,13 +283,13 @@ class Player:
             if t > self.energy_regain_rate:
                 self.energy_timer.mod_time(self.energy_regain_rate)
                 self.energy += 1
-                if self.energy >= CONST_MAX_ENERGY:
-                    self.energy = CONST_MAX_ENERGY
+                if self.energy >= self.max_energy:
+                    self.energy = self.max_energy
 
         self.sprite.update(deltatime)
 
-        if self.health.health > CONST_MAX_HEALTH:
-            self.health.health = CONST_MAX_HEALTH
+        if self.health.health > self.max_health:
+            self.health.health = self.max_health
 
         #handle collisions
         self.handle_collisions()

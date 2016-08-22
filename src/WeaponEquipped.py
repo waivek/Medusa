@@ -60,10 +60,10 @@ class WeaponEquipped:
                     from src.Skeleton import Skeleton
                     from src.Player import Player
                     if isinstance(collision, Skeleton):
-                        collision.health -= 1
+                        collision.health -= 10
                         play_sound(SoundEnum.METAL_MEDIUM_SLICE_METAL)
                     if isinstance(collision, Player):
-                        collision.health.deal_damage(1)
+                        collision.health.deal_damage(10)
                         play_sound(SoundEnum.METAL_MEDIUM_SLICE_METAL)
 
 

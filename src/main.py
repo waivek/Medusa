@@ -1,5 +1,4 @@
 import sys
-import pygame
 from src.MapEditor import *
 
 CONST_MAX_FPS = 60
