@@ -83,7 +83,6 @@ def init_weapons():
             projectile.owner.level.destroy_entity(projectile)
 
     def dealdmg(projectile, other):
-        print("collision called")
         from src.Skeleton import Skeleton
         if isinstance(other, Skeleton):
             other.health -= 1
@@ -94,16 +93,15 @@ def init_weapons():
             play_sound(SoundEnum.ARROW_HIT_STONE)
 
     def bow(weapon, target):
-        if weapon.ammo > 0:
-            weapon.ammo -= 1
-            vel = pygame.math.Vector2(500, 0)
-            rot = math.atan2((target[1] - weapon.owner.moving_component.position[1])-16
-                                 ,(target[0] - weapon.owner.moving_component.position[0])-16)
-            vel = vel.rotate(math.degrees(rot))
-            vel2 = (vel.x,vel.y)
-            p = Projectile(AmmoSprites[weapon.weapon_type.value], weapon.owner, weapon.owner.moving_component.position, vel2,
-                           arrowinit,arrowupd,dealdmg)
-            weapon.owner.level.add_entity(p)
+        vel = pygame.math.Vector2(500, 0)
+        rot = math.atan2((target[1] - weapon.owner.moving_component.position[1]) - 16
+                         , (target[0] - weapon.owner.moving_component.position[0]) - 16)
+        vel = vel.rotate(math.degrees(rot))
+        vel2 = (vel.x, vel.y)
+        p = Projectile(AmmoSprites[weapon.weapon_type.value], weapon.owner, weapon.owner.moving_component.position,
+                       vel2,
+                       arrowinit, arrowupd, dealdmg)
+        weapon.owner.level.add_entity(p)
     WeaponFunctions.append(bow)
 
     def sword(weapon, target):

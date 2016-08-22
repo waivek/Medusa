@@ -14,6 +14,7 @@ CONST_DELTATIME_MAX = 50
 #todo - make collider masks pixel perfect
 #done - fix weapon swapping bug
 #done - fix weapon attach points not working properly
+#todo - fix ammo system
 
 def init():
     pygame.init()

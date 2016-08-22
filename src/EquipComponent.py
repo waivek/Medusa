@@ -50,6 +50,8 @@ class EquipComponent:
         assert isinstance(weapon, WeaponEquipped)
         self.right_hand = weapon
         self.right_hand.attach_points = self.attach_points
+        print("equipped")
+        print(weapon.weapon_type)
 
     def equip_left(self, weapon):
         assert isinstance(weapon, WeaponEquipped)
@@ -58,6 +60,7 @@ class EquipComponent:
 
     def attack_right(self, target):
         if self.right_hand is not None:
+            print("use")
             self.right_hand.use(target)
             self.is_attacking = True
 

@@ -39,7 +39,6 @@ class PlayerAnimState(Enum):
     STAB_RIGHT = 7
 
 class Player:
-
     def __init__(self, pos, level):
         self.level = level
 
@@ -203,6 +202,7 @@ class Player:
                     i+=1
 
             elif event.key == pygame.K_q:
+
                 i = self.equipped_weapon - 1
                 while i >= 0:
                     if self.equipment[i] is not None:
@@ -306,9 +306,6 @@ class Player:
         return (Player(pos, level))
 
     def on_collision(self, other):
-        #if isinstance(other, Skeleton):
-        #    self.health.deal_damage(1)
-
         if isinstance(other, Powerup):
             other.buff.start()
             self.buffs.append(other.buff)
@@ -331,9 +328,11 @@ class Player:
                 self.level.destroy_entity(other)
 
         if isinstance(other, WeaponItem):
+            print("eq")
             self.equipment[other.weapon_type.value] = WeaponEquipped(other.weapon_type, 5, self)
             if self.equip_component.right_hand is None:
                 self.equip_component.equip_right(self.equipment[other.weapon_type.value])
+                self.equipped_weapon = other.weapon_type.value
             else:
                 self.equipment[other.weapon_type.value].ammo += 5
             self.level.destroy_entity(other)
