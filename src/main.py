@@ -41,7 +41,7 @@ def main():
     time = pygame.time.get_ticks()
 
     lastsecond = time
-    frames = 0
+    frames = 1
 
     while True:
         for event in pygame.event.get():
@@ -70,6 +70,6 @@ def main():
         if time - lastsecond > 1000:
             lastsecond = time
             print("FPS: %d" % frames)
-            frames = 0
+            frames = 1
 
 main()
