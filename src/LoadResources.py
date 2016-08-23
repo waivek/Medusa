@@ -142,6 +142,7 @@ gSoundPaths = [
 def load_images():
     for i in range(len(gImagePaths)):
         img = pygame.image.load(gImagePaths[i])
+
         if img is None:
             print("ERROR: Unable to load image: %s" % (gImagePaths[i]))
             return False

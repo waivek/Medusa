@@ -1,5 +1,6 @@
 import sys
 from src.MapEditor import *
+import src.SpriteCreator
 
 CONST_MAX_FPS = 60
 CONST_DELTATIME_MAX = 50
@@ -25,6 +26,8 @@ def init():
     init_weapons()
 
 def main():
+    src.SpriteCreator.create_sprites()
+
     init()
 
     size = CONST_SCREEN_WIDTH, CONST_SCREEN_HEIGHT

@@ -3,6 +3,7 @@ from src.Player import *
 from src.Monster import *
 from src.Powerup import *
 from src.LoadResources import *
+from src.SurfaceSprite import *
 from src.HUD import *
 from src.Powerups import *
 import src.Util
@@ -31,7 +32,7 @@ class Level:
             [
                 [y >= (10) for x in range(self.col)]
                 for y in range(self.row)
-                ]
+            ]
 
         self.sky_sprite = Sprite(ImageEnum.SKY)
         self.sky_sprite.bounds = (0,0,2000,2000)
@@ -54,6 +55,23 @@ class Level:
         self.hud = None
         self.show_hud = True
 
+        self.world_spr = None
+        self.create_world_sprite()
+
+    def create_world_sprite(self):
+        surface = pygame.Surface((self.col*32,self.row*32), pygame.HWSURFACE | pygame.SRCALPHA)
+        surface.fill((0,0,0,0))
+
+        for i in range(self.row):
+            for j in range(self.col):
+                if self.tiles[i][j]:
+                    self.block_sprite.set_location((BLOCK_SIZE * j, BLOCK_SIZE * i))
+                    surface.blit(self.block_sprite.sprite, pygame.Rect(self.block_sprite.sprite_rec[0], self.block_sprite.sprite_rec[1],
+                                                                       self.block_sprite.sprite_rec[2],
+                                                                       self.block_sprite.sprite_rec[3]))
+
+        self.world_spr = SurfaceSprite(surface)
+
     def save_data(self, path):
         print("saving")
         file = open(path, 'r+')
@@ -68,7 +86,7 @@ class Level:
         file.write(str(len(self.entities)))
         file.write('\n')
 
-        for ent in self.players:
+        for ent in self.players: #save the player first
             for i in range(len(EntityClasses)):
                 if type(ent)==EntityClasses[i]:
                     file.write(str(i))
@@ -103,11 +121,13 @@ class Level:
     def draw(self, screen):
         self.sky_sprite.draw(screen, (0,0))
 
-        for i in range(self.row):
-            for j in range(self.col):
-                if self.tiles[i][j] is True:
-                    self.block_sprite.set_location((BLOCK_SIZE*j,BLOCK_SIZE*i))
-                    self.block_sprite.draw(screen,self.camera_pos)
+        # for i in range(self.row):
+        #     for j in range(self.col):
+        #         if self.tiles[i][j]:
+        #             self.block_sprite.set_location((BLOCK_SIZE*j,BLOCK_SIZE*i))
+        #             self.block_sprite.draw(screen,self.camera_pos)
+
+        self.world_spr.draw(screen,self.camera_pos)
 
 
         #for monster in self.monsters:
@@ -190,5 +210,7 @@ class Level:
             #print(EntityClasses[j])
             ent = EntityClasses[j].load(file, level)
             level.add_entity(ent)
+
+        level.create_world_sprite()
 
         return level

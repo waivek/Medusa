@@ -54,7 +54,7 @@ class Blink_Component:
         #self.valid_blink_points = []
 
         line = Line(player_x,player_y,mouse_x,mouse_y)
-        self.valid_blink_points = line.get_valid_points(self.player.level,BLOCK_SIZE,self.player.level.colliders)
+        self.valid_blink_points = line.get_valid_points(self.player.level,1,self.player.level.colliders)
 
         # step = 0
         #
