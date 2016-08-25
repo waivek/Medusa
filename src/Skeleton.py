@@ -52,8 +52,10 @@ class Skeleton:
 
     def update_sprite(self):
         if self.equip_component.is_attacking:
+            print(self.sprite.get_loop())
             if self.sprite.get_loop()>0:
                 self.equip_component.is_attacking = False
+                self.weapon.stop_swing()
 
         if not self.equip_component.is_attacking:
             if self.moving_component.velocity[0] < 0:
@@ -62,14 +64,20 @@ class Skeleton:
             elif self.moving_component.velocity[0] > 0:
                 self.sprite.set_state(1)
                 self.facing = Facing.RIGHT
+            elif self.facing == Facing.LEFT:
+                self.sprite.set_state(0)
+            elif self.facing == Facing.RIGHT:
+                self.sprite.set_state(1)
 
     def attack(self):
-        self.equip_component.is_attacking = True
-        self.weapon.is_attacking = True
-        if self.facing == Facing.LEFT:
-            self.sprite.set_state(2)
-        else:
-            self.sprite.set_state(3)
+        if self.equip_component.is_attacking == False:
+            print("attack!")
+            self.equip_component.is_attacking = True
+            self.weapon.start_swing()
+            if self.facing == Facing.LEFT:
+                self.sprite.set_state(2)
+            else:
+                self.sprite.set_state(3)
 
     def update(self, deltaTime):
         self.moving_component.update(deltaTime)

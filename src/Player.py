@@ -92,14 +92,14 @@ class Player:
 
         self.valid_blink_points = []
 
-        self.health = Health(CONST_INIT_HEALTH, 1)
+        self.health = Health(CONST_INIT_HEALTH, 0)
         self.max_health = CONST_INIT_HEALTH
         self.max_energy = CONST_INIT_ENERGY
 
         self.buffs = []
 
         from src.Sprite import Sprite
-        self.dot_spr =Sprite(ImageEnum.BLINK_DOT)
+        self.dot_spr = Sprite(ImageEnum.BLINK_DOT)
         self.dot_spr.bounds = (0, 0, 4, 4)
         self.can_blink = False
 

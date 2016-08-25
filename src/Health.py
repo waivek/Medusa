@@ -10,5 +10,7 @@ class Health:
         t = self.timer.get_time()
         if t > self.cooldown_seconds * 1000:
             self.health = self.health - damage
+            if self.health < 0:
+                self.health = 0
             self.time_elapsed_since_hit = 0
             self.timer.reset()
