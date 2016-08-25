@@ -26,7 +26,7 @@ def init():
     init_weapons()
 
 def main():
-    #src.SpriteCreator.create_sprites()
+    src.SpriteCreator.create_sprites()
 
     init()
 
