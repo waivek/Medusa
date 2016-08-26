@@ -1,0 +1,10 @@
+{
+  "frame0": {
+    "leftleg rot": 45,
+    "rightleg rot": -45,
+    "leftarm rot": 90,
+    "rightarm rot": -90,
+    "lefthand rot": 90,
+    "righthand rot": -90
+  }
+}
