@@ -57,10 +57,11 @@ def create_animation(path, head,arm,hand,leg, attach):
         rightleg_rot = anim[fid]["rightleg rot"]
 
         # right
-        tmp = rotate_surface_around_point(leg, leg2body, rightleg_rot)
+        tmp = rotate_surface_around_point(hand, hand2arm, righthand_rot)
         size = tmp.get_size()
         left.blit(tmp,
-                  (32 * i + body2leg[0] - leg2body[0], body2leg[1] - leg2body[1], 32, 32),
+                  (32 * i + body2arm[0] - arm2body[0] + arm2hand[0] - hand2arm[0],
+                   body2arm[1] - arm2body[1] + arm2hand[1] - hand2arm[1], 32, 32),
                   (size[0] / 2 - 16, size[1] / 2 - 16, 32, 32))
 
         tmp = rotate_surface_around_point(arm, arm2body, rightarm_rot)
@@ -69,17 +70,28 @@ def create_animation(path, head,arm,hand,leg, attach):
                   (32 * i + body2arm[0] - arm2body[0], body2arm[1] - arm2body[1], 32, 32),
                   (size[0] / 2 - 16, size[1] / 2 - 16, 32, 32))
 
-        tmp = rotate_surface_around_point(hand, hand2arm, righthand_rot)
+        tmp = rotate_surface_around_point(leg, leg2body, rightleg_rot)
         size = tmp.get_size()
         left.blit(tmp,
-                  (32 * i + body2arm[0] - arm2body[0] + arm2hand[0] - hand2arm[0],
-                   body2arm[1] - arm2body[1] + arm2hand[1] - hand2arm[1], 32, 32),
+                  (32 * i + body2leg[0] - leg2body[0], body2leg[1] - leg2body[1], 32, 32),
                   (size[0] / 2 - 16, size[1] / 2 - 16, 32, 32))
 
         # body
         left.blit(head, (32*i, 0, 32, 32))
 
         # left
+        tmp = rotate_surface_around_point(leg, leg2body, leftleg_rot)
+        size = tmp.get_size()
+        left.blit(tmp,
+                  (32 * i + body2leg[0] - leg2body[0], body2leg[1] - leg2body[1], 32, 32),
+                  (size[0] / 2 - 16, size[1] / 2 - 16, 32, 32))
+        
+        tmp = rotate_surface_around_point(arm, arm2body, leftarm_rot)
+        size = tmp.get_size()
+        left.blit(tmp,
+                  (32 * i + body2arm[0] - arm2body[0], body2arm[1] - arm2body[1], 32, 32),
+                  (size[0] / 2 - 16, size[1] / 2 - 16, 32, 32))
+
         tmp = rotate_surface_around_point(hand, hand2arm, lefthand_rot)
         size = tmp.get_size()
         left.blit(tmp,
@@ -87,19 +99,6 @@ def create_animation(path, head,arm,hand,leg, attach):
                    body2arm[1] - arm2body[1] + arm2hand[1] - hand2arm[1], 32, 32),
                   (size[0] / 2 - 16, size[1] / 2 - 16, 32, 32))
 
-        tmp = rotate_surface_around_point(arm, arm2body, leftarm_rot)
-        size = tmp.get_size()
-        left.blit(tmp,
-                  (32 * i + body2arm[0] - arm2body[0], body2arm[1] - arm2body[1], 32, 32),
-                  (size[0] / 2 - 16, size[1] / 2 - 16, 32, 32))
-
-        print(body2leg[0], leg2body[0])
-        print(body2leg[0] - leg2body[0], body2leg[1] - leg2body[1])
-        tmp = rotate_surface_around_point(leg, leg2body, leftleg_rot)
-        size = tmp.get_size()
-        left.blit(tmp,
-                  (32 * i + body2leg[0] - leg2body[0], body2leg[1] - leg2body[1], 32, 32),
-                  (size[0] / 2 - 16, size[1] / 2 - 16, 32, 32))
 
     #right
     right = pygame.Surface((32 * frames, 32), pygame.SRCALPHA)

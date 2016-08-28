@@ -11,24 +11,24 @@
     "leftleg rot": 0,
     "rightleg rot": 0,
     "leftarm rot": 0,
-    "rightarm rot": 45,
+    "rightarm rot": -45,
     "lefthand rot": 0,
-    "righthand rot": 45
+    "righthand rot": -45
   },
 "frame2": {
     "leftleg rot": 0,
     "rightleg rot": 0,
     "leftarm rot": 0,
-    "rightarm rot": 90,
+    "rightarm rot": -90,
     "lefthand rot": 0,
-    "righthand rot": 90
+    "righthand rot": -90
   },
 "frame3": {
     "leftleg rot": 0,
     "rightleg rot": 0,
     "leftarm rot": 0,
-    "rightarm rot": 45,
+    "rightarm rot": -45,
     "lefthand rot": 0,
-    "righthand rot": 45
+    "righthand rot": -45
   }
 }
