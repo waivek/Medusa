@@ -1,6 +1,9 @@
 import pygame
 import json
 
+#todo - generate attach.txt
+#todo - fix hand not rotating with arm
+
 def import_json(path):
     file = open(path,'r+')
     lines = file.readlines()
@@ -16,7 +19,7 @@ def rotate_surface_around_point(surface, point, angle):
     result.fill((0, 0, 0, 0))
     result.blit(surface, (point[0]-16, point[1]-16, point[0]+16, point[1]+16))
     result = pygame.transform.rotate(result, angle)
-    size = result.get_size()
+    #size = result.get_size()
     #result = result.subsurface()
     #self.sprite_rec = self.sprite.get_rect(center=self.sprite_rec.center)
     #self.bounds = (0, 0, self.sprite_rec[2], self.sprite_rec[3])
@@ -32,12 +35,12 @@ def create_animation(path, head,arm,hand,leg, attach):
     anim = import_json("../raw/creator/anim/"+path+".json")
     frames = len(anim)
 
-    body2arm = attach["body2arm"]
-    arm2body = attach["arm2body"]
-    arm2hand = attach["arm2hand"]
-    hand2arm = attach["hand2arm"]
-    body2leg = attach["body2leg"]
-    leg2body = attach["leg2body"]
+    body2arm = list(attach["body2arm"])
+    arm2body = list(attach["arm2body"])
+    arm2hand = list(attach["arm2hand"])
+    hand2arm = list(attach["hand2arm"])
+    body2leg = list(attach["body2leg"])
+    leg2body = list(attach["leg2body"])
 
     #left
     left = pygame.Surface((32*frames, 32), pygame.SRCALPHA)
@@ -90,6 +93,8 @@ def create_animation(path, head,arm,hand,leg, attach):
                   (32 * i + body2arm[0] - arm2body[0], body2arm[1] - arm2body[1], 32, 32),
                   (size[0] / 2 - 16, size[1] / 2 - 16, 32, 32))
 
+        print(body2leg[0], leg2body[0])
+        print(body2leg[0] - leg2body[0], body2leg[1] - leg2body[1])
         tmp = rotate_surface_around_point(leg, leg2body, leftleg_rot)
         size = tmp.get_size()
         left.blit(tmp,
@@ -179,7 +184,7 @@ def create_sprites():
 
     attach = import_json(r"..\raw\creator\attach.json")
 
-    create_animation("walk",head,arm1,arm2,leg,attach)
+    create_animation("walk", head, arm1, arm2, leg, attach)
     create_animation("jump", head, arm1, arm2, leg, attach)
     create_animation("stab", head, arm1, arm2, leg, attach)
     #create_animation("stand", head, arm1, arm2, leg, attach)
