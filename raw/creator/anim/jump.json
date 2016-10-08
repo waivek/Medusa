@@ -5,6 +5,7 @@
     "leftarm rot": 90,
     "rightarm rot": -90,
     "lefthand rot": 90,
-    "righthand rot": -90
+    "righthand rot": -90,
+    "weapon rot" : 45
   }
 }

@@ -3,6 +3,7 @@ from enum import Enum
 
 gImages = []
 gSounds = []
+gFonts = []
 
 class ImageEnum(Enum):
     PLAYER1_LEFT = 0
@@ -158,8 +159,18 @@ def load_sounds():
         gSounds.append(sound)
     return True
 
+def load_fonts():
+    #global gFont
+    #nonlocal gFont
+    font = pygame.font.Font(r"..\raw\fonts\OxygenMono.ttf", 18)
+    if font is None:
+        print("ERROR: unable to load font")
+        return False
+    gFonts.append(font)
+    return True
+
 def load_resources():
-    return load_images() and load_sounds()
+    return load_images() and load_sounds() and load_fonts()
 
 def play_sound(soundenum):
     gSounds[soundenum.value].play()

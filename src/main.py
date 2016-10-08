@@ -19,6 +19,9 @@ CONST_DELTATIME_MAX = 50
 def init():
     pygame.init()
     pygame.mixer.init(frequency=22050, size=-16, channels=2, buffer=4096)
+    pygame.font.init()
+    if not pygame.font.get_init():
+        print("ERROR: unable to init font")
 
     if not load_resources():
         print("ERROR: unable to load resources")

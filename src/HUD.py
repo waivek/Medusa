@@ -11,11 +11,11 @@ class HUD:
         self.life_spr = Sprite(ImageEnum.HUD_LIFE)
         self.energy_spr = Sprite(ImageEnum.HUD_ENERGY)
 
-        self.life_spr.set_location((0, 0))
-        self.energy_spr.set_location((0, 32))
+        self.life_spr.set_location((32, 0))
+        self.energy_spr.set_location((32, 32))
 
-        self.life_bar = BarUI((32,2),(238,36,38),28,3)
-        self.energy_bar = BarUI((32,34),(107,205,104),28,3)
+        self.life_bar = BarUI((64,2),(238,36,38),28,3)
+        self.energy_bar = BarUI((64,34),(107,205,104),28,3)
 
         self.blink_spr = Sprite(ImageEnum.CAN_BLINK)
         self.no_blink_spr = Sprite(ImageEnum.NO_BLINK)
@@ -30,6 +30,11 @@ class HUD:
 
         self.life_bar.draw(screen, (0,0))
         self.energy_bar.draw(screen, (0,0))
+
+        life_val = gFonts[0].render(str(self.player.health.health), True, (255,255,255))
+        energy_val = gFonts[0].render(str(self.player.energy), True, (255, 255, 255))
+        screen.blit(life_val, (0,5,32,32))
+        screen.blit(energy_val,(0,37,32,32))
 
         for i in range(KeyEnum.NUM.value):
             self.key_spr[i].set_location((500, 0))

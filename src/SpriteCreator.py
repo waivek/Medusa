@@ -45,6 +45,7 @@ def create_animation(path, head,arm,hand,leg, attach):
     hand2arm = list(attach["hand2arm"])
     body2leg = list(attach["body2leg"])
     leg2body = list(attach["leg2body"])
+    hand2weapon = list(attach["hand2weapon"])
 
     #left
     left = pygame.Surface((32*frames, 32), pygame.SRCALPHA)
@@ -59,6 +60,8 @@ def create_animation(path, head,arm,hand,leg, attach):
         righthand_rot = anim[fid]["righthand rot"]
         leftleg_rot = anim[fid]["leftleg rot"]
         rightleg_rot = anim[fid]["rightleg rot"]
+        #leftweapon_rot = anim[fid]["leftweapon rot"]
+        #rightweapon_rot = anim[fid]["rightweapon rot"]
 
         # right
         tmp = rotate_surface_around_point(hand, hand2arm, righthand_rot)
@@ -118,6 +121,7 @@ def create_animation(path, head,arm,hand,leg, attach):
     hand2arm[0] = 32-hand2arm[0]
     body2leg[0] = 32-body2leg[0]
     leg2body[0] = 32-leg2body[0]
+    hand2weapon[0] = 32-hand2weapon[0]
 
     head = pygame.transform.flip(head,True,False)
     arm = pygame.transform.flip(arm, True, False)
@@ -133,6 +137,8 @@ def create_animation(path, head,arm,hand,leg, attach):
         righthand_rot = 360-anim[fid]["righthand rot"]
         leftleg_rot = 360-anim[fid]["leftleg rot"]
         rightleg_rot = 360-anim[fid]["rightleg rot"]
+        #leftweapon_rot = 360-anim[fid]["leftweapon rot"]
+        #rightweapon_rot = 360-anim[fid]["rightweapon rot"]
 
         # left
         tmp = rotate_surface_around_point(hand, hand2arm, lefthand_rot)
